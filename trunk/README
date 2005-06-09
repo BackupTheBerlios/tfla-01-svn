@@ -34,6 +34,7 @@ Building TFLA-01 from source
     - adjust PREFIX in tfla-01.pro with your favourite editor
     - qmake tfla-01.pro
     - make
+    - lrelease tfla-01.pro
     - make install
  * Windows
     - TODO
