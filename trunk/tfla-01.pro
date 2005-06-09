@@ -138,6 +138,26 @@ OBJECTS_DIR = out/
 # -----------------------------------------------------------------------------
 
 #
+# make a tarball on Unix with "make tarball"
+maketarball.target          = tarball
+maketarball.commands        = svn export `pwd` /tmp/tfla-01-$$VERSION_STRING &&
+maketarball.commands       += pushd . &&
+maketarball.commands       += cd /tmp/tfla-01-$$VERSION_STRING &&
+maketarball.commands       += qmake tfla-01.pro &&
+maketarball.commands       += rm Makefile &&
+maketarball.commands       += cd /tmp &&
+maketarball.commands       += tar cvfz tfla-01-$${VERSION_STRING}.tar.gz tfla-01-$$VERSION_STRING &&
+maketarball.commands       += popd &&
+maketarball.commands       += mv /tmp/tfla-01-$${VERSION_STRING}.tar.gz . &&
+maketarball.commands       += rm -r /tmp/tfla-01-$$VERSION_STRING
+QMAKE_EXTRA_UNIX_TARGETS   += maketarball
+
+
+
+
+# -----------------------------------------------------------------------------
+
+#
 # Installation
 i_documentation.path        = $$DOCDIR
 i_documentation.files      += README COPYING ChangeLog
