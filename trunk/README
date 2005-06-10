@@ -13,14 +13,16 @@ System requirements
     - Qt installed
  * Windows
     - Windows 2000 or XP
- * a parallel port and the schematic on the TFLA-01 homepage attached
+ * A parallel port and the schematic attached. The schematic is
+   in the source .tar.gz in doc/schematic, in the installed RPM
+   it's in /usr/share/doc/packages/tfla-01/.
 
 
 Installing binaries
 -------------------
 
  * Linux
-    - rpm -Uvh tfla-01....rpm
+    - rpm -Uvh tfla-01-<version>.i586.rpm
  * Windows
     - unzip the ZIP file and install on your favourite place, e.g.
       c:\program files.
