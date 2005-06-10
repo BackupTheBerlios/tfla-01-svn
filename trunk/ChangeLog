@@ -1,4 +1,11 @@
 2005-06-10  Bernhard Walle <bernhard.walle@gmx.de>
+	* Changed schematic:
+	  - Changed inputs and outputs for MAX232 (of course, use only RS232
+	    inputs and TTL outputs)
+	  - Changed POWER pin to be on the right side of the 7805
+	  - Connect MAX232 to power
+
+2005-06-10  Bernhard Walle <bernhard.walle@gmx.de>
 
 	* Initial release 0.1.0
 
