@@ -25,6 +25,9 @@
 class Data
 {
     public:
+        enum LineState { LS_ALWAYS_L, LS_ALWAYS_H, LS_CHANGING };
+        
+    public:
         Data() throw ();
         
         ByteVector& bytes() throw();
@@ -35,9 +38,13 @@ class Data
         uint getMeasuringTime() const throw ();
         void setMeasuringTime(uint time) throw ();
         
+        LineState getLineState(int line) const throw ();
+        void calculateLineStates() throw ();
+        
     private:
         ByteVector m_bytes;
         uint       m_measuringTime;
+        LineState  m_lineStates[NUMBER_OF_BITS_PER_BYTE];
 };
 
 #endif /* DATA_H */

@@ -142,8 +142,6 @@ void DataCollector::run()
             }
         }
         
-        std::vector<byte> vec;
-        
         QTime start = QTime::currentTime();
         
         // we cannot use QTimer in this thread because it's in non-GUI thread
@@ -160,8 +158,7 @@ void DataCollector::run()
         }
         
         m_data.setMeasuringTime(start.msecsTo(QTime::currentTime()));
-        
-        PRINT_TRACE("Getting data finished with %d samples.", vec.size());
+        m_data.calculateLineStates();
     }
     catch (const TfError& err)
     {

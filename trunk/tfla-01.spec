@@ -1,6 +1,6 @@
 Summary: 	The Fabulous Logic Analyzer
 Name: 		tfla-01
-Version: 	0.1.0
+Version: 	0.1.1
 Release: 	0
 Packager:       Bernhard Walle <bernhard.walle@gmx.de>
 License:	GPL

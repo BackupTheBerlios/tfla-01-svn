@@ -301,19 +301,40 @@ void DataPlot::plot(QPainter* painter)
         
         for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++, currentY += heightPerField)
         {
-            QPointArray points(m_xPositions.size());
             int currentLowY = currentY;
             int currentHighY = currentY - 3 * heightPerField / 5;
             
-            QValueVector<uint>::iterator it = m_xPositions.begin();
-            uint j = m_startIndex, j0 = 0;
-            while (it != m_xPositions.end() && j < (data.size()))
-            {
-                points.setPoint(j0, *it, data[j] & (1 << i) ? currentHighY : currentLowY);
-                ++it, ++j, ++j0;
-            }
+            Data::LineState ls = m_dataView->m_currentData.getLineState(i);
             
-            painter->drawPolyline(points, 0, j0);
+            switch (ls)
+            {
+                case Data::LS_ALWAYS_L:
+                    painter->drawLine( m_xPositions[0], currentLowY, 
+                                       m_xPositions.back(), currentLowY);
+                    PRINT_TRACE("LS_ALWAYS_L (%d)", i);
+                    break;
+                   
+                case Data::LS_ALWAYS_H:
+                    painter->drawLine( m_xPositions[0], currentHighY, 
+                                       m_xPositions.back(), currentHighY);
+                    PRINT_TRACE("LS_ALWAYS_H (%d)", i);
+                    break;
+                   
+                case Data::LS_CHANGING:
+                    QPointArray points(m_xPositions.size());
+                    
+                    QValueVector<uint>::iterator it = m_xPositions.begin();
+                    uint j = m_startIndex, j0 = 0;
+                    while (it != m_xPositions.end() && j < (data.size()))
+                    {
+                        points.setPoint(j0, *it, data[j] & (1 << i) ? currentHighY : currentLowY);
+                        ++it, ++j, ++j0;
+                    }
+                    
+                    painter->drawPolyline(points, 0, j0);
+                    PRINT_TRACE("LS_CHANGING (%d)", i);
+                    break;
+            }
         }
     }
 }

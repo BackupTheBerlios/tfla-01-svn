@@ -22,7 +22,12 @@
 // -------------------------------------------------------------------------------------------------
 Data::Data() throw ()
     : m_measuringTime(0)
-{}
+{
+    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
+    {
+        m_lineStates[i] = LS_CHANGING;
+    }
+}
 
 
 // -------------------------------------------------------------------------------------------------
@@ -50,6 +55,57 @@ uint Data::getMeasuringTime() const throw ()
 void Data::setMeasuringTime(uint time) throw ()
 {
     m_measuringTime = time;
+}
+
+
+// -------------------------------------------------------------------------------------------------
+Data::LineState Data::getLineState(int line) const throw ()
+{
+    return m_lineStates[line];
+}
+
+#define bit_is_set(b, i) \
+     (b & (1 << i))
+
+#define bit_is_clear(b, i) \
+     (!bit_is_set(b, i))
+
+// -------------------------------------------------------------------------------------------------
+void Data::calculateLineStates() throw ()
+{
+    if (m_bytes.size() < 1)
+    {
+        return;
+    }
+    
+    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
+    {
+        m_lineStates[i] = bit_is_set(m_bytes[0], i) ? LS_ALWAYS_H : LS_ALWAYS_L;
+        
+        for (uint j = 0; j < m_bytes.size() && m_lineStates[i] != LS_CHANGING; j++)
+        {
+            switch (m_lineStates[i])
+            {
+                case LS_ALWAYS_L:
+                    if (bit_is_set(m_bytes[j], i))
+                    {
+                        m_lineStates[i] = LS_CHANGING;
+                    }
+                    break;
+                    
+                case LS_ALWAYS_H:
+                    if (bit_is_clear(m_bytes[j], i))
+                    {
+                        m_lineStates[i]  = LS_CHANGING;
+                    }
+                    break;
+                    
+                case LS_CHANGING:
+                    // don't occure
+                    break;
+            }
+        }
+    }
 }
 
 
