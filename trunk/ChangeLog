@@ -4,6 +4,7 @@
 	  collection is collecting 100 % CPU anyway
 	* Optimized drawing for lines that have always the same value
 	* Changed shortcuts for start/stop to F5/F6
+	* Added another jumper pair to the schematic
 
 2005-06-10  Bernhard Walle <bernhard.walle@gmx.de>
 	* Changed schematic:
