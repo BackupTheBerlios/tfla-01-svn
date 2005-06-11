@@ -146,8 +146,8 @@ void Tfla01::startAnalyze()
         goto end;
     }
     
-    statusBar()->message(tr(QString("Collected %1 samples successfully.").arg( 
-                         loc.toString(coll->getData().bytes().size()))), 
+    statusBar()->message(tr("Collected %1 samples successfully.").arg( 
+                         loc.toString(coll->getData().bytes().size())), 
                          2000);
     
     m_centralWidget->getDataView()->setData(coll->getData());

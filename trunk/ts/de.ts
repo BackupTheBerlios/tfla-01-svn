@@ -71,6 +71,10 @@
         <source>(no difference)</source>
         <translation>(keine Differenz)</translation>
     </message>
+    <message>
+        <source>&amp;Sampling Rate:</source>
+        <translation>&amp;Samplerate:</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -242,6 +246,10 @@ wird beendet.</translation>
     <message>
         <source>Application</source>
         <translation>Anwendung</translation>
+    </message>
+    <message>
+        <source>Collected %1 samples successfully.</source>
+        <translation>%1 Messungen erfolgreich durchgeführt.</translation>
     </message>
 </context>
 </TS>
