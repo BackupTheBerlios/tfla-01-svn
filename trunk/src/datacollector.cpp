@@ -29,17 +29,15 @@
 const int DataCollector::INITIAL_VECTOR_SPACE   = 1000000;
 
 // -------------------------------------------------------------------------------------------------
-DataCollector::DataCollector(uint port)
-    throw ()
+DataCollector::DataCollector(uint port) throw ()
     : m_portNumber(port), m_triggering(false), m_triggeringMask(0), m_triggeringValue(0),
-      m_collectingTime(0), m_stop(false)
+      m_collectingTime(0), m_stop(false), m_numberOfSkips(0)
 {
     m_data.bytes().reserve(INITIAL_VECTOR_SPACE);
 }
 
 // -------------------------------------------------------------------------------------------------
-void DataCollector::setTriggering(bool enabled, unsigned char value, unsigned char mask)
-    throw ()
+void DataCollector::setTriggering(bool enabled, unsigned char value, unsigned char mask) throw ()
 {
     m_triggering = enabled;
     m_triggeringValue = value;
@@ -48,42 +46,51 @@ void DataCollector::setTriggering(bool enabled, unsigned char value, unsigned ch
 
 
 // -------------------------------------------------------------------------------------------------
-bool DataCollector::isTriggeringEnabled() const
-    throw ()
+bool DataCollector::isTriggeringEnabled() const throw ()
 {
     return m_triggering;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-unsigned char DataCollector::getTriggeringValue() const
-    throw ()
+unsigned char DataCollector::getTriggeringValue() const throw ()
 {
     return m_triggeringValue;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-unsigned char DataCollector::getTriggeringMask() const
-    throw ()
+unsigned char DataCollector::getTriggeringMask() const throw ()
 {
     return m_triggeringMask;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void DataCollector::setCollectingTime(int time)
-    throw ()
+void DataCollector::setCollectingTime(int time) throw ()
 {
     m_collectingTime = time;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-int DataCollector::getCollectingTime() const
-    throw ()
+int DataCollector::getCollectingTime() const throw ()
 {
     return m_collectingTime;
+}
+
+
+// -------------------------------------------------------------------------------------------------
+void DataCollector::setNumberOfSkips(int numberOfSkips) throw ()
+{
+    m_numberOfSkips = numberOfSkips;
+}
+
+
+// -------------------------------------------------------------------------------------------------
+int DataCollector::getNumberOfSkips() const throw ()
+{
+    return m_numberOfSkips;
 }
 
 
@@ -153,6 +160,10 @@ void DataCollector::run()
         {
             for (int i = 0; i < 100 && !m_stop; i++)
             {
+                for (int j = 0; j < m_numberOfSkips; j++)
+                {
+                    port.readData();
+                }
                 m_data.bytes().push_back(port.readData());
             }
         }
@@ -169,5 +180,4 @@ void DataCollector::run()
     
     PRINT_TRACE("Getting data finished with %d samples.", m_data.bytes().count());
 }
-
 

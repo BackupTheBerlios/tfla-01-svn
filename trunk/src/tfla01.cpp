@@ -16,9 +16,11 @@
  */
 #include <memory>
 
+#include <qlocale.h>
 #include <qpixmap.h>
 #include <qtimer.h>
 #include <qeventloop.h>
+#include <qcursor.h>
 #include <qiconset.h>
 #include <qapplication.h>
 #include <qpopupmenu.h>
@@ -99,6 +101,8 @@ void Tfla01::portChange(int id)
 void Tfla01::startAnalyze()
     throw ()
 {
+    QLocale loc;
+    
     m_actions.startAction->setEnabled(false);
     m_actions.stopAction->setEnabled(true);
     m_analyzingActive = true;
@@ -110,6 +114,9 @@ void Tfla01::startAnalyze()
                                  set.readNumEntry("Measuring/Triggering/Seconds") ) * 1000  );
     coll->setTriggering(true, set.readNumEntry("Measuring/Triggering/Value"), 
                               set.readNumEntry("Measuring/Triggering/Mask") );
+    coll->setNumberOfSkips(set.readNumEntry("Measuring/Number_Of_Skips"));
+    
+    QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
     coll->start();
     
     // loop while the thread has finished
@@ -127,6 +134,7 @@ void Tfla01::startAnalyze()
         coll->stop();
         coll->wait();
     }
+    QApplication::restoreOverrideCursor();
     
     // finished
     if (coll->getErrorString())
@@ -138,6 +146,10 @@ void Tfla01::startAnalyze()
         goto end;
     }
     
+    statusBar()->message(tr(QString("Collected %1 samples successfully.").arg( 
+                         loc.toString(coll->getData().bytes().size()))), 
+                         2000);
+    
     m_centralWidget->getDataView()->setData(coll->getData());
     
 end:
@@ -147,8 +159,7 @@ end:
 
 
 // -------------------------------------------------------------------------------------------------
-void Tfla01::stopAnalyze()
-    throw ()
+void Tfla01::stopAnalyze() throw ()
 {
     m_analyzingActive = false;
 }

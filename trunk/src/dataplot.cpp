@@ -161,14 +161,14 @@ int DataPlot::getPointsPerSample(double zoom ) const throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-void DataPlot::updateData(bool forceRedraw)
+void DataPlot::updateData(bool forceRedraw, bool forceRecalculatePositions)
     throw ()
 {
     QPainter p;
     QPixmap screenPixmap( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE *  m_zoomFactor),
                          height() );
     
-    if (m_lastWidth != width())
+    if (m_lastWidth != width() || forceRecalculatePositions)
     {
         recalculateXPositions();
     }
@@ -309,31 +309,47 @@ void DataPlot::plot(QPainter* painter)
             switch (ls)
             {
                 case Data::LS_ALWAYS_L:
-                    painter->drawLine( m_xPositions[0], currentLowY, 
-                                       m_xPositions.back(), currentLowY);
-                    PRINT_TRACE("LS_ALWAYS_L (%d)", i);
+                    painter->drawLine(m_xPositions.first(), currentLowY, 
+                                      m_xPositions.last(), currentLowY);
                     break;
-                   
+                    
                 case Data::LS_ALWAYS_H:
-                    painter->drawLine( m_xPositions[0], currentHighY, 
-                                       m_xPositions.back(), currentHighY);
-                    PRINT_TRACE("LS_ALWAYS_H (%d)", i);
+                    painter->drawLine(m_xPositions.first(), currentHighY, 
+                                      m_xPositions.last(), currentHighY);
                     break;
-                   
+                    
                 case Data::LS_CHANGING:
+                {
                     QPointArray points(m_xPositions.size());
                     
                     QValueVector<uint>::iterator it = m_xPositions.begin();
                     uint j = m_startIndex, j0 = 0;
+                    
+                    // handle the first point
+                    bool oldHigh = data[j] & (1 << i), newHigh;
+                    points.setPoint(j0++, *it, oldHigh ? currentHighY : currentLowY);
+                    ++it;
+                    
                     while (it != m_xPositions.end() && j < (data.size()))
                     {
-                        points.setPoint(j0, *it, data[j] & (1 << i) ? currentHighY : currentLowY);
-                        ++it, ++j, ++j0;
+                        newHigh = data[j] & (1 << i);
+                        
+                        if (newHigh != oldHigh)
+                        {
+                            points.setPoint(j0++, *(it - 1), oldHigh ? currentHighY : currentLowY);
+                            points.setPoint(j0++, *it,       newHigh ? currentHighY : currentLowY);
+                            
+                            oldHigh = newHigh;
+                        }
+                        ++it, ++j;
                     }
                     
+                    // end handling
+                    points.setPoint(j0++, *(it - 1), newHigh ? currentHighY : currentLowY);
+                    
                     painter->drawPolyline(points, 0, j0);
-                    PRINT_TRACE("LS_CHANGING (%d)", i);
                     break;
+                }
             }
         }
     }
@@ -350,7 +366,7 @@ void DataPlot::drawMarkers(QPainter* painter) throw ()
     {
         int displaySample = m_leftMarker - m_startIndex;
         
-        if (displaySample >= 0 && displaySample <= static_cast<int>(m_xPositions.size()))
+        if (displaySample >= 0 && displaySample < static_cast<int>(m_xPositions.size()))
         {
             int x = m_xPositions[displaySample];
             painter->setPen(leftMarkerPen);
@@ -361,7 +377,7 @@ void DataPlot::drawMarkers(QPainter* painter) throw ()
     {
         int displaySample = m_rightMarker - m_startIndex;
         
-        if (displaySample >= 0 && displaySample <= static_cast<int>(m_xPositions.size()))
+        if (displaySample >= 0 && displaySample < static_cast<int>(m_xPositions.size()))
         {
             int x = m_xPositions[displaySample];
             painter->setPen(rightMarkerPen);

@@ -5,6 +5,11 @@
 	* Optimized drawing for lines that have always the same value
 	* Changed shortcuts for start/stop to F5/F6
 	* Added another jumper pair to the schematic
+	* Fixed various bugs with scrolling
+	* Improved line drawing for lines that don't have always the same
+	  value, too
+	* make sample rate (i. e. skip rate) configurable
+	* added status message that displays the number of collected samples
 
 2005-06-10  Bernhard Walle <bernhard.walle@gmx.de>
 	* Changed schematic:

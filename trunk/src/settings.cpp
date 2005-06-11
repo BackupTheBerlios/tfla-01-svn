@@ -41,6 +41,7 @@ Settings::Settings()
     DEF_INTEGE("Measuring/Triggering/Seconds",   5);
     DEF_INTEGE("Measuring/Triggering/Value",     0);
     DEF_INTEGE("Measuring/Triggering/Mask",      0xff);
+    DEF_INTEGE("Measuring/Number_Of_Skips",      0);
     DEF_STRING("UI/Foreground_Color_Line",       "yellow");
     DEF_STRING("UI/Background_Color",            "black");
     DEF_STRING("UI/Left_Marker_Color",           "red");

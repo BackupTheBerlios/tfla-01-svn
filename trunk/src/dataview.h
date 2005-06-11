@@ -46,6 +46,8 @@ class DataView : public QWidget
         void end() throw ();
         void navigateLeft() throw ();
         void navigateRight() throw ();
+        void navigateLeftPage() throw ();
+        void navigateRightPage() throw ();
         void jumpToLeftMarker() throw ();
         void jumpToRightMarker() throw ();
         
@@ -59,12 +61,14 @@ class DataView : public QWidget
         
     protected slots:
         void updateScrollInfo() throw ();
+        void scrollValueChanged() throw ();
         void scrollValueChanged(int value) throw ();
         
     private:
         DataPlot*   m_dataPlot;
         QScrollBar* m_scrollBar;
         Data        m_currentData;
+        int         m_scrollDivisor;
 };
 
 #endif /* DATAVIEW_H */

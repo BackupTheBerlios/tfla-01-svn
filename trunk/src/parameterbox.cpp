@@ -17,6 +17,7 @@
 #include <qapplication.h>
 #include <qwidget.h>
 #include <qlayout.h>
+#include <qslider.h>
 #include <qlabel.h>
 #include <qlocale.h>
 #include <qdatetimeedit.h>
@@ -27,12 +28,14 @@
 #include "triggerwidget.h"
 #include "settings.h"
 
+#define MAX_SLIDER_VALUE 20
+
 // -------------------------------------------------------------------------------------------------
 ParameterBox::ParameterBox(QWidget* parent, const char* name)
     throw () 
     : QFrame(parent, name), m_leftValue(-1.0), m_rightValue(-1.0)
 {
-    QGridLayout* layout = new QGridLayout(this, 4 /* row */, 9 /* col */, 0 /* margin */, 5);
+    QGridLayout* layout = new QGridLayout(this, 5 /* row */, 9 /* col */, 0 /* margin */, 5);
     
     // - create ------------------------------------------------------------------------------------
     
@@ -41,10 +44,12 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     
     // widgets
     QLabel* timeLabel = new QLabel(tr("&Measuring Time:"), this);
+    QLabel* sampleLabel = new QLabel(tr("&Sampling Rate:"), this);
     QLabel* triggerLabel = new QLabel(tr("&Triggering:"), this);
     
     QTimeEdit* timeedit = new QTimeEdit(this);
     timeedit->setRange(QTime(0, 0), QTime(0, 1));
+    QSlider* sampleSlider = new QSlider(0, MAX_SLIDER_VALUE, 1, 0, Qt::Horizontal, this);
     TriggerWidget* triggering = new TriggerWidget(this);
     
     // labels for the markers
@@ -66,19 +71,23 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     // buddys
     timeLabel->setBuddy(timeedit);
     triggerLabel->setBuddy(triggering);
+    sampleLabel->setBuddy(sampleSlider);
     
     // load value
     triggering->setValue(set.readNumEntry("Measuring/Triggering/Value"),
                          set.readNumEntry("Measuring/Triggering/Mask"));
     timeedit->setTime(QTime(0, set.readNumEntry("Measuring/Triggering/Minutes"),
                                set.readNumEntry("Measuring/Triggering/Seconds"))); 
+    sampleSlider->setValue(MAX_SLIDER_VALUE - set.readNumEntry("Measuring/Number_Of_Skips"));
     
     // - layout the stuff --------------------------------------------------------------------------
                                    // row, col
     layout->addWidget(timeLabel,           0,    1);
-    layout->addWidget(triggerLabel,        1,    1,    Qt::AlignTop);
+    layout->addWidget(sampleLabel,         1,    1);
+    layout->addWidget(triggerLabel,        2,    1,    Qt::AlignTop);
     layout->addWidget(timeedit,            0,    3);
-    layout->addMultiCellWidget(triggering, 1, 3, 3, 3);
+    layout->addWidget(sampleSlider,        1,    3);
+    layout->addMultiCellWidget(triggering, 2, 3, 3, 3);
     layout->addWidget(leftMarkerLabel,     0,    5);
     layout->addWidget(rightMarkerLabel,    1,    5);
     layout->addWidget(diffLabel,           2,    5);
@@ -89,11 +98,15 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     layout->setColSpacing(2, 20);
     layout->setColStretch(4, 4);
     layout->setColSpacing(6, 20);
-    layout->setColSpacing(7, 130);
+    layout->setColSpacing(7, 150);
     layout->setColStretch(8, 2);
     
-    connect(timeedit, SIGNAL(valueChanged(const QTime&)), SLOT(timeValueChanged(const QTime&)));
-    connect(triggering, SIGNAL(valueChanged(byte, byte)), SLOT(triggerValueChanged(byte, byte)));
+    connect(timeedit,                   SIGNAL(valueChanged(const QTime&)), 
+            this,                       SLOT(timeValueChanged(const QTime&)));
+    connect(triggering,                 SIGNAL(valueChanged(byte, byte)), 
+            this,                       SLOT(triggerValueChanged(byte, byte)));
+    connect(sampleSlider,               SIGNAL(valueChanged(int)),
+            this,                       SLOT(sliderValueChanged(int)));
     
     // - initial values ----------------------------------------------------------------------------
     updateValues();
@@ -117,6 +130,13 @@ void ParameterBox::triggerValueChanged(byte mask, byte value)
     Settings& set = Settings::set();
     set.writeEntry("Measuring/Triggering/Value", value);
     set.writeEntry("Measuring/Triggering/Mask", mask);
+}
+
+
+// -------------------------------------------------------------------------------------------------
+void ParameterBox::sliderValueChanged(int value) throw ()
+{
+    Settings::set().writeEntry("Measuring/Number_Of_Skips", MAX_SLIDER_VALUE - value);
 }
 
 
