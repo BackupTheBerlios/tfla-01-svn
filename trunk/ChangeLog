@@ -1,3 +1,8 @@
+2005-06-11  Bernhard Walle <bernhard.walle@gmx.de>
+	* Bugfix: Don't use QTimer in non-GUI thread. Replaced by QTime()
+	  polling operation (polling is not bad here because the parport data
+	  collection is collecting 100 % CPU anyway
+
 2005-06-10  Bernhard Walle <bernhard.walle@gmx.de>
 	* Changed schematic:
 	  - Changed inputs and outputs for MAX232 (of course, use only RS232

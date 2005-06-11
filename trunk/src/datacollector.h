@@ -45,8 +45,8 @@ class DataCollector : public QThread
         bool isTriggeringEnabled() const throw ();
         byte getTriggeringValue() const throw ();
         byte getTriggeringMask() const throw ();
-        void setCollectingTime(unsigned int msecs) throw ();
-        unsigned int getCollectingTime() const throw ();
+        void setCollectingTime(int msecs) throw ();
+        int getCollectingTime() const throw ();
         Data getData() const throw ();
         QString getErrorString() const throw ();
         
@@ -61,7 +61,7 @@ class DataCollector : public QThread
         byte          m_triggeringMask;
         byte          m_triggeringValue;
         Data          m_data;
-        unsigned int  m_collectingTime;
+        int           m_collectingTime;
         QString       m_errorString;
         bool          m_stop;
 };

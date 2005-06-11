@@ -21,7 +21,6 @@
 #include <qobject.h>
 #include <qdatetime.h>
 #include <qcstring.h>
-#include <qtimer.h>
 
 #include "datacollector.h"
 #include "hardware/parportlist.h"
@@ -73,7 +72,7 @@ unsigned char DataCollector::getTriggeringMask() const
 
 
 // -------------------------------------------------------------------------------------------------
-void DataCollector::setCollectingTime(unsigned int time)
+void DataCollector::setCollectingTime(int time)
     throw ()
 {
     m_collectingTime = time;
@@ -81,7 +80,7 @@ void DataCollector::setCollectingTime(unsigned int time)
 
 
 // -------------------------------------------------------------------------------------------------
-unsigned int DataCollector::getCollectingTime() const
+int DataCollector::getCollectingTime() const
     throw ()
 {
     return m_collectingTime;
@@ -117,9 +116,6 @@ void DataCollector::run()
 {
     try
     {
-        // create a timer
-        std::auto_ptr<QTimer> timer(new QTimer(NULL));
-        
         // open the port and claim it
         ParportList* list = ParportList::findPorts();
         Parport port = *(list->getPort(m_portNumber));
@@ -135,8 +131,6 @@ void DataCollector::run()
         {
             PRINT_TRACE("Triggering enabled, starting Parport::waitData()");
             
-            qDebug("Mask=%x, Value=%x", m_triggeringMask, m_triggeringValue);
-            
             struct timeval timeout = { 0, 500 };
             
             while (!m_stop)
@@ -148,16 +142,24 @@ void DataCollector::run()
             }
         }
         
-        timer->start(m_collectingTime, true);
-        
         std::vector<byte> vec;
         
-        while (timer->isActive() && !m_stop)
+        QTime start = QTime::currentTime();
+        
+        // we cannot use QTimer in this thread because it's in non-GUI thread
+        // this changes in Qt 4, but this is future
+        // so we need to poll, and to be platform independent we use QTime
+        // QTime::msecsTo(QTime::currentTime) isn't very fast, so we do this every 100 measures
+        // which seems to be accurate enough
+        while (start.msecsTo(QTime::currentTime()) <= m_collectingTime)
         {
-            m_data.bytes().push_back(port.readData());
+            for (int i = 0; i < 100 && !m_stop; i++)
+            {
+                m_data.bytes().push_back(port.readData());
+            }
         }
         
-        m_data.setMeasuringTime(m_collectingTime);
+        m_data.setMeasuringTime(start.msecsTo(QTime::currentTime()));
         
         PRINT_TRACE("Getting data finished with %d samples.", vec.size());
     }
