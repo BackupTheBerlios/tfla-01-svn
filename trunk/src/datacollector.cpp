@@ -149,7 +149,7 @@ void DataCollector::run()
         // so we need to poll, and to be platform independent we use QTime
         // QTime::msecsTo(QTime::currentTime) isn't very fast, so we do this every 100 measures
         // which seems to be accurate enough
-        while (start.msecsTo(QTime::currentTime()) <= m_collectingTime)
+        while ((start.msecsTo(QTime::currentTime()) <= m_collectingTime) && !m_stop)
         {
             for (int i = 0; i < 100 && !m_stop; i++)
             {

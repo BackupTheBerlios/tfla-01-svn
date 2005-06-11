@@ -301,10 +301,10 @@ void Tfla01::initActions()
     // ----- Analyze -------------------------------------------------------------------------------
     m_actions.startAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_redo_16.png"),
         QPixmap::fromMimeSource("stock_redo_24.png") ), tr("&Start"), 
-        QKeySequence(CTRL|Key_S), this);
+        QKeySequence(Key_F5), this);
     m_actions.stopAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_stop_16.png"),
         QPixmap::fromMimeSource("stock_stop_24.png") ), tr("&Start"), 
-        QKeySequence(CTRL|Key_O), this);
+        QKeySequence(Key_F6), this);
     
     // ----- Navigate ------------------------------------------------------------------------------
     m_actions.navigatePos1Action = new QAction(QIconSet(
