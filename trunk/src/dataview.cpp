@@ -83,11 +83,11 @@ void DataView::setData(const Data& data)
     //   bar->setPageStep(2962973);
     // to solve this, we connect to the pagestep / linestep signals directly and use a smaller
     // pagestep and range value here
+    m_currentData = data;
     m_scrollDivisor =  m_currentData.bytes().size()  == 0
                        ? 1
                        : m_currentData.bytes().size() / 1000;
                        
-    m_currentData = data;
     m_dataPlot->setStartIndex(0);
     m_dataPlot->updateData(true, true);
     m_dataPlot->clearMarkers();
@@ -186,6 +186,10 @@ void DataView::updateScrollInfo()
     {
         m_scrollBar->setPageStep(ps / m_scrollDivisor);
         m_scrollBar->setLineStep(qRound(ps / 10.0 / m_scrollDivisor)); 
+
+        PRINT_TRACE("div = %d", m_scrollDivisor);
+        PRINT_TRACE("range = %d to %d", m_scrollBar->minValue(), m_scrollBar->maxValue());
+        PRINT_TRACE("ps = %d", m_scrollBar->pageStep());
     }
 }
 

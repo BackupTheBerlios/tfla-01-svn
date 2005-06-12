@@ -326,7 +326,8 @@ void DataPlot::plot(QPainter* painter)
                     uint j = m_startIndex, j0 = 0;
                     
                     // handle the first point
-                    bool oldHigh = data[j] & (1 << i), newHigh;
+                    bool oldHigh = data[j] & (1 << i);
+                    bool newHigh = oldHigh;
                     points.setPoint(j0++, *it, oldHigh ? currentHighY : currentLowY);
                     ++it;
                     
