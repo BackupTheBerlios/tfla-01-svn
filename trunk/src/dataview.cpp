@@ -177,9 +177,6 @@ void DataView::updateScrollInfo()
     m_scrollBar->setRange(0, (m_currentData.bytes().size() - ps) / m_scrollDivisor);
     m_scrollBar->setValue(m_dataPlot->getStartIndex() / m_scrollDivisor);
     
-    qDebug("val = %d", m_scrollBar->value());
-    qDebug("max = %d", m_scrollBar->maxValue());
-    
     // set this to calculate the size
     if ((m_currentData.bytes().size() - ps) == 0)
     {

@@ -136,8 +136,6 @@ void DataCollector::run()
         // wait for triggering
         if (m_triggering && m_triggeringMask != 0xff)
         {
-            PRINT_TRACE("Triggering enabled, starting Parport::waitData()");
-            
             struct timeval timeout = { 0, 500 };
             
             while (!m_stop)
@@ -174,10 +172,8 @@ void DataCollector::run()
     catch (const TfError& err)
     {
         PRINT_TRACE("Error occured while getting data: %s", (const char*)err.what().local8Bit());
-        perror("Test\n");
+        PRINT_DBG("OS error was %s", strerror(errno));
         m_errorString = err.what();
     }
-    
-    PRINT_TRACE("Getting data finished with %d samples.", m_data.bytes().count());
 }
 

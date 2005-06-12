@@ -48,32 +48,6 @@ int main(int argc, char* argv[])
     
     try
     {
-        /*ParportList* list = ParportList::findPorts(0);
-        Parport* port = list->getPort(1);*/
-        
-        /*DataCollector* coll = new DataCollector(1);
-        coll->setCollectingTime(2000);
-        coll->start();*/
-        
-        
-        
-        //delete port;
-        //delete list;
-        
-        /* 
-        coll->wait();
-        
-        delete coll;
-        
-        ParportList* list = ParportList::findPorts(0);
-        
-        qDebug("Number of ports = %d", list->getNumberOfPorts());
-        
-        Parport* port = list->getPort(1);
-        qDebug("Name of 2nd port: %s\n", (const char*)port->getName().local8Bit());
-        
-        delete port;
-        delete list; */
         auto_ptr<Tfla01> tfla01(new Tfla01);
         
         app.setMainWidget(tfla01.get());
