@@ -18,11 +18,17 @@
 
 #include <qframe.h>
 #include <qlayout.h>
+#include <qpixmap.h>
+#include <qapplication.h>
 #include <qscrollbar.h>
+#include <qfiledialog.h>
+#include <qstatusbar.h>
+#include <qmessagebox.h>
 
 #include "settings.h"
 #include "dataview.h"
 #include "dataplot.h"
+#include "tfla01.h"
 
 using std::min;
 using std::max;
@@ -122,14 +128,37 @@ void DataView::zoomFit()
         m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 1) / 
                               m_dataPlot->getPointsPerSample() / m_currentData.bytes().size() );
     }
+    else
+    {
+        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
+            tr("Function only available if data is displayed."), 4000); 
+    }
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void DataView::zoom1()
-    throw ()
+void DataView::zoom1() throw ()
 {
     m_dataPlot->setZoomFactor(1.0);
+}
+
+
+// -------------------------------------------------------------------------------------------------
+void DataView::zoomMarkers() throw ()
+{
+    if (m_dataPlot->getLeftMarker() > 0 && m_dataPlot->getRightMarker() > 0)
+    {
+        double diff = DABS(m_dataPlot->getRightMarker() - m_dataPlot->getLeftMarker());
+        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 2) / 
+                              m_dataPlot->getPointsPerSample() / diff );
+        m_dataPlot->setStartIndex(min(m_dataPlot->getLeftMarker(), m_dataPlot->getRightMarker()));
+    }
+    else
+    {
+        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
+            tr("Function only available if both markers are set."), 4000); 
+    }
+    
 }
 
 
@@ -213,7 +242,6 @@ void DataView::scrollValueChanged()
 // -------------------------------------------------------------------------------------------------
 void DataView::scrollValueChanged(int value) throw ()
 {
-    qDebug("value = %d", value);
     if (value == m_scrollBar->maxValue())
     {
         end();
@@ -277,6 +305,28 @@ void DataView::jumpToRightMarker() throw ()
         // 3 instead of 2 because in end() size() is lastElementIndex + 1
         m_dataPlot->setStartIndex(max(0, m_dataPlot->getRightMarker() -
                                        m_dataPlot->getNumberOfDisplayedSamples() + 3)  );
+    }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+void DataView::saveScreenshot() throw ()
+{
+    QString fileName = QFileDialog::getSaveFileName(
+        QString::null, tr("PNG files (*.png)"),
+        this, "", tr("Choose file to save"));
+    if (!fileName)
+    {
+        return;
+    }
+    
+    QPixmap screenshot = m_dataPlot->getScreenshot();
+    if (!screenshot.save(fileName, "PNG"))
+    {
+        QMessageBox::warning(this,
+            tr("TFLA-01"), tr("Current view could not be saved. Maybe you "
+                "you don't have permissions to that location."),
+                QMessageBox::Ok, QMessageBox::NoButton);
     }
 }
 

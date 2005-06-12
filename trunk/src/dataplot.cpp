@@ -36,20 +36,10 @@ DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name)
     throw ()
     : QWidget(parent, name, WRepaintNoErase), 
       m_dataView(dataView), m_startIndex(0), m_zoomFactor(1.0),
-      m_lastPixmap(NULL), m_leftMarker(-1), m_rightMarker(-1)
+      m_lastPixmap(0, 0), m_leftMarker(-1), m_rightMarker(-1)
 {
     setFocusPolicy(QWidget::WheelFocus);
     setBackgroundMode( QWidget::NoBackground );
-}
-
-
-// -------------------------------------------------------------------------------------------------
-DataPlot::~DataPlot()
-{
-    if (m_lastPixmap)
-    {
-        delete m_lastPixmap;
-    }
 }
 
 
@@ -161,8 +151,17 @@ int DataPlot::getPointsPerSample(double zoom ) const throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-void DataPlot::updateData(bool forceRedraw, bool forceRecalculatePositions)
-    throw ()
+QPixmap DataPlot::getScreenshot() throw ()
+{
+    QPixmap ret = m_lastPixmap;
+    ret.resize(width(), height());
+    
+    return ret;
+}
+
+
+// -------------------------------------------------------------------------------------------------
+void DataPlot::updateData(bool forceRedraw, bool forceRecalculatePositions) throw ()
 {
     QPainter p;
     QPixmap screenPixmap( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE *  m_zoomFactor),
@@ -173,21 +172,16 @@ void DataPlot::updateData(bool forceRedraw, bool forceRecalculatePositions)
         recalculateXPositions();
     }
     
-    if (forceRedraw || m_lastWidth != width() || m_lastHeight != height() || !m_lastPixmap)
+    if (forceRedraw || m_lastWidth != width() || m_lastHeight != height() 
+            || !(m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0))
     {
-        if (m_lastPixmap)
-        {
-            delete m_lastPixmap;
-        }
-        
         // larger pixmap to have space to draw the last point
-        m_lastPixmap = new QPixmap( static_cast<int>(  width() + 
-                                                           DEFAULT_POINTS_PER_SAMPLE * 
-                                                           m_zoomFactor),
-                                    height() );
-        m_lastPixmap->fill(QColor(Settings::set().readEntry("UI/Background_Color")));
+        m_lastPixmap.resize( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE * 
+                                                          m_zoomFactor),
+                             height() );
+        m_lastPixmap.fill(QColor(Settings::set().readEntry("UI/Background_Color")));
         
-        p.begin(m_lastPixmap);
+        p.begin(&m_lastPixmap);
         plot(&p);
         p.end();
         
@@ -198,7 +192,7 @@ void DataPlot::updateData(bool forceRedraw, bool forceRecalculatePositions)
     }
     
     p.begin(&screenPixmap);
-    p.drawPixmap(0, 0, *m_lastPixmap);
+    p.drawPixmap(0, 0, m_lastPixmap);
     drawMarkers(&p);
     p.end();
     

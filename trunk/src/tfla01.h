@@ -49,6 +49,7 @@ class Tfla01 : public QMainWindow
     private:
         struct
         {
+            QAction* saveViewAction;
             QAction* quitAction;
             QAction* whatsThisAction;
             QAction* helpAction;
@@ -58,6 +59,7 @@ class Tfla01 : public QMainWindow
             QAction* zoomOutAction;
             QAction* zoomFitAction;
             QAction* zoom1Action;
+            QAction* zoomMarkersAction;
             QAction* startAction;
             QAction* stopAction;
             QAction* changeForegroundColorAction;

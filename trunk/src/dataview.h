@@ -36,12 +36,15 @@ class DataView : public QWidget
         
         void setData(const Data& data) throw ();
         void redrawData() throw ();
+        
     
     public slots:
         void zoomIn() throw ();
         void zoomOut() throw ();
         void zoomFit() throw ();
         void zoom1() throw ();
+        void zoomMarkers() throw ();
+        
         void pos1() throw ();
         void end() throw ();
         void navigateLeft() throw ();
@@ -50,6 +53,7 @@ class DataView : public QWidget
         void navigateRightPage() throw ();
         void jumpToLeftMarker() throw ();
         void jumpToRightMarker() throw ();
+        void saveScreenshot() throw ();
         
     signals:
         void leftMarkerValueChanged(double value);

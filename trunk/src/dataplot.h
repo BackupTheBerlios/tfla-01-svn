@@ -19,6 +19,7 @@
 
 #include <qframe.h>
 #include <qvaluevector.h>
+#include <qpixmap.h>
 
 class DataView;
 
@@ -32,7 +33,7 @@ class DataPlot : public QWidget
     public:
     
         DataPlot(QWidget* parent, DataView* dataView, const char* name = 0) throw ();
-        virtual ~DataPlot();
+        virtual ~DataPlot() {}
         
         void updateData(bool forceRedraw, bool forceRecalculatePositions = false) throw ();
         
@@ -50,6 +51,8 @@ class DataPlot : public QWidget
         int getRightMarker() const throw ();
         void setRightMarker(int markerPosition) throw ();
         void clearMarkers() throw ();
+        
+        QPixmap getScreenshot() throw ();
         
     signals:
         void leftMarkerValueChanged(double value);
@@ -71,7 +74,7 @@ class DataPlot : public QWidget
         DataView*           m_dataView;
         int                 m_startIndex;
         double              m_zoomFactor;
-        QPixmap*            m_lastPixmap;
+        QPixmap             m_lastPixmap;
         int                 m_lastWidth;
         int                 m_lastHeight;
         bool                m_gridEnabled;

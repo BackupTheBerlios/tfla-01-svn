@@ -1,6 +1,8 @@
 2005-06-12  Bernhard Walle <bernhard.walle@gmx.de>
         * Changed directory structure so that translation works in the source
 	  directory structure
+	* Implemented "zoom to fit markers" action
+	* Implemented "save current plot" action
 
 2005-06-11  Bernhard Walle <bernhard.walle@gmx.de>
 	* Bugfix: Don't use QTimer in non-GUI thread. Replaced by QTime()

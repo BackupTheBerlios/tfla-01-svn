@@ -113,5 +113,7 @@ typedef unsigned int uint;
 
 #endif
 
+#define DABS(a) (((a) < 0) ? (-(a)) : (a))
+
 
 #endif /* GLOBAL_H */

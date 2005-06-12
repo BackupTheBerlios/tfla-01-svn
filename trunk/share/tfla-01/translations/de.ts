@@ -27,6 +27,37 @@
     </message>
 </context>
 <context>
+    <name>DataView</name>
+    <message>
+        <source>Function only available if data is displayed.</source>
+        <translation>Funktion nur verfügbar wenn Daten angezeigt werden.</translation>
+    </message>
+    <message>
+        <source>Function only available if both markers are set.</source>
+        <translation>Funktion nur verfügbar wenn beide Markierungen gesetzt sind.</translation>
+    </message>
+    <message>
+        <source>PNG files (*.png)</source>
+        <translation>PNG-Dateien (*.png)</translation>
+    </message>
+    <message>
+        <source>Choose file to save</source>
+        <translation>Wählen Sie eine Datei zum Speichern</translation>
+    </message>
+    <message>
+        <source>TFLA-01</source>
+        <translation>TFLA-01</translation>
+    </message>
+    <message>
+        <source>Current view could not be saved. Maybe you choosed an unsupported image format or you don&apos;t have permissions to that location.</source>
+        <translation type="obsolete">Aktueller Plot konnte nicht gespeichert werden. Möglicherweise haben Sie ein ungültiges Bildformat gewählt oder keine Zugriffsrechte auf das gewählte Verzeichnis.</translation>
+    </message>
+    <message>
+        <source>Current view could not be saved. Maybe you you don&apos;t have permissions to that location.</source>
+        <translation>Aktueller Plot konnte nicht gespeichert werden. Möglicherweise haben Sie keine Zugriffsrechte auf das gewählte Verzeichnis.</translation>
+    </message>
+</context>
+<context>
     <name>Help</name>
     <message>
         <source>&lt;qt&gt;&lt;p&gt;Failed to open the link &lt;tt&gt;%1&lt;/tt&gt; in the specified web browser. The command was:&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;nobr&gt;%2&lt;/tt&gt;&lt;/nobr&gt;&lt;/p&gt;&lt;/qt&gt;</source>
@@ -250,6 +281,14 @@ wird beendet.</translation>
     <message>
         <source>Collected %1 samples successfully.</source>
         <translation>%1 Messungen erfolgreich durchgeführt.</translation>
+    </message>
+    <message>
+        <source>&amp;Save current plot...</source>
+        <translation>Aktuellen &amp;Plot speichern...</translation>
+    </message>
+    <message>
+        <source>Zoom to fit &amp;markers</source>
+        <translation>Ansicht auf &amp;Markierungen einpassen</translation>
     </message>
 </context>
 </TS>

@@ -230,7 +230,8 @@ void Tfla01::initMenubar() throw ()
     QPopupMenu* fileMenu = new QPopupMenu(this);
     menuBar()->insertItem(tr("&File"), fileMenu);
 
-    //fileMenu->insertSeparator();
+    m_actions.saveViewAction->addTo(fileMenu);
+    fileMenu->insertSeparator();
     m_actions.quitAction->addTo(fileMenu);
     
     // ----- Analyze -------------------------------------------------------------------------------
@@ -247,6 +248,7 @@ void Tfla01::initMenubar() throw ()
     m_actions.zoomOutAction->addTo(viewMenu);
     m_actions.zoom1Action->addTo(viewMenu);
     m_actions.zoomFitAction->addTo(viewMenu);
+    m_actions.zoomMarkersAction->addTo(viewMenu);
     
     // ----- Navigate ------------------------------------------------------------------------------
     QPopupMenu* navigateMenu = new QPopupMenu(this);
@@ -293,6 +295,9 @@ void Tfla01::initActions()
     throw ()
 {
     // ----- File ----------------------------------------------------------------------------------
+    m_actions.saveViewAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_convert_16.png"),
+        QPixmap::fromMimeSource("stock_convert_24.png") ), tr("&Save current plot..."),
+        QKeySequence(CTRL|Key_S), this);
     m_actions.quitAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_exit_16.png"),
         QPixmap::fromMimeSource("stock_exit_24.png") ), tr("E&xit"),
         QKeySequence(CTRL|Key_Q), this);
@@ -311,6 +316,11 @@ void Tfla01::initActions()
     m_actions.zoom1Action = new QAction(QIconSet( QPixmap::fromMimeSource("stock_zoom-1_16.png"),
         QPixmap::fromMimeSource("stock_zoom-1_24.png") ), tr("Zoom &Default"), 
         QKeySequence(CTRL|Key_1), this);
+    m_actions.zoomMarkersAction = new QAction(QIconSet(
+        QPixmap::fromMimeSource("stock_zoom-optimal_16.png"),
+        QPixmap::fromMimeSource("stock_zoom-optimal_24.png")),
+        tr("Zoom to fit &markers"),
+        QKeySequence(Key_F4), this);
     
     // ----- Analyze -------------------------------------------------------------------------------
     m_actions.startAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_redo_16.png"),
@@ -384,6 +394,7 @@ void Tfla01::initToolbar()
     m_actions.zoomOutAction->addTo(applicationToolbar);
     m_actions.zoom1Action->addTo(applicationToolbar);
     m_actions.zoomFitAction->addTo(applicationToolbar);
+    m_actions.zoomMarkersAction->addTo(applicationToolbar);
     applicationToolbar->addSeparator();
     m_actions.navigatePos1Action->addTo(applicationToolbar);
     m_actions.navigateLeftAction->addTo(applicationToolbar);
@@ -396,6 +407,8 @@ void Tfla01::initToolbar()
 void Tfla01::connectSignalsAndSlots()
     throw ()
 {
+    connect(m_actions.saveViewAction,              SIGNAL(activated()), 
+            m_centralWidget->getDataView(),        SLOT(saveScreenshot()));
     connect(m_actions.quitAction,                  SIGNAL(activated()), 
             this,                                  SLOT(close()));
     //connect(m_actions.helpAction, SIGNAL(activated()), &m_help, SLOT(showHelp()));
@@ -419,6 +432,8 @@ void Tfla01::connectSignalsAndSlots()
             m_centralWidget->getDataView(),        SLOT(zoomOut()) );
     connect(m_actions.zoomFitAction,               SIGNAL(activated()), 
             m_centralWidget->getDataView(),        SLOT(zoomFit()) );
+    connect(m_actions.zoomMarkersAction,           SIGNAL(activated()),
+            m_centralWidget->getDataView(),        SLOT(zoomMarkers()));
     connect(m_actions.changeForegroundColorAction, SIGNAL(activated()),
             this,                                  SLOT(changeForegroundColor()));
     connect(m_actions.changeLeftColorAction,       SIGNAL(activated()),
