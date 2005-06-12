@@ -5,6 +5,7 @@
 #  Adapt these variables to your system
 
 PREFIX             = /usr/local
+PREFIX             = //home/bwalle/x
 SHAREDIR           = $${PREFIX}/share
 DOCDIR             = $${SHAREDIR}/doc/packages
 BINDIR             = $${PREFIX}/bin
@@ -68,7 +69,7 @@ HEADERS     =                                   \
 # -----------------------------------------------------------------------------
 
 TRANSLATIONS =                                  \
-    ts/de.ts
+    share/tfla-01/translations/de.ts
 
 # -----------------------------------------------------------------------------
 
@@ -134,6 +135,7 @@ isEmpty (debug) {
 
 MOC_DIR     = out/
 OBJECTS_DIR = out/
+DESTDIR     = bin
 
 # -----------------------------------------------------------------------------
 
@@ -164,11 +166,11 @@ i_documentation.files      += README COPYING ChangeLog
 INSTALLS                   += i_documentation
 
 i_binary.path               = $$BINDIR
-i_binary.files             += tfla-01
+i_binary.files             += bin/tfla-01
 INSTALLS                   += i_binary
 
 i_translation.path          = $$SHAREDIR/tfla-01/translations
-i_translation.files        += ts/*.qm
+i_translation.files        += share/tfla-01/translations/*.qm
 INSTALLS                   += i_translation
 
 i_share.path                = $$SHAREDIR/tfla-01/

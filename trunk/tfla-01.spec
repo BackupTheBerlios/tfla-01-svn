@@ -36,10 +36,10 @@ mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/tfla-01
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/pixmaps
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/tfla-01/translations
-install -m 0755 tfla-01 $RPM_BUILD_ROOT/%{_bindir}
+install -m 0755 bin/tfla-01 $RPM_BUILD_ROOT/%{_bindir}
 install -m 0644 images/tfla-01_*.png $RPM_BUILD_ROOT/%{_datadir}/pixmaps/
 install -m 0644 COPYING $RPM_BUILD_ROOT/%{_datadir}/tfla-01/
-install -m 0644 ts/*.qm $RPM_BUILD_ROOT/%{_datadir}/tfla-01/translations
+install -m 0644 share/tfla-01/translations/*.qm $RPM_BUILD_ROOT/%{_datadir}/tfla-01/translations
 #ln -s %{_docdir}/qpamat $RPM_BUILD_ROOT/%{_datadir}/qpamat/doc
 
 %clean
