@@ -105,7 +105,11 @@ IMAGES =                                        \
     images/stock_right_arrow_16.png             \
     images/stock_right_arrow_24.png             \
     images/stock_left_arrow_16.png              \
-    images/stock_left_arrow_24.png
+    images/stock_left_arrow_24.png              \
+    images/stock_convert_16.png                 \
+    images/stock_convert_24.png                 \
+    images/stock_zoom-optimal_16.png            \
+    images/stock_zoom-optimal_24.png
     
 
 #win32:RC_FILE = share/win32/tfla-01_win32.rc
