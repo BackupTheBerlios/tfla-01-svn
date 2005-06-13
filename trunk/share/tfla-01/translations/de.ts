@@ -27,6 +27,13 @@
     </message>
 </context>
 <context>
+    <name>DataPlot</name>
+    <message>
+        <source>Point is outside of data area.</source>
+        <translation>Der Punkt befindet sich außerhalb des Datenbereichs.</translation>
+    </message>
+</context>
+<context>
     <name>DataView</name>
     <message>
         <source>Function only available if data is displayed.</source>
@@ -260,11 +267,11 @@ wird beendet.</translation>
     </message>
     <message>
         <source>Update on &amp;scroll</source>
-        <translation>Beim &amp;Scrollen aktualisieren</translation>
+        <translation type="obsolete">Beim &amp;Scrollen aktualisieren</translation>
     </message>
     <message>
         <source>&amp;What&apos;s this</source>
-        <translation>&amp;Direkthilfe</translation>
+        <translation type="obsolete">&amp;Direkthilfe</translation>
     </message>
     <message>
         <source>&amp;About...</source>
@@ -289,6 +296,34 @@ wird beendet.</translation>
     <message>
         <source>Zoom to fit &amp;markers</source>
         <translation>Ansicht auf &amp;Markierungen einpassen</translation>
+    </message>
+    <message>
+        <source>&lt;qt&gt;Enter the web browser &lt;small&gt;(must be in PATH environment or specify the full path)&lt;/small&gt;:&lt;/qt&gt;</source>
+        <translation>&lt;qt&gt;Geben Sie den Webbrowser an &lt;small&gt;(muss in der PATH-Umgebung sein, ansonsten voller Pfad)&lt;/small&gt;:&lt;/qt&gt;</translation>
+    </message>
+    <message>
+        <source>Left web browser setting unchanged.</source>
+        <translation>Die Webbrowser-Einstellung bleibt unverändert.</translation>
+    </message>
+    <message>
+        <source>Change browser...</source>
+        <translation type="obsolete">&amp;Browser ändern...</translation>
+    </message>
+    <message>
+        <source>Changed web browser successfully.</source>
+        <translation>Webbrowser-Einstellung erfolgreich geändert.</translation>
+    </message>
+    <message>
+        <source>Change &amp;browser...</source>
+        <translation>&amp;Browser ändern...</translation>
+    </message>
+    <message>
+        <source>Page l&amp;eft</source>
+        <translation>S&amp;eite nach links</translation>
+    </message>
+    <message>
+        <source>Page r&amp;ight</source>
+        <translation>Se&amp;ite nach rechts</translation>
     </message>
 </context>
 </TS>

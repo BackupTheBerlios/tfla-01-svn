@@ -19,11 +19,14 @@
 #include <qpixmap.h>
 #include <qpainter.h>
 #include <qevent.h>
+#include <qapplication.h>
+#include <qstatusbar.h>
 
 #include "dataplot.h"
 #include "global.h"
 #include "settings.h"
 #include "dataview.h"
+#include "tfla01.h"
 
 using std::min;
 using std::max;
@@ -95,9 +98,19 @@ int DataPlot::getLeftMarker() const throw ()
 // -------------------------------------------------------------------------------------------------
 void DataPlot::setLeftMarker(int markerpos)  throw ()
 {
-    m_leftMarker = markerpos;
-    updateData(false);
-    leftMarkerValueChanged( m_dataView->m_currentData.getMsecsForSample(markerpos) );
+    double ms = m_dataView->m_currentData.getMsecsForSample(markerpos);
+    
+    if (markerpos == -1 || ms >= 0.0)
+    {
+        m_leftMarker = markerpos;
+        updateData(false);
+        leftMarkerValueChanged(ms);
+    }
+    else
+    {
+        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
+            tr("Point is outside of data area."), 4000); 
+    }
 }
 
 
@@ -111,10 +124,19 @@ int DataPlot::getRightMarker() const throw ()
 // -------------------------------------------------------------------------------------------------
 void DataPlot::setRightMarker(int markerpos) throw ()
 {
-    ByteVector data = m_dataView->m_currentData.bytes();
-    m_rightMarker = markerpos;
-    updateData(false);
-    rightMarkerValueChanged( m_dataView->m_currentData.getMsecsForSample(markerpos) );
+    double ms = m_dataView->m_currentData.getMsecsForSample(markerpos);
+    
+    if (markerpos == -1 || ms >= 0.0)
+    {
+        m_rightMarker = markerpos;
+        updateData(false);
+        rightMarkerValueChanged(ms);
+    }
+    else
+    {
+        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
+            tr("Point is outside of data area."), 4000); 
+    }
 }
 
 
@@ -128,10 +150,21 @@ void DataPlot::clearMarkers() throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-int DataPlot::getNumberOfDisplayedSamples () const
-    throw ()
+int DataPlot::getNumberOfDisplayedSamples () const throw ()
 {
-    return m_xPositions.size();
+    uint dataToDisplayMax = m_dataView->m_currentData.bytes().size() - m_startIndex;
+    
+    return  (dataToDisplayMax > (m_xPositions.size() - 1)) 
+          ? m_xPositions.size() - 1
+          : dataToDisplayMax;
+}
+
+
+// -------------------------------------------------------------------------------------------------
+int DataPlot::getNumberOfPossiblyDisplayedSamples() const throw()
+{
+    // -1 because we have one outside the draw area
+    return QMIN(0, m_xPositions.size() - 1);
 }
 
 
@@ -154,6 +187,9 @@ int DataPlot::getPointsPerSample(double zoom ) const throw ()
 QPixmap DataPlot::getScreenshot() throw ()
 {
     QPixmap ret = m_lastPixmap;
+    QPainter p(&ret);
+    drawMarkers(&p);
+    p.end();
     ret.resize(width(), height());
     
     return ret;
@@ -173,7 +209,7 @@ void DataPlot::updateData(bool forceRedraw, bool forceRecalculatePositions) thro
     }
     
     if (forceRedraw || m_lastWidth != width() || m_lastHeight != height() 
-            || !(m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0))
+            || (m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0))
     {
         // larger pixmap to have space to draw the last point
         m_lastPixmap.resize( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE * 
@@ -212,9 +248,9 @@ void DataPlot::recalculateXPositions() throw ()
     if (m_dataView->m_currentData.bytes().size() > 0)
     {
         int i = 0;
-        int max = m_dataView->m_currentData.bytes().size() - 1;
         int currentX = leftBegin;
-        while (currentX < width() && i < max)
+        int w = width();
+        while (currentX < w)
         {
             currentX = qRound(leftBegin + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor * i);
             m_xPositions.push_back(currentX);
@@ -223,7 +259,7 @@ void DataPlot::recalculateXPositions() throw ()
         }
         
         // last because to have one point outside the draw area
-        currentX = static_cast<int>(leftBegin + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor * i);
+        currentX = qRound(leftBegin + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor * i);
         m_xPositions.push_back(currentX);
     }
 }
@@ -292,6 +328,7 @@ void DataPlot::plot(QPainter* painter)
     {
         painter->setPen(dataPen);
         int currentY = 4 * heightPerField / 5;
+        int lastXOnScreen = m_xPositions[getNumberOfDisplayedSamples()];
         
         for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++, currentY += heightPerField)
         {
@@ -304,12 +341,12 @@ void DataPlot::plot(QPainter* painter)
             {
                 case Data::LS_ALWAYS_L:
                     painter->drawLine(m_xPositions.first(), currentLowY, 
-                                      m_xPositions.last(), currentLowY);
+                                      lastXOnScreen, currentLowY);
                     break;
                     
                 case Data::LS_ALWAYS_H:
                     painter->drawLine(m_xPositions.first(), currentHighY, 
-                                      m_xPositions.last(), currentHighY);
+                                      lastXOnScreen, currentHighY);
                     break;
                     
                 case Data::LS_CHANGING:

@@ -58,7 +58,6 @@ void Help::showHelp()
         QMessageBox::critical(qApp->mainWidget(), tr("TFLA-01"), 
             tr("The TFLA-01 documentation is not installed."), QMessageBox::Ok, 
             QMessageBox::NoButton );
-        return;
     }
 }
 
@@ -66,7 +65,7 @@ void Help::showHelp()
 // -------------------------------------------------------------------------------------------------
 void Help::openURL(QWidget* parent, const QString& url)
 {
-    QString command = Settings::set().readEntry("/General/Webbrowser");
+    QString command = Settings::set().readEntry("General/Webbrowser");
     QProcess* process = new QProcess(command, parent);
     process->addArgument(url);
     

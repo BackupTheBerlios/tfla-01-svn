@@ -18,11 +18,11 @@
 #define DATAVIEW_H
 
 #include <qframe.h>
-#include <qscrollbar.h>
 
 #include "dataplot.h"
 #include "global.h"
 #include "data.h"
+#include "wheelscrollbar.h"
 
 class DataView : public QWidget
 {
@@ -69,10 +69,10 @@ class DataView : public QWidget
         void scrollValueChanged(int value) throw ();
         
     private:
-        DataPlot*   m_dataPlot;
-        QScrollBar* m_scrollBar;
-        Data        m_currentData;
-        int         m_scrollDivisor;
+        DataPlot*       m_dataPlot;
+        WheelScrollBar* m_scrollBar;
+        Data            m_currentData;
+        int             m_scrollDivisor;
 };
 
 #endif /* DATAVIEW_H */

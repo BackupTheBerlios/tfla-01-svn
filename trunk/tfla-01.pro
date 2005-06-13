@@ -46,7 +46,8 @@ SOURCES     =                                   \
     src/help.cpp                                \
     src/dataview.cpp                            \
     src/data.cpp                                \
-    src/tfla01.cpp
+    src/tfla01.cpp                              \
+    src/wheelscrollbar.cpp
 
 # -----------------------------------------------------------------------------
 
@@ -64,10 +65,12 @@ HEADERS     =                                   \
     src/help.h                                  \
     src/dataview.h                              \
     src/data.h                                  \
-    src/tfla01.h
+    src/tfla01.h                                \
+    src/wheelscrollbar.h
 
 # -----------------------------------------------------------------------------
 
+DOC_LANGS    = en
 TRANSLATIONS =                                  \
     share/tfla-01/translations/de.ts
 
@@ -109,7 +112,14 @@ IMAGES =                                        \
     images/stock_convert_16.png                 \
     images/stock_convert_24.png                 \
     images/stock_zoom-optimal_16.png            \
-    images/stock_zoom-optimal_24.png
+    images/stock_zoom-optimal_24.png            \
+    images/network_16.png                       \
+    images/network_24.png                       \
+    images/stock_previous-page_16.png           \
+    images/stock_previous-page_24.png           \
+    images/stock_next-page_16.png               \
+    images/stock_next-page_24.png 
+
     
 
 #win32:RC_FILE = share/win32/tfla-01_win32.rc
@@ -158,7 +168,13 @@ maketarball.commands       += mv /tmp/tfla-01-$${VERSION_STRING}.tar.gz . &&
 maketarball.commands       += rm -r /tmp/tfla-01-$$VERSION_STRING
 QMAKE_EXTRA_UNIX_TARGETS   += maketarball
 
-
+#
+# make documentation on Unix with "make documentation"
+makedoc.target              = documentation
+makedoc.commands           += cd doc/user &&
+makedoc.commands           += for i in $$DOC_LANGS ; do xsltproc -o \$$i/ tfla-01.xsl \$$i/tfla-01.xml ; done &&
+makedoc.commands           += cd -
+QMAKE_EXTRA_UNIX_TARGETS   += makedoc
 
 
 # -----------------------------------------------------------------------------

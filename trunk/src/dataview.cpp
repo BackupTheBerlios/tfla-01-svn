@@ -44,7 +44,7 @@ DataView::DataView(QWidget* parent, const char* name)
 {
     QVBoxLayout* layout = new QVBoxLayout(this, 0);
     m_dataPlot = new DataPlot(this, this);
-    m_scrollBar = new QScrollBar(Qt::Horizontal, this);
+    m_scrollBar = new WheelScrollBar(Qt::Horizontal, this);
     m_scrollBar->setTracking(false);
     
     layout->addWidget(m_dataPlot);
@@ -175,7 +175,7 @@ void DataView::end() throw ()
     if (m_currentData.bytes().size() > 0)
     {
         m_dataPlot->setStartIndex(m_currentData.bytes().size() - 
-                                  m_dataPlot->getNumberOfDisplayedSamples() + 2);
+                                  m_dataPlot->getNumberOfPossiblyDisplayedSamples() + 2);
     }
 }
 
@@ -183,15 +183,45 @@ void DataView::end() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::wheelEvent(QWheelEvent* e)
 {
-    if (e->delta() > 0)
+    switch (e->state())
     {
-        zoomIn();
+        case Qt::ControlButton:
+            if (e->delta() > 0)
+            {
+                zoomIn();
+            }
+            else
+            {
+                zoomOut();
+            }
+            break;
+            
+        case Qt::ShiftButton:
+            if (e->delta() > 0)
+            {
+                navigateLeftPage();
+            }
+            else
+            {
+                navigateRightPage();
+            }
+            break;
+            
+        case Qt::NoButton:
+            if (e->delta() > 0)
+            {
+                navigateLeft();
+            }
+            else
+            {
+                navigateRight();
+            }
+            break;
+            
+        default:
+            // do nothing
+            break;
     }
-    else
-    {
-        zoomOut();
-    }
-    updateScrollInfo();
     
     e->accept();
 }
@@ -216,9 +246,11 @@ void DataView::updateScrollInfo()
         m_scrollBar->setPageStep(ps / m_scrollDivisor);
         m_scrollBar->setLineStep(qRound(ps / 10.0 / m_scrollDivisor)); 
 
+#if 0
         PRINT_TRACE("div = %d", m_scrollDivisor);
         PRINT_TRACE("range = %d to %d", m_scrollBar->minValue(), m_scrollBar->maxValue());
         PRINT_TRACE("ps = %d", m_scrollBar->pageStep());
+#endif
     }
 }
 
@@ -257,33 +289,36 @@ void DataView::scrollValueChanged(int value) throw ()
 void DataView::navigateLeft() throw ()
 {
     m_dataPlot->setStartIndex(  max(0,   m_dataPlot->getStartIndex() -
-                                        qRound(m_dataPlot->getNumberOfDisplayedSamples() / 10.0)) );
+                                        qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()
+                                               / 10.0)) );
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateRight() throw ()
 {
-    m_dataPlot->setStartIndex(  min(  m_dataPlot->getStartIndex() +
-                                         qRound(m_dataPlot->getNumberOfDisplayedSamples() / 10.0),
-                                      static_cast<int>(m_currentData.bytes().size())) );
+    m_dataPlot->setStartIndex( min(m_dataPlot->getStartIndex() +
+                                   qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0),
+                                   static_cast<int>(m_currentData.bytes().size())) );
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateLeftPage() throw ()
 {
-    m_dataPlot->setStartIndex(  max(0,   m_dataPlot->getStartIndex() -
-                                        qRound(m_dataPlot->getNumberOfDisplayedSamples())) );
+    int si = max(0,   m_dataPlot->getStartIndex() -
+                      qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()));
+    m_dataPlot->setStartIndex(si);
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateRightPage() throw ()
 {
-    m_dataPlot->setStartIndex(  min(  m_dataPlot->getStartIndex() +
-                                         qRound(m_dataPlot->getNumberOfDisplayedSamples()),
-                                      static_cast<int>(m_currentData.bytes().size())) );
+    int si = min( m_dataPlot->getStartIndex() +
+                  qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()),
+                  static_cast<int>(m_currentData.bytes().size()));
+    m_dataPlot->setStartIndex(si);
 }
 
 

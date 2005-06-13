@@ -19,6 +19,7 @@
 #include <qlocale.h>
 #include <qpixmap.h>
 #include <qtimer.h>
+#include <qinputdialog.h>
 #include <qeventloop.h>
 #include <qcursor.h>
 #include <qiconset.h>
@@ -212,6 +213,27 @@ void Tfla01::changeRightColor()  throw ()
 
 
 // -------------------------------------------------------------------------------------------------
+void Tfla01::changeBrowser() throw ()
+{
+    bool ok;
+    QString text = QInputDialog::getText( tr("TFLA-01"),
+            tr("<qt>Enter the web browser <small>(must be in PATH environment "
+                "or specify the full path)</small>:</qt>"),
+            QLineEdit::Normal,
+            Settings::set().readEntry("General/Webbrowser"), &ok, this);
+    if (ok && !text.isEmpty()) 
+    {
+        Settings::set().writeEntry("General/Webbrowser", text);
+        statusBar()->message(tr("Changed web browser successfully."), 4000);
+    }
+    else 
+    {
+        statusBar()->message(tr("Left web browser setting unchanged."), 4000);
+    }
+}
+
+
+// -------------------------------------------------------------------------------------------------
 void Tfla01::closeEvent(QCloseEvent* e)
 {
     // write window layout
@@ -255,9 +277,11 @@ void Tfla01::initMenubar() throw ()
     menuBar()->insertItem(tr("&Navigate"), navigateMenu);
     
     m_actions.navigatePos1Action->addTo(navigateMenu);
+    m_actions.navigateEndAction->addTo(navigateMenu);
+    m_actions.navigatePageLeftAction->addTo(navigateMenu);
+    m_actions.navigatePageRightAction->addTo(navigateMenu);
     m_actions.navigateLeftAction->addTo(navigateMenu);
     m_actions.navigateRightAction->addTo(navigateMenu);
-    m_actions.navigateEndAction->addTo(navigateMenu);
     navigateMenu->insertSeparator();
     m_actions.jumpLeftAction->addTo(navigateMenu);
     m_actions.jumpRightAction->addTo(navigateMenu);
@@ -269,6 +293,7 @@ void Tfla01::initMenubar() throw ()
     m_actions.changeForegroundColorAction->addTo(settingsMenu);
     m_actions.changeLeftColorAction->addTo(settingsMenu);
     m_actions.changeRightColorAction->addTo(settingsMenu);
+    m_actions.changeBrowserAction->addTo(settingsMenu);
     
     m_portsMenu = new QPopupMenu(this);
     settingsMenu->insertItem(tr("&Port"), m_portsMenu);
@@ -282,8 +307,7 @@ void Tfla01::initMenubar() throw ()
     QPopupMenu* helpMenu = new QPopupMenu(this);
     menuBar()->insertItem(tr("&Help"), helpMenu);
     
-    //m_actions.helpAction->addTo(helpMenu);
-    m_actions.whatsThisAction->addTo(helpMenu);
+    m_actions.helpAction->addTo(helpMenu);
     helpMenu->insertSeparator();
     m_actions.aboutQtAction->addTo(helpMenu);
     m_actions.aboutAction->addTo(helpMenu);
@@ -305,17 +329,17 @@ void Tfla01::initActions()
     // ----- View ----------------------------------------------------------------------------------
     m_actions.zoomInAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_zoom_in_16.png"),
         QPixmap::fromMimeSource("stock_zoom_in_24.png") ), tr("Zoom &In"), 
-        QKeySequence(CTRL|Key_Plus), this);
+        QKeySequence(Key_Plus), this);
     m_actions.zoomOutAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_zoom-out_16.png"),
         QPixmap::fromMimeSource("stock_zoom-out_24.png") ), tr("Zoom &Out"), 
-        QKeySequence(CTRL|Key_Minus), this);
+        QKeySequence(Key_Minus), this);
     m_actions.zoomFitAction = new QAction(QIconSet( 
         QPixmap::fromMimeSource("stock_zoom-page-width_16.png"),
         QPixmap::fromMimeSource("stock_zoom-page-width_24.png") ), tr("Zoom &Fit"), 
-        QKeySequence(CTRL|Key_Equal), this);
+        QKeySequence(Key_F3), this);
     m_actions.zoom1Action = new QAction(QIconSet( QPixmap::fromMimeSource("stock_zoom-1_16.png"),
         QPixmap::fromMimeSource("stock_zoom-1_24.png") ), tr("Zoom &Default"), 
-        QKeySequence(CTRL|Key_1), this);
+        QKeySequence(Key_F2), this);
     m_actions.zoomMarkersAction = new QAction(QIconSet(
         QPixmap::fromMimeSource("stock_zoom-optimal_16.png"),
         QPixmap::fromMimeSource("stock_zoom-optimal_24.png")),
@@ -339,14 +363,22 @@ void Tfla01::initActions()
         QPixmap::fromMimeSource("stock_last_16.png"),
         QPixmap::fromMimeSource("stock_last_24.png")),
         tr("&End"), QKeySequence(Key_End), this);
+    m_actions.navigatePageLeftAction = new QAction(QIconSet(
+        QPixmap::fromMimeSource("stock_previous-page_16.png"),
+        QPixmap::fromMimeSource("stock_previous-page_24.png")),
+        tr("Page l&eft"), QKeySequence(Key_PageUp), this);
+    m_actions.navigatePageRightAction = new QAction(QIconSet(
+        QPixmap::fromMimeSource("stock_next-page_16.png"),
+        QPixmap::fromMimeSource("stock_next-page_24.png")),
+        tr("Page r&ight"), QKeySequence(Key_PageDown), this);
     m_actions.navigateLeftAction = new QAction(QIconSet(
         QPixmap::fromMimeSource("stock_left_arrow_16.png"),
         QPixmap::fromMimeSource("stock_left_arrow_24.png")),
-        tr("&Left"), QKeySequence(ALT|Key_Left), this);
+        tr("&Left"), QKeySequence(Key_Left), this);
     m_actions.navigateRightAction = new QAction(QIconSet(
         QPixmap::fromMimeSource("stock_right_arrow_16.png"),
         QPixmap::fromMimeSource("stock_right_arrow_24.png")),
-        tr("&Right"), QKeySequence(ALT|Key_Right), this);
+        tr("&Right"), QKeySequence(Key_Right), this);
     m_actions.jumpLeftAction = new QAction(
         tr("&Jump to left marker"), QKeySequence(CTRL|Key_Left), this);
     m_actions.jumpRightAction = new QAction(
@@ -361,15 +393,14 @@ void Tfla01::initActions()
         tr("Change color of &left marker..."), QKeySequence(), this);
     m_actions.changeRightColorAction = new QAction(
         tr("Change color of &right marker..."), QKeySequence(), this);
-    m_actions.updateOnScrollAction = new QAction(
-        tr("Update on &scroll"), QKeySequence(CTRL|Key_U), this);
-    m_actions.updateOnScrollAction->setToggleAction(true);
+    m_actions.changeBrowserAction = new QAction(QIconSet(
+        QPixmap::fromMimeSource("network_16.png"),
+        QPixmap::fromMimeSource("network_24.png")),
+        tr("Change &browser..."), QKeySequence(), this);
         
     // ----- Help ----------------------------------------------------------------------------------
-    //m_actions.helpAction = new QAction(QIconSet(QPixmap::fromMimeSource("stock_help_16.png"),
-    //    QPixmap::fromMimeSource("stock_help_24.png")), tr("&Help"), QKeySequence(Key_F1), this);
-    m_actions.whatsThisAction = new QAction(QPixmap(QPixmap::fromMimeSource("whats_this.png")), 
-        tr("&What's this"), QKeySequence(SHIFT|Key_F1), this);
+    m_actions.helpAction = new QAction(QIconSet(QPixmap::fromMimeSource("stock_help_16.png"),
+        QPixmap::fromMimeSource("stock_help_24.png")), tr("&Help"), QKeySequence(Key_F1), this);
     m_actions.aboutAction = new QAction(QIconSet(QPixmap::fromMimeSource("info_16.png"),
         QPixmap::fromMimeSource("info_24.png")), tr("&About..."), 0, this);
     m_actions.aboutQtAction = new QAction(QPixmap::fromMimeSource("qt_16.png"), 
@@ -397,9 +428,13 @@ void Tfla01::initToolbar()
     m_actions.zoomMarkersAction->addTo(applicationToolbar);
     applicationToolbar->addSeparator();
     m_actions.navigatePos1Action->addTo(applicationToolbar);
+    m_actions.navigateEndAction->addTo(applicationToolbar);
+    m_actions.navigatePageLeftAction->addTo(applicationToolbar);
+    m_actions.navigatePageRightAction->addTo(applicationToolbar);
     m_actions.navigateLeftAction->addTo(applicationToolbar);
     m_actions.navigateRightAction->addTo(applicationToolbar);
-    m_actions.navigateEndAction->addTo(applicationToolbar);
+    applicationToolbar->addSeparator();
+    m_actions.helpAction->addTo(applicationToolbar);
 }
 
 
@@ -411,9 +446,8 @@ void Tfla01::connectSignalsAndSlots()
             m_centralWidget->getDataView(),        SLOT(saveScreenshot()));
     connect(m_actions.quitAction,                  SIGNAL(activated()), 
             this,                                  SLOT(close()));
-    //connect(m_actions.helpAction, SIGNAL(activated()), &m_help, SLOT(showHelp()));
-    connect(m_actions.whatsThisAction,             SIGNAL(activated()), 
-            this,                                  SLOT(whatsThis()));
+    connect(m_actions.helpAction,                  SIGNAL(activated()), 
+            &m_help,                               SLOT(showHelp()));
     connect(m_actions.aboutAction,                 SIGNAL(activated()) , 
             &m_help,                               SLOT(showAbout()));
     connect(m_actions.aboutQtAction,               SIGNAL(activated()), 
@@ -440,6 +474,8 @@ void Tfla01::connectSignalsAndSlots()
             this,                                  SLOT(changeLeftColor()));
     connect(m_actions.changeRightColorAction,      SIGNAL(activated()),
             this,                                  SLOT(changeRightColor()));
+    connect(m_actions.changeBrowserAction,         SIGNAL(activated()),
+            this,                                  SLOT(changeBrowser()));
     connect(m_actions.navigatePos1Action,          SIGNAL(activated()),
             m_centralWidget->getDataView(),        SLOT(pos1()));
     connect(m_actions.navigateEndAction,           SIGNAL(activated()),
@@ -448,6 +484,10 @@ void Tfla01::connectSignalsAndSlots()
             m_centralWidget->getDataView(),        SLOT(navigateLeft()));
     connect(m_actions.navigateRightAction,         SIGNAL(activated()),
             m_centralWidget->getDataView(),        SLOT(navigateRight()));
+    connect(m_actions.navigatePageLeftAction,      SIGNAL(activated()),
+            m_centralWidget->getDataView(),        SLOT(navigateLeftPage()));
+    connect(m_actions.navigatePageRightAction,     SIGNAL(activated()),
+            m_centralWidget->getDataView(),        SLOT(navigateRightPage()));
     connect(m_actions.jumpLeftAction,              SIGNAL(activated()),
             m_centralWidget->getDataView(),        SLOT(jumpToLeftMarker()));
     connect(m_actions.jumpRightAction,             SIGNAL(activated()),

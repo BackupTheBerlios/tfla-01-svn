@@ -1,5 +1,13 @@
+2005-06-13  Bernhard Walle <bernhard.walle@gmx.de>
+	* Many bugfixes
+	* Changed shortcuts for navigation and zooming
+	* Changed mouse wheel action in plot area (Shift: page, None: normal, 
+	  Ctrl: Zoom)
+	* Implemented help, removed What's This
+	* Added help skeleton (XML Docbook) and added build system
+
 2005-06-12  Bernhard Walle <bernhard.walle@gmx.de>
-        * Changed directory structure so that translation works in the source
+	* Changed directory structure so that translation works in the source
 	  directory structure
 	* Implemented "zoom to fit markers" action
 	* Implemented "save current plot" action

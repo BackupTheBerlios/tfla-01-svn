@@ -119,7 +119,6 @@ double Data::getMsecsForSample(int sample) const throw()
     }
     else if (sample < 0 || sample > static_cast<int>(m_bytes.size()))
     {
-        PRINT_DBG("Sample is invalid (%d), should be between 0 and %d", sample, m_bytes.size());
         return -1.0;
     }
     

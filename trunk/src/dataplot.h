@@ -40,19 +40,23 @@ class DataPlot : public QWidget
         void setZoomFactor(double factor) throw ();
         double getZoomFactor() const throw ();
         int getNumberOfDisplayedSamples() const throw ();
+        int getNumberOfPossiblyDisplayedSamples() const throw();
         int getCurrentWidthForPlot() const throw ();
         int getPointsPerSample(double zoom = 1.0) const throw ();
+        QPixmap getScreenshot() throw ();
         
+        // start index ----------------------------------------------------------------------------
         void setStartIndex(int startIndex) throw (); 
         int getStartIndex() const throw ();
         
+        // marker handling ------------------------------------------------------------------------
         int getLeftMarker() const throw ();
         void setLeftMarker(int markerPosition) throw ();
+        
         int getRightMarker() const throw ();
         void setRightMarker(int markerPosition) throw ();
-        void clearMarkers() throw ();
         
-        QPixmap getScreenshot() throw ();
+        void clearMarkers() throw ();
         
     signals:
         void leftMarkerValueChanged(double value);

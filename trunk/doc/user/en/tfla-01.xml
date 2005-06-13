@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY date "June 2005"> 
+  <!ENTITY version "0.1.1">
+  <!ENTITY application "TFLA-01"> 
+]>
+<article id="index" lang="en">
+
+  <!-- Header -->
+  <articleinfo>
+    <title>The Fabulous Logic Analyzer #1</title>
+
+    <pubdate>&date;</pubdate>
+
+    <copyright>
+      <year>2005</year>
+      <holder>Bernhard Walle</holder>
+    </copyright>
+
+    <legalnotice id="legalnotice">
+      <para>
+        Permission is granted to copy, distribute and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.1 or
+        any later version published by the Free Software Foundation; with no
+        Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+        Texts. The complete license text is available from the <ulink
+        type="http" url="http://www.gnu.org/">Free Software Foundation</ulink>.
+      </para>
+    </legalnotice>
+
+    <!-- <authorgroup> -->
+      <author>
+        <firstname>Bernhard</firstname>
+        <surname>Walle</surname>
+        <affiliation>
+          <address><email>bernhard@bwalle.de</email></address>
+        </affiliation>
+      </author>
+    <!-- </authorgroup> -->
+
+    <releaseinfo>
+      This manual describes version &version; of &application;.
+    </releaseinfo>
+  </articleinfo>
+
+  <sect1 id="intro">
+    <title>Introduction to &application;</title>
+
+    <sect2>
+      <title>What is this logic analyzer?</title>
+
+      <para>
+        A logic analyzer is needed to 
+      </para>
+
+
+</article>
+<!--
+	vim:set ts=2 sw=2 et ai:
+-->
