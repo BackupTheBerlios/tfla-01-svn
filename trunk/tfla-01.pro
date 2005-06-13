@@ -4,10 +4,11 @@
 #
 #  Adapt these variables to your system
 
-PREFIX             = /usr/local
-PREFIX             = //home/bwalle/x
+isEmpty(PREFIX) {
+  PREFIX             = /usr/local
+}
 SHAREDIR           = $${PREFIX}/share
-DOCDIR             = $${SHAREDIR}/doc/packages
+DOCDIR             = $${SHAREDIR}/doc/packages/tfla-01
 BINDIR             = $${PREFIX}/bin
 
 ################################################################################
@@ -160,6 +161,7 @@ maketarball.commands        = svn export `pwd` /tmp/tfla-01-$$VERSION_STRING &&
 maketarball.commands       += pushd . &&
 maketarball.commands       += cd /tmp/tfla-01-$$VERSION_STRING &&
 maketarball.commands       += qmake tfla-01.pro &&
+maketarball.commands       += make documentation &&
 maketarball.commands       += rm Makefile &&
 maketarball.commands       += cd /tmp &&
 maketarball.commands       += tar cvfz tfla-01-$${VERSION_STRING}.tar.gz tfla-01-$$VERSION_STRING &&
@@ -185,6 +187,10 @@ i_documentation.path        = $$DOCDIR
 i_documentation.files      += README COPYING ChangeLog
 INSTALLS                   += i_documentation
 
+i_userdoc.path              = $$SHAREDIR/tfla-01/doc/
+i_userdoc.files            += doc/user/*
+INSTALLS                   += i_userdoc
+
 i_binary.path               = $$BINDIR
 i_binary.files             += bin/tfla-01
 INSTALLS                   += i_binary
@@ -196,5 +202,9 @@ INSTALLS                   += i_translation
 i_share.path                = $$SHAREDIR/tfla-01/
 i_share.files              += COPYING
 INSTALLS                   += i_share
+
+i_pixmaps.path              = $$SHAREDIR/pixmaps
+i_pixmaps.files            += images/tfla-01*
+INSTALLS                   += i_pixmaps
 
 

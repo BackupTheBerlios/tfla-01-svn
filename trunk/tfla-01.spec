@@ -26,28 +26,22 @@ Author
 %setup -q
 
 %build
-qmake tfla-01.pro debug=1
+qmake PREFIX=$RPM_BUILD_ROOT/%{_prefix} tfla-01.pro debug=1
 lrelease tfla-01.pro
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{_bindir} 
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/tfla-01
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/pixmaps
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/tfla-01/translations
-install -m 0755 bin/tfla-01 $RPM_BUILD_ROOT/%{_bindir}
-install -m 0644 images/tfla-01_*.png $RPM_BUILD_ROOT/%{_datadir}/pixmaps/
-install -m 0644 COPYING $RPM_BUILD_ROOT/%{_datadir}/tfla-01/
-install -m 0644 share/tfla-01/translations/*.qm $RPM_BUILD_ROOT/%{_datadir}/tfla-01/translations
-#ln -s %{_docdir}/qpamat $RPM_BUILD_ROOT/%{_datadir}/qpamat/doc
+# running again because the binary file must exist to be recognized
+qmake PREFIX=$RPM_BUILD_ROOT/%{_prefix} tfla-01.pro 
+make install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README COPYING doc/schematic/*.pdf
+%doc README COPYING doc/schematic/*.pdf doc/user/
 %{_bindir}/*
 %{_datadir}/tfla-01
 %{_datadir}/pixmaps/*.png

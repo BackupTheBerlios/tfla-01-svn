@@ -45,13 +45,13 @@ void Help::showHelp()
     QString base = QDir(qApp->applicationDirPath() + "/../share/tfla-01/doc/").canonicalPath();
     QString loc = QString(QTextCodec::locale()).section("_", 0, 0);
     
-    if (QFile::exists(base + "/" + loc + "/manual/index.html"))
+    if (QFile::exists(base + "/" + loc + "/index.html"))
     {
-        openURL(qApp->mainWidget(), "file:///" + base + "/" + loc + "/manual/index.html");
+        openURL(qApp->mainWidget(), "file:///" + base + "/" + loc + "/index.html");
     }
-    else if (QFile::exists(base + "/en/manual/index.html"))
+    else if (QFile::exists(base + "/en/index.html"))
     {
-        openURL(qApp->mainWidget(), "file:///" + base + "/en/manual/index.html");
+        openURL(qApp->mainWidget(), "file:///" + base + "/en/index.html");
     }
     else
     {
