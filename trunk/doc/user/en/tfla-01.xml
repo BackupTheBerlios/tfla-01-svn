@@ -51,9 +51,228 @@
       <title>What is this logic analyzer?</title>
 
       <para>
-        A logic analyzer is needed to 
+        A logic analyzer is a device which can monitor the high and low states of several
+        input lines of a digital logic. It is useful for debugging digital circuits such
+        as bus transfers, etc. You can imagine a logic analyzer to be something like
+        a digital oscilloscope.
+      </para>
+      
+      <para>
+        Normally, a logic analyzer is a external device with a own controller that has a own
+        display or is connected to a PC via USB or serial line. The PC or the display then
+        shows the data, e. g. some waveforms.
       </para>
     </sect2>
+    
+    <sect2>
+      <title>What's special about TFLA-01</title>
+      
+      <para>
+        This logic analyzer is designed to be cheap, somehing like a logic analyzer for poor
+        men, which means not for industrial use but for hobbyists. It simply consits of a
+        schematic which is attached to the PCs parallel port. There's no real external device which 
+        collects the data: The schematic just protects the parallel port and converts RS232 
+        level (+/- 12 V) to 5 V TTL level on two pins configurable with jumpers. 
+        The schematic is described later in this manual. The measuring is done by the PC software
+        using the parallel port.
+      </para>
+      
+      <para>
+        This means that the speed depends on your PCs parallel port and on the operating system.
+        The data ist just collected by a user process to be portable against different operating
+        system. However, with my Athlon XP 2200 and a extra PCI parallel card I get on Linux
+        data rates about 1 MHz which is quite well for I²C, RS-232, SPI and some other stuff.
+      </para>
+      
+      <para>The software has following features:</para>
+      
+      <itemizedlist>
+        <listitem>
+          <para> Triggering </para>
+        </listitem>
+        <listitem>
+          <para> Zooming </para>
+        </listitem>
+        <listitem>
+          <para> Two markers for which the (estimated) times are displayed </para>
+        </listitem>
+        <listitem>
+          <para> 
+            Application runs completely in userspace, 
+            <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> is used 
+            for parallel port access. This means that the installation is easy and the system
+            stays stable.
+          </para>
+        </listitem>
+      </itemizedlist>
+      
+    </sect2>
+    
+    <sect2>
+      <title>System requirements</title>
+      
+      <para>
+        TFLA-01 is designed to be portable against various operating systems. It is written
+        in C++, uses <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> as
+        cross-plattform API mostly for the graphical user interface and 
+        <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> to access
+        the parallel port. This means that it is possible to run TFLA-01 on following 
+        systems:
+      </para>
+      
+      <itemizedlist>
+        <listitem>
+          <para>Linux</para>
+        </listitem>
+        <listitem>
+          <para>Windows with <ulink url="http://www.cygwin.com">Cygwin</ulink></para>
+        </listitem>
+        <listitem>
+          <para>OpenBSD (i386 only)</para>
+        </listitem>
+        <listitem>
+          <para>FreeBSD /i386</para>
+        </listitem>
+        <listitem>
+          <para>Solaris/x86</para>
+        </listitem>
+      </itemizedlist>
+      
+      <para>
+        On hardware side, you need a parallel port. Use the port of your mainboard or a 
+        additional PCI card. Forget about USB adapters, they are normally designed for 
+        printers and for nothing else and if it would work, the speed would be insuitable for
+        a logic analyzer. (Of course, USB is faster than a parallel port, but that does nothing
+        say about the speed of such adapters.) Therefore, a normal Mac would be insuitable 
+        for such a task -- porting TFLA-01 to MacOS should be not the problem here.
+      </para>
+    </sect2>
+  </sect1>
+  
+  
+  <sect1>
+    <title>Getting started</title>
+    
+    <para>
+      You should read this section if you would like to install TFLA-01 on your
+      system and get it working. Don't ask me any questions per E-Mail if you didn't
+      read this chapter of the documentation completely!
+    </para>
+      
+    <sect2>
+      <title>Installing the software</title>
+      
+      <sect3>
+        <title>Linux RPM</title>
+        
+        <para>
+          If you have a RPM based Linux distribution which is mostly up to date (which means
+          glibc 2.3, <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> 3.3 and  
+          <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> installed), 
+          then just running
+          
+<screen>$ su
+# rpm -Uvh tfla-01-&version;-0.i586.rpm</screen>
+          
+          should do it.
+        </para>
+        
+        <para>
+          Start the logic analyzer via command line by running
+          
+          <screen>$ tfla-01</screen>
+          
+          or add a shortcut to your desktop's start menu. In <filename>/usr/share/pixmaps</filename>
+          you find some icons which you can use for that.
+        </para>
+        
+      </sect3>
+      
+      <sect3>
+        <title>Unix via source code</title>
+        
+        <para>
+          The normal way to install TFLA-01 on Unix is to compile the source code since
+          it is impossible for me to provide binaries for all various plattforms. If you've built
+          a binary (preferrable a package) for your favourite Unix flavour and you plan to maintain
+          it for future TFLA-01 releases, just drop me a note and I'll put a link on the TFLA-01
+          homepage or upload the binary. The users will thank you!
+        </para>
+        
+        <para>
+          However, compiling TFLA-01 is not difficult since the dependencies are small. 
+          Building on Microsoft Windows is different, so this chapter only describes the 
+          build procedure on Unix. At first, make sure that you have following software
+          installed and that the preconditions are met:
+        </para>
+        
+        <itemizedlist>
+          <listitem>
+            <para>
+              <ulink url="http://www.gnu.org/software/gcc">gcc</ulink> or another C++ compiler
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> 3.3 including
+              the developement package. Verify this by running <application>qmake</application>
+              on command line. Also, you have to set <envar>QTDIR</envar> and
+              <envar>QMAKESPEC</envar> environment properly, see the 
+              <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> documentation for
+              more information. On my Linux box <envar>QTDIR</envar> is set to
+              <filename>/usr/lib/qt3</filename> and <envar>QMAKESPEC</envar> to 
+              <literal>/usr/lib/qt3/mkspecs/linux-g++</literal>.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> including
+              the developement package (which includes the header files).
+            </para>
+          </listitem>
+        </itemizedlist>
+      
+        <para>
+          Just build the software now with
+          
+<screen>$ qmake PREFIX=/usr tfla-01.pro
+$ make
+$ lrelease tfla-01.pro
+</screen>
+  
+          The first command creates the <filename>Makefile</filename> from the
+          <application>qmake</application> project file using the specified <literal>PREFIX</literal>.
+          This specifies the installation location (and nothing more, i. e. the pathname is
+          not compiled in the binary). If you don't specify <literal>PREFIX</literal>,
+          <filename>/usr/local/</filename> is used as a default value. The second command
+          builds the software and the third command compiles the translation files.</para>
+          
+        <para>
+          To install the software, just run
+          
+<screen>$ qmake PREFIX=/usr tfla-01.pro
+$ su
+# make install
+</screen>
+  
+          You have to repeat the <application>qmake</application> step because the binary
+          doesn't get installed if it is not present while running <application>qmake</application>.
+          Don't ask me if this is a bug or a feature, it just is so and it's no real problem
+          if you know it. Then get root privilegues and install the software. Yes, that's all.
+        </para>
+      </sect3>
+    
+      <sect3>
+        <title>Windows</title>
+        
+        <para>
+          Description will follow as soon as binaries are available. You'll have to 
+          install a dummy driver which gives the user access to the parallel port. Not very good
+          but most other programs use the same.
+        </para>
+      </sect3>
+    </sect2>
+    
   </sect1>
 
 </article>
