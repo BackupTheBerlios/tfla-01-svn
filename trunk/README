@@ -1,43 +1,8 @@
 The Fabulous Logic Analyzer #1
 ==============================
 
-This is a simple logic analyzer software.
+This is a simple logic analyzer software. Read the documentation in HTML format
+in the doc/user subdirectory to get started with installation and running
+of the software.
 
-
-System requirements
--------------------
-
- * Linux
-    - Kernel 2.2 or higher
-    - libieee1284 installed
-    - Qt installed
- * Windows
-    - Windows 2000 or XP
- * A parallel port and the schematic attached. The schematic is
-   in the source .tar.gz in doc/schematic, in the installed RPM
-   it's in /usr/share/doc/packages/tfla-01/.
-
-
-Installing binaries
--------------------
-
- * Linux
-    - rpm -Uvh tfla-01-<version>.i586.rpm
- * Windows
-    - unzip the ZIP file and install on your favourite place, e.g.
-      c:\program files.
-
-
-Building TFLA-01 from source
-----------------------------
- 
- * Linux
-    - export QMAKESPEC=linux-g++
-    - adjust PREFIX in tfla-01.pro with your favourite editor
-    - qmake tfla-01.pro
-    - make
-    - lrelease tfla-01.pro
-    - make install
- * Windows
-    - TODO
 
