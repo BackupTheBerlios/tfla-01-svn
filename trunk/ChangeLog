@@ -4,6 +4,7 @@
 	* Critial bugfix: DataPlot::getNumberOfPossiblyDisplayedSamples()
 	  always returned 0
 	* Completed documentation
+	* Released 0.1.1.
 
 2005-06-13  Bernhard Walle <bernhard.walle@gmx.de>
 	* Many bugfixes
