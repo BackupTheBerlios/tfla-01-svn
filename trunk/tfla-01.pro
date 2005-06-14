@@ -183,12 +183,17 @@ QMAKE_EXTRA_UNIX_TARGETS   += makedoc
 
 #
 # Installation
-i_documentation.path        = $$DOCDIR
-i_documentation.files      += README COPYING ChangeLog
-INSTALLS                   += i_documentation
+
+# install the documentation twice for convenience on Unix
+unix:!mac {
+  i_documentation.path        = $$DOCDIR
+  i_documentation.files      += README COPYING ChangeLog
+  i_documentation.files      += doc/user/* doc/schematic
+  INSTALLS                   += i_documentation
+}
 
 i_userdoc.path              = $$SHAREDIR/tfla-01/doc/
-i_userdoc.files            += doc/user/*
+i_userdoc.files            += doc/user/* doc/schematic
 INSTALLS                   += i_userdoc
 
 i_binary.path               = $$BINDIR

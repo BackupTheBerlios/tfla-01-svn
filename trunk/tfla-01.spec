@@ -41,7 +41,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README COPYING doc/schematic/*.pdf doc/user/
+%doc %{_datadir}/doc/packages/tfla-01
 %{_bindir}/*
 %{_datadir}/tfla-01
 %{_datadir}/pixmaps/*.png

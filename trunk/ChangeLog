@@ -1,3 +1,7 @@
+2005-06-14  Bernhard Walle <bernhard.walle@gmx.de>
+	* Added schematic in Eagle format to both documentation paths
+	* Added schematic to the share/tfla-01/ path
+
 2005-06-13  Bernhard Walle <bernhard.walle@gmx.de>
 	* Many bugfixes
 	* Changed shortcuts for navigation and zooming
