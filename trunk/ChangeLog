@@ -3,6 +3,7 @@
 	* Added schematic to the share/tfla-01/ path
 	* Critial bugfix: DataPlot::getNumberOfPossiblyDisplayedSamples()
 	  always returned 0
+	* Completed documentation
 
 2005-06-13  Bernhard Walle <bernhard.walle@gmx.de>
 	* Many bugfixes
