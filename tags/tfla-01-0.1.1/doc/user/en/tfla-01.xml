@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY date "June 2005"> 
+  <!ENTITY version "0.1.1">
+  <!ENTITY application "TFLA-01"> 
+]>
+<article id="index" lang="en">
+
+  <!-- Header -->
+  <articleinfo>
+    <title>The Fabulous Logic Analyzer #1</title>
+
+    <pubdate>&date;</pubdate>
+
+    <copyright>
+      <year>2005</year>
+      <holder>Bernhard Walle</holder>
+    </copyright>
+
+    <legalnotice id="legalnotice">
+      <para>
+        Permission is granted to copy, distribute and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.1 or
+        any later version published by the Free Software Foundation; with no
+        Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+        Texts. The complete license text is available from the <ulink
+        type="http" url="http://www.gnu.org/">Free Software Foundation</ulink>.
+      </para>
+    </legalnotice>
+
+    <!-- <authorgroup> -->
+      <author>
+        <firstname>Bernhard</firstname>
+        <surname>Walle</surname>
+        <affiliation>
+          <address><email>bernhard@bwalle.de</email></address>
+        </affiliation>
+      </author>
+    <!-- </authorgroup> -->
+
+    <releaseinfo>
+      This manual describes version &version; of &application;.
+    </releaseinfo>
+  </articleinfo>
+
+  <sect1 id="intro">
+    <title>Introduction to &application;</title>
+
+    <sect2>
+      <title>What is this logic analyzer?</title>
+
+      <para>
+        A logic analyzer is a device which can monitor the high and low states of several
+        input lines of a digital logic. It is useful for debugging digital circuits such
+        as bus transfers, etc. You can imagine a logic analyzer to be something like
+        a digital oscilloscope.
+      </para>
+      
+      <para>
+        Normally, a logic analyzer is a external device with a own controller that has a own
+        display or is connected to a PC via USB or serial line. The PC or the display then
+        shows the data, e. g. some waveforms.
+      </para>
+    </sect2>
+    
+    <sect2>
+      <title>What's special about TFLA-01</title>
+      
+      <para>
+        This logic analyzer is designed to be cheap, somehing like a logic analyzer for poor
+        men, which means not for industrial use but for hobbyists. It simply consits of a
+        schematic which is attached to the PCs parallel port. Therefore, 8 Bit (i. e. 
+        8 data lines) can be monitored simultaneously. 
+      </para>
+      
+      <para>There's no real external device which 
+        collects the data: The schematic just protects the parallel port and converts RS232 
+        level (+/- 12 V) to 5 V TTL level on two pins configurable with jumpers. 
+        The schematic is described later in this manual. The measuring is done by the PC software
+        using the parallel port.
+      </para>
+      
+      <para>
+        This means that the speed depends on your PCs parallel port and on the operating system.
+        The data ist just collected by a user process to be portable against different operating
+        system. However, with my Athlon XP 2200 and a extra PCI parallel card I get on Linux
+        data rates about 1 MHz which is quite well for I²C, RS-232, SPI and some other stuff.
+      </para>
+      
+      <para>The software has following features:</para>
+      
+      <itemizedlist>
+        <listitem>
+          <para> Triggering </para>
+        </listitem>
+        <listitem>
+          <para> Zooming </para>
+        </listitem>
+        <listitem>
+          <para> Two markers for which the (estimated) times are displayed </para>
+        </listitem>
+        <listitem>
+          <para> 
+            Application runs completely in userspace, 
+            <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> is used 
+            for parallel port access. This means that the installation is easy and the system
+            stays stable.
+          </para>
+        </listitem>
+      </itemizedlist>
+      
+    </sect2>
+    
+    <sect2>
+      <title>System requirements</title>
+      
+      <para>
+        TFLA-01 is designed to be portable against various operating systems. It is written
+        in C++, uses <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> as
+        cross-plattform API mostly for the graphical user interface and 
+        <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> to access
+        the parallel port. This means that it is possible to run TFLA-01 on following 
+        systems:
+      </para>
+      
+      <itemizedlist>
+        <listitem>
+          <para>Linux</para>
+        </listitem>
+        <listitem>
+          <para>Windows with <ulink url="http://www.cygwin.com">Cygwin</ulink></para>
+        </listitem>
+        <listitem>
+          <para>OpenBSD (i386 only)</para>
+        </listitem>
+        <listitem>
+          <para>FreeBSD /i386</para>
+        </listitem>
+        <listitem>
+          <para>Solaris/x86</para>
+        </listitem>
+      </itemizedlist>
+      
+      <para>
+        On hardware side, you need a parallel port. Use the port of your mainboard or a 
+        additional PCI card. Forget about USB adapters, they are normally designed for 
+        printers and for nothing else and if it would work, the speed would be insuitable for
+        a logic analyzer. (Of course, USB is faster than a parallel port, but that does nothing
+        say about the speed of such adapters.) Therefore, a normal Mac would be insuitable 
+        for such a task -- porting TFLA-01 to MacOS should be not the problem here.
+      </para>
+    </sect2>
+  </sect1>
+  
+  
+  <sect1 id="gettingstarted">
+    <title>Getting started</title>
+    
+    <para>
+      You should read this section if you would like to install TFLA-01 on your
+      system and get it working. Don't ask me any questions per E-Mail if you didn't
+      read this chapter of the documentation completely!
+    </para>
+      
+    <sect2 id="installingsoftware">
+      <title>Installing the software</title>
+      
+      <sect3>
+        <title>Primary installation</title>
+      
+        <sect4>
+          <title>Linux RPM</title>
+          
+          <para>
+            If you have a RPM based Linux distribution which is mostly up to date (which means
+            glibc 2.3, <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> 3.3 and  
+            <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> installed), 
+            then just running
+            
+<screen>$ su
+# rpm -Uvh tfla-01-&version;-0.i586.rpm</screen>
+          
+            should do it.
+          </para>
+          
+          <para>
+            Start the logic analyzer via command line by running
+            
+            <screen>$ tfla-01</screen>
+            
+            or add a shortcut to your desktop's start menu. In <filename>/usr/share/pixmaps</filename>
+            you find some icons which you can use for that.
+          </para>
+          
+        </sect4>
+        <sect4>
+          <title>Unix via source code</title>
+        
+          <para>
+            The normal way to install TFLA-01 on Unix is to compile the source code since
+            it is impossible for me to provide binaries for all various plattforms. If you've built
+            a binary (preferrable a package) for your favourite Unix flavour and you plan to maintain
+            it for future TFLA-01 releases, just drop me a note and I'll put a link on the TFLA-01
+            homepage or upload the binary. The users will thank you!
+          </para>
+          
+          <para>
+            However, compiling TFLA-01 is not difficult since the dependencies are small. 
+            Building on Microsoft Windows is different, so this chapter only describes the 
+            build procedure on Unix. At first, make sure that you have following software
+            installed and that the preconditions are met:
+          </para>
+          
+          <itemizedlist>
+            <listitem>
+              <para>
+                <ulink url="http://www.gnu.org/software/gcc">gcc</ulink> or another C++ compiler
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> 3.3 including
+                the developement package. Verify this by running <application>qmake</application>
+                on command line. Also, you have to set <envar>QTDIR</envar> and
+                <envar>QMAKESPEC</envar> environment properly, see the 
+                <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> documentation for
+                more information. On my Linux box <envar>QTDIR</envar> is set to
+                <filename>/usr/lib/qt3</filename> and <envar>QMAKESPEC</envar> to 
+                <literal>/usr/lib/qt3/mkspecs/linux-g++</literal>.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> including
+                the developement package (which includes the header files).
+              </para>
+            </listitem>
+          </itemizedlist>
+        
+          <para>
+            Just build the software now with
+            
+<screen>$ qmake PREFIX=/usr tfla-01.pro
+$ make
+$ lrelease tfla-01.pro
+</screen>
+    
+            The first command creates the <filename>Makefile</filename> from the
+            <application>qmake</application> project file using the specified <literal>PREFIX</literal>.
+            This specifies the installation location (and nothing more, i. e. the pathname is
+            not compiled in the binary). If you don't specify <literal>PREFIX</literal>,
+            <filename>/usr/local/</filename> is used as a default value. The second command
+            builds the software and the third command compiles the translation files.</para>
+            
+          <para>
+            To install the software, just run
+            
+<screen>$ qmake PREFIX=/usr tfla-01.pro
+$ su
+# make install
+</screen>
+    
+            You have to repeat the <application>qmake</application> step because the binary
+            doesn't get installed if it is not present while running <application>qmake</application>.
+            Don't ask me if this is a bug or a feature, it just is so and it's no real problem
+            if you know it. Then get root privilegues and install the software. Yes, that's all.
+          </para>
+        </sect4>
+        
+        <sect4>
+          <title>Windows</title>
+          
+          <para>
+            Description will follow as soon as binaries are available. You'll have to 
+            install a dummy driver which gives the user access to the parallel port. Not very good
+            but most other programs use the same.
+          </para>
+        </sect4>
+      </sect3>
+      <sect3>
+        <title>Permissions</title>
+        
+        <para>
+          Because you want to run the application as normal user and not only as administrator,
+          you have to deal with permissions of the operating system. This depends really on the
+          system (i. e. there are differences between Unix flavours and even Windows versions)
+          and does not depend whether you compile the program by hand or use a binary
+          to install, so I made an extra section.
+        </para>
+        
+        <sect4>
+          <title>Linux</title>
+          
+          <para>
+            On recent Linux versions (Kernel 2.4 and higher), the applications uses internally
+            the <application>ppdev</application> kernel module. It should be loaded automatically.
+            The only thing you have to make sure is that the user which runs the TFLA-01
+            program has read and write permissions to the <filename>/dev/paraportX</filename>
+            device file where <literal>X</literal> means the number of the parallelport you
+            want to access.
+          </para>
+          
+          <para>
+            The classical approach is to create a group <emphasis>parport</emphasis>, set
+            the owning group of the parallel port device to <emphasis>parport</emphasis>, change
+            the parallel port to <literal>crw-rw----</literal> and add the users to the group
+            as necessary. Read the manual of your Linux distribution for details. SuSE users
+            may use <application>YaST</application> to create the group and add the users
+            to the group, just add
+<programlisting>
+/dev/parport0                    root.parport   0660
+</programlisting>
+            to <filename>/etc/permissions.local</filename> and finally run
+            <application>SuSEconfig</application> to apply the permissions. Of course, you
+            have to logout and login again to apply the new group for the current user.
+          </para>
+        </sect4>
+        
+        <sect4>
+          <title>Windows 98/ME</title>
+          
+          <para>
+            This is a single user operating system where the current user has all permissions
+            so nothing needs do be done. However, we don't recommend it for using with
+            the TFLA-01, it's instable, insecure, we didn't test it and we will not test it.
+            In short: it's unsupported but it may work, though.
+          </para>
+        </sect4>
+      </sect3>
+    </sect2>
+    <sect2 id="buildhardware">
+      <title>Building the hardware</title>
+      
+      <para>
+        A schematic in <ulink url="http://www.cadsoft.de/">Eagle</ulink> and <abbrev>PDF</abbrev>
+        format is distributed with the program. In source Tarball, you find the schematic
+        in <filename>doc/schematic</filename> and it gets installed in
+        <filename>PREFIX/share/doc/schematic</filename> on any plattform. You can also view
+        it <ulink url="http://tfla-01.berlios.de/pics/schematic.png">online</ulink>. 
+      </para>
+        
+      <para>It should be easy for you to get and solder the components. The components are
+        cheap and should be available at any electronic part store. In Germany, for example
+        at <ulink url="http://www.reichelt.de">Reichelt</ulink> <footnote><para>No, I don't
+        get any money from this company.</para></footnote>. If anything is unclear,
+        feel free to send me an email at <email>bernhard@bwalle.de</email> and hope to get
+        a reply. If anyone made a board layout (preferrable with
+        <ulink url="http://www.cadsoft.de/">Eagle</ulink>, too) it would be nice if you could
+        sent it to me so that I can it include in the TFLA-01 distribution or just link
+        on the <ulink url="http://tfla-01.berlios.de">TFLA-01 homepage</ulink>. 
+      </para>
+      
+      <figure id="board">
+        <title>Image of my hand-made Logic Analyzer</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/board.jpg" format="JPG"/>
+          </imageobject>
+          <textobject>
+            <phrase>Image of my hand-made Logic Analyzer</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+    
+      <para>
+        To connect it to the parallel port of the PC, you have to solder a small adapter
+        because of the different connectors. You can also use a SUB-D plug on the board and
+        a standard cable.
+      </para>
+      
+    </sect2>
+    <sect2 id="tryitout">
+      <title>Now try it out</title>
+      
+      <para>
+        After you installed the program and built the hardware, it's time to test it.
+        Insert a battery in the logic analyzer and power it on by connecting the 
+        <literal>JP-POWER</literal> jumper. A green LED should show that the power supply works.
+        Now use a wire to connect pin 9 and 8 of the <literal>ANALYZE</literal> jack. Start
+        the TFLA-01 application by typing <command>tfla-01</command> on Unix or by double-clicking
+        the TFLA-01 icon in the Windows explorer.
+      </para>
+      
+      <para>
+        After the TFLA-01 window appears, choose a parallel port in the
+        <menuchoice><guimenu>Settings</guimenu><guimenu>Ports</guimenu></menuchoice> menu. 
+        All other default settings should work, so just click on the
+        <guiicon>Start</guiicon> icon, use the <menuchoice><guimenu>Analyze</guimenu>
+        <guimenuitem>Start</guimenuitem></menuchoice> menu item or press
+        <keycombo><keycap>F5</keycap></keycombo>. You should see something like the
+        screenshot below:
+      </para>
+      
+      <figure id="shot-getting-started">
+        <title>Screenshot of the TFLA-01</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/shot-getting-started.png" format="PNG"/>
+            </imageobject>
+            <textobject>
+              <phrase>Image of my hand-made Logic Analyzer</phrase>
+            </textobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+      
+      <para>
+        Because there's no changing signal, you see nothing special. The pin 8 is connected
+        to GND while all other pins are unused which means high level here. The grid on the
+        screen represents the samples. Just before the line is drawn the application
+        displays the number of collected samples in the status line. This may give you a
+        hint how fast your parallel port is. You can work out the sample frequency now, 
+        it's <emphasis>1/(number of samples)</emphasis>.
+      </para>
+      
+      <para>
+        Congratulation, your logic analyzer is working. Play a bit now and come back to this
+        documentation to discover all features of the software (which are, of couse, not very
+        much).
+      </para>
+    </sect2>
+  </sect1>
+  <sect1 id="hardwareconfig">
+    <title>Hardware description and configuration</title>
+    
+    <sect2 id="connectors">
+      <title>Connections</title>
+      
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>PARPORT</emphasis></term>
+          <listitem>
+            <para>
+              Connect this to the PCs parallel port (IEEE 1284). You find the pin
+              configuration of that port at
+              <ulink url="http://www.bcar.us/Common%20Cable%20Pinout%20Information.htm"/>.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>ANALYZE</emphasis></term>
+          <listitem>
+            <para>
+              This connector is used to connect the 8 data lines to a schematic (e. g. a
+              I²C bus or a RS-232 line). You have to connect <emphasis>GND</emphasis> and
+              between one and eight data lines. 
+            </para>
+            
+            <para>
+              The first two pins (number 1 and 2) can be connected to a 5 V logic (TTL level)
+              or to a +/- 12 V (RS-232) logic depending on the jumper settings
+              (see <link linkend="jumpers">Jumpers</link>). The other pins (3 to 8) can 
+              only be connected to a 5 V logic.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>9V-IN</emphasis></term>
+          <listitem>
+            <para>
+              This is the power supply for the board. We use an external power supply instead of
+              using a pin of the parallel port because the parallel port is not designed to
+              provide current for devices and this solution only may work with the 
+              <emphasis>74HC245N</emphasis> IC but not with the <emphasis>MAX232</emphasis>.
+            </para>
+            
+            <para>
+              Connect this to a 9 V battery or power supply unit. The 9 V are not critical, 
+              you can also use 12 V. Refer to the datasheet of the <emphasis>7805</emphasis> IC
+              for the accurate range.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      
+    </sect2>
+    <sect2 id="jumpers">
+      <title>Jumpers</title>
+      
+      <para>
+        The hardware (as described in <link linkend="buildhardware">Building the hardware</link>
+        has follwing jumpers:
+      </para>
+      
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>JP-POWER</emphasis></term>
+          <listitem>
+            <para> Use this jumper to power-off or power-on the circuit. </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term><emphasis>JP-SER-1-DIS</emphasis></term>
+          <listitem>
+            <para>
+              If this jumper is connected, the input pin 1 can be used as 5 V input. If it is 
+              disconnected, it may be used for +/- 12 V. Important: If 
+              <emphasis>JP-SER-1-DIS</emphasis> is connected, <emphasis>JS-SER1-EN1</emphasis> and 
+              <emphasis>JS-SER1-EN2</emphasis> must be disconnected.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term><emphasis>JS-SER1-EN1</emphasis> and <emphasis>JS-SER1-EN2</emphasis></term>
+          <listitem>
+            <para>
+              If these jumpers are connected, the input pin 1 can be used as +/- 12 V input.
+              If they are disconnected, it may be used for 5 V. Important: If
+              <emphasis>JS-SER1-EN1</emphasis> and <emphasis>JS-SER1-EN2</emphasis>
+              are connected, <emphasis>JP-SER-1-DIS</emphasis> must be disconnected.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term><emphasis>JP-SER-2-DIS</emphasis></term>
+          <listitem>
+            <para>
+              If this jumper is connected, the input pin 1 can be used as 5 V input. If it is 
+              disconnected, it may be used for +/- 12 V. Important: If 
+              <emphasis>JP-SER-2-DIS</emphasis> is connected, <emphasis>JS-SER2-EN1</emphasis> and 
+              <emphasis>JS-SER2-EN2</emphasis> must be disconnected.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term><emphasis>JS-SER2-EN1</emphasis> and <emphasis>JS-SER2-EN2</emphasis></term>
+          <listitem>
+            <para>
+              If these jumpers are connected, the input pin 1 can be used as +/- 12 V input.
+              If they are disconnected, it may be used for 5 V. Important: If
+              <emphasis>JS-SER2-EN1</emphasis> and <emphasis>JS-SER2-EN2</emphasis>
+              are connected, <emphasis>JP-SER-2-DIS</emphasis> must be disconnected.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+      </variablelist>
+    </sect2>
+    <sect2 id="leds">
+      <title>LEDs</title>
+      
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>LED-POWER</emphasis></term>
+          <listitem>
+            <para>
+              If the LED lights, the circuit is connected with power.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+  </sect1>
+  <sect1 id="extendedusage">
+    <title>Extended usage</title>
+    
+    <sect2 id="navigation">
+      <title>Navigation</title>
+      
+      <para>
+        Navigation is important for the plot area (that's the area where the data graph
+        is displayed). There are several possible ways of navigation:
+      </para>
+      
+      <variablelist>
+        <varlistentry>
+          <term>Keyboard navigation</term>
+          <listitem>
+            <para>
+              Use the <keycap>Left</keycap> and <keycap>Right</keycap> cursor keys for slow
+              navigation and the <keycap>Page Up</keycap> and <keycap>Page Down</keycap> key
+              for fast navigation. Use <keycap>Home</keycap> and <keycap>End</keycap> to
+              get to the start or to the end of the display area.
+            </para>
+            <para>
+              To support <link linkend="markers">markers</link>, the <keycombo><keycap>Ctrl</keycap>
+              <keycap>Left</keycap></keycombo> or <keycombo><keycap>Ctrl</keycap>
+              <keycap>Right</keycap></keycombo> shortcut can be used to jump to the left
+              or right marker.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>Toolbar</term>
+          <listitem>
+            <para>
+              The toolbar also has items for navigation: Use the <guiicon>Left</guiicon>
+              and <guiicon>Right</guiicon> icon to navigate slow, the <guiicon>Page left</guiicon>
+              and <guiicon>Page right</guiicon> icon to navigate fast and the
+              <guiicon>Begin</guiicon> and <guiicon>End</guiicon> icon to navigate to the
+              top or bottom of the data area.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>Scrollbar</term>
+          <listitem>
+            <para>
+              You should be familar how to use a scrollbar. However, note that while dragging
+              the slider the display is not updated. This is because of performance reasons
+              if the displayed area is large.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>Mouse wheel</term>
+          <listitem>
+            <para>
+              If you have a wheel mouse, it's very easy to navigate. Just rotate the mouse
+              wheel to move forward/backward in the timeline or press the <keycap>Shift</keycap>
+              key while roatating to move faster.
+            </para>
+          </listitem>
+        </varlistentry>
+      
+        <varlistentry>
+          <term>Menu entries</term>
+          <listitem>
+            <para>
+              The <guimenu>Navigation</guimenu> menu holds the whole functions as menu items.
+              This items are not intended to used by choose them from the menu but they are
+              provided to present the keyboard shortcuts in a common way to the user.
+            </para>
+            <para>
+              Only the <guimenuitem>Jump to left marker</guimenuitem> and
+              <guimenuitem>Jump to right marker</guimenuitem> items may be accessed directly.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+    
+    <sect2 id="zooming">
+      <title>Zooming</title>
+      
+      <variablelist>
+        <varlistentry>
+          <term>Keyboard zooming</term>
+          <listitem>
+            <para>
+              Use <keycap>+</keycap> to zoom in, <keycap>-</keycap> to zoom out,
+              <keycap>F2</keycap> to come back to the default zoom factor,
+              <keycap>F3</keycap> to fit the whole data on the display and
+              <keycap>F4</keycap> to fit the marked data (markers are discussed later)
+              on the screen.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>Toolbar</term>
+          <listitem>
+            <para>
+              Use <guiicon>Zoom In</guiicon> to zoom in, <guiicon>Zoom Out</guiicon> to zoom out,
+              <guiicon>Zoom Default</guiicon> to come back to the default zoom factor,
+              <guiicon>Zoom Fit</guiicon> to fit the whole data on the display and
+              <guiicon>Zoom to fit markers</guiicon> to fit the marked data (markers are 
+              discussed later) on the screen.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>Mouse wheel</term>
+          <listitem>
+            <para>
+              If you hold the <keycap>Ctrl</keycap> key while rotating the mouse wheel, 
+              scrolling is performed. For other scrolling actions use the toolbar, the
+              keyboard or the menu entries.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>Menu entries</term>
+          <listitem>
+            <para>
+              The <guimenu>View</guimenu> menu holds the whole functions as menu items.
+              This items are not intended to used by choose them from the menu but they are
+              provided to present the keyboard shortcuts in a common way to the user.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+    
+    <sect2 id="markers">
+      <title>Markers</title>
+      
+      <para>
+        Markers (TFLA-01 provides two of them) are useful in much situations:
+        
+        <itemizedlist>
+          <listitem>
+            <para>
+              To show the (mostly) exact time of a certain point in the plot area. The
+              time cannot be exact because we don't use realtime capabilities of the operating
+              system (neither "normal" Linux now Windows have hard realtime capabilities) but
+              it is accurate enough in most situations.
+            </para>
+          </listitem>
+          
+          <listitem>
+            <para>
+              To show a time difference between two measuring points.
+            </para>
+          </listitem>
+          
+          <listitem>
+            <para>
+              To remember a position in the data area while scrolling to another position
+              for a short while.
+            </para>
+          </listitem>
+          
+          <listitem>
+            <para>
+              To help for zooming: Just select the area you want to see more detailled and
+              press <keycap>F4</keycap> or use the <guiicon>Zoom to fit markers</guiicon>.
+            </para>
+          </listitem>
+        </itemizedlist>
+      </para>
+      
+      <figure id="shot-markers">
+        <title>Screenshot of the TFLA-01 showing the use of markers</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/shot-markers.png" format="PNG"/>
+            </imageobject>
+            <textobject>
+              <phrase>Screenshot of the TFLA-01 showing the use of markers</phrase>
+            </textobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+      
+      <para>
+        TFLA-01 supports a so-called <emphasis>left marker</emphasis> and a 
+        <emphasis>right marker</emphasis>. To set markers, click on the plot area
+        with the left or the right mouse button. The left marker is intended to be left
+        of the right marker, but it must not. If not, the time difference is negative.
+        See <link linkend="navigation">Navigation</link> to see how markers can be
+        used to navigate and <link linkend="zooming">Zooming</link> for information
+        about scrolling and markers.
+      </para>
+      
+    </sect2>
+    
+    <sect2 id="triggering">
+      <title>Triggering</title>
+      
+      <para>
+        Triggering is useful if you want to monitor a line for a longer period of time and
+        you mostly wait for an event to occure. For example you are alone and you have to start
+        the logic analyzer to monitor data and you also have to do some manual steps to start
+        the action on the data lines to occure.
+      </para>
+      
+      <para>
+        For each line you can configure if the line should be low or high to trigger of if
+        the line should be ignored. If all lines are set to <emphasis>ignore</emphasis>,
+        triggering is disabled. The display of the three states may depend of the GUI style
+        of <ulink url="http://www.trolltech.com/products/qt">Qt</ulink>, the screenshot
+        shows the Windows, ThinKeramik and Motif style. The first line is set to trigger
+        on low level, the second on high level and all other lines are ignored.
+      </para>
+      
+      <figure id="shot-triggering">
+        <title>Triggering selection in different GUI styles</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/shot-triggering.png" format="PNG"/>
+            </imageobject>
+            <textobject>
+              <phrase>Triggering selection in different GUI styles</phrase>
+            </textobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+      
+      <note>
+        <para>
+          Triggering may not work if the period where the value which should be triggered
+          for is two low. Since the function which waits for the triggered data is a part of the
+          <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> parallel port
+          library, we have no influence on this.
+        </para>
+        <para>
+          Also, triggering may be implemented differently on the operating system. For
+          example on Linux it's part of the kernel module which means that there's no
+          CPU usage until the triggered value is detected.
+        </para>
+      </note>
+    </sect2>
+    <sect2 id="datameasuringsettings">
+      <title>Data measuring settings</title>
+      
+      <sect3 id="time">
+        <title>Measuring time</title>
+        
+        <para>The measuring time sets the time to sample data after the user clicked on
+          <guiicon>Start</guiicon> and if he doesn't <guiicon>Stop</guiicon>. Note that depending
+          on the system speed the quantity of data is large so the same is for the
+          memory consumtion (expect 1 MByte per second). Also the GUI is slow if drawing
+          large data areas in this situation.
+          So normally, a timespan between 1 and 10 seconds is a good idea.
+        </para>
+      </sect3>
+      <sect3 id="samplerate">
+        <title>Sample rate</title>
+      
+        <para>By default, TFLA-01 collects data with full sample rate. The sample rate
+          may be reduced to get less data which makes larger timespans possible. The most
+          right position of the slider means maximal sample rate.
+        </para>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="save">
+      <title>Save plot</title>
+      
+      <para>The current plot can be saved as image with 
+        <menuchoice><guimenu>File</guimenu> <guimenuitem>Save current plot</guimenuitem>
+        </menuchoice>. Currently, exaclty the displayed area is saved including the markers
+        and the only supported format is PNG. This may change in future.
+      </para>
+    </sect2>
+    
+  </sect1>
+  
+  <sect1 id="settings">
+    <title>Settings</title>
+    
+    <para>TFLA-01 has a <guimenu>Settings</guimenu> menu where some configuration settings
+      can be changed. The settings are stored permanently without user invocation. The
+      data storage depends on the operating system: While on Unix the settings are stored
+      in a configuration file (<filename>$HOME/.qt/tfla-01rc</filename>), the registry
+      is used on Windows.
+    </para>
+    
+    <sect2 id="colorsettings">
+      <title>Color settings</title>
+      <para>
+        <guimenuitem>Change foreground color</guimenuitem> changes the color of the drawing
+        line of the data plot. Note that the background is always black.
+      </para>
+      
+      <para>
+        <guimenuitem>Change color of left marker</guimenuitem> and
+        <guimenuitem>Change color of right marker</guimenuitem> changes the color
+        of the left marker (set with the left mouse button) and the right marker
+        (right mouse button), respectively.
+      </para>
+    </sect2>
+    
+    <sect2 id="browser">
+      <title>Browser settings</title>
+      
+      <para>The web browser is used to display HTML help in the application. On Windows,
+        <application>Internet Explorer</application> is used as default, on Unix it is
+        <application>Mozilla Firefox</application>. Use
+        <menuchoice><guimenu>Settings</guimenu> <guimenuitem>Change browser</guimenuitem>
+        </menuchoice> to change the browser: Just enter the name of the executable
+        (e. g. <application>mozilla</application>) if it is in <envar>PATH</envar>
+        enviroment or the full path (e. g. <application>/opt/mozilla/mozilla</application>
+        on Unix or <application>c:\program files\mozilla\mozilla.exe</application> on Windows).
+      </para>
+      
+      <para>
+        The HTML file to display, prefixed with <literal>file://</literal> is the first
+        and only argument of the browser start action.
+      </para>
+    </sect2>
+    
+    <sect2 id="parport">
+      <title>Parallel port</title>
+      
+      <para>
+        The parallel port can be configured in <menuchoice><guimenu>Settings</guimenu>
+        <guimenu>Port</guimenu></menuchoice>. Each detected port is displayed here.
+        The detection is done only on startup, "hot plugging" is not supported (I even
+        don't know hot-pluggable parallel ports).
+      </para>
+    </sect2>
+    
+    
+    
+  </sect1>
+  <sect1 id="aboutapplication">
+    <title>About &application;</title>
+    
+    <sect2 id="copyright">
+      <title>Copyright</title>
+
+    <para>
+        &application; and this documentation was written by Bernhard Walle
+        (<email>bernhard@bwalle.de</email>). Visit the
+        <ulink url="http://tfla-01.berlios.de" type="http">TFLA-01 website</ulink>
+        for more information.
+      </para>
+      
+      <para>
+        This software is distributed under the terms of the GNU General Public License
+        as published by the Free Software Foundation; either version 2 of the License, or
+        (at your option) any later version.
+      </para>
+  
+      <para>
+        You should have received a copy of the GNU General Public License 
+        along with this program; if not, write to the Free Software 
+        Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+        USA.
+      </para>
+      
+    </sect2>
+    <sect2 id="credits">
+      <title>Credits</title>
+      
+      <para>
+        Stefan Holzer (<email>stefan-holzer@gmx.de</email>) is responsible for the 
+        Windows port of TFLA-01.
+      </para>
+      
+      <para>
+        The schematic was heavily inspired by
+        <ulink url="http://www.xs4all.nl/~jwasys/old/diy2.html">JWA Systems - 
+        A logic analyzer using the PC's parallel port</ulink>. Without this website,
+        this TFLA-01 probably would never have been created.
+      </para>
+    </sect2>
+  </sect1>
+
+</article>
+<!--
+	vim:set ts=2 sw=2 et ai:
+-->

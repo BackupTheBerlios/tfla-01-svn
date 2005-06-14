@@ -1,0 +1,46 @@
+2005-06-14  Bernhard Walle <bernhard.walle@gmx.de>
+	* Added schematic in Eagle format to both documentation paths
+	* Added schematic to the share/tfla-01/ path
+	* Critial bugfix: DataPlot::getNumberOfPossiblyDisplayedSamples()
+	  always returned 0
+	* Completed documentation
+	* Released 0.1.1.
+
+2005-06-13  Bernhard Walle <bernhard.walle@gmx.de>
+	* Many bugfixes
+	* Changed shortcuts for navigation and zooming
+	* Changed mouse wheel action in plot area (Shift: page, None: normal, 
+	  Ctrl: Zoom)
+	* Implemented help, removed What's This
+	* Added help skeleton (XML Docbook) and added build system
+
+2005-06-12  Bernhard Walle <bernhard.walle@gmx.de>
+	* Changed directory structure so that translation works in the source
+	  directory structure
+	* Implemented "zoom to fit markers" action
+	* Implemented "save current plot" action
+
+2005-06-11  Bernhard Walle <bernhard.walle@gmx.de>
+	* Bugfix: Don't use QTimer in non-GUI thread. Replaced by QTime()
+	  polling operation (polling is not bad here because the parport data
+	  collection is collecting 100 % CPU anyway
+	* Optimized drawing for lines that have always the same value
+	* Changed shortcuts for start/stop to F5/F6
+	* Added another jumper pair to the schematic
+	* Fixed various bugs with scrolling
+	* Improved line drawing for lines that don't have always the same
+	  value, too
+	* make sample rate (i. e. skip rate) configurable
+	* added status message that displays the number of collected samples
+
+2005-06-10  Bernhard Walle <bernhard.walle@gmx.de>
+	* Changed schematic:
+	  - Changed inputs and outputs for MAX232 (of course, use only RS232
+	    inputs and TTL outputs)
+	  - Changed POWER pin to be on the right side of the 7805
+	  - Connect MAX232 to power
+
+2005-06-10  Bernhard Walle <bernhard.walle@gmx.de>
+
+	* Initial release 0.1.0
+
