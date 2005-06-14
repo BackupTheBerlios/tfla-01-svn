@@ -14,8 +14,6 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <algorithm>
-
 #include <qpixmap.h>
 #include <qpainter.h>
 #include <qevent.h>
@@ -28,15 +26,11 @@
 #include "dataview.h"
 #include "tfla01.h"
 
-using std::min;
-using std::max;
-
 // -------------------------------------------------------------------------------------------------
 #define DEFAULT_POINTS_PER_SAMPLE 10
 
 // -------------------------------------------------------------------------------------------------
-DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name)
-    throw ()
+DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name) throw ()
     : QWidget(parent, name, WRepaintNoErase), 
       m_dataView(dataView), m_startIndex(0), m_zoomFactor(1.0),
       m_lastPixmap(0, 0), m_leftMarker(-1), m_rightMarker(-1)
@@ -54,8 +48,7 @@ void DataPlot::paintEvent(QPaintEvent*)
 
 
 // -------------------------------------------------------------------------------------------------
-void DataPlot::setZoomFactor(double factor)
-    throw ()
+void DataPlot::setZoomFactor(double factor) throw ()
 {
     m_zoomFactor = factor;
     recalculateXPositions();
@@ -64,16 +57,14 @@ void DataPlot::setZoomFactor(double factor)
 
 
 // -------------------------------------------------------------------------------------------------
-double DataPlot::getZoomFactor() const
-    throw ()
+double DataPlot::getZoomFactor() const throw ()
 {
     return m_zoomFactor;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void DataPlot::setStartIndex(int startIndex)
-    throw ()
+void DataPlot::setStartIndex(int startIndex) throw ()
 {
     m_startIndex = startIndex;
     updateData(true);
@@ -164,13 +155,16 @@ int DataPlot::getNumberOfDisplayedSamples () const throw ()
 int DataPlot::getNumberOfPossiblyDisplayedSamples() const throw()
 {
     // -1 because we have one outside the draw area
-    return QMIN(0, m_xPositions.size() - 1);
+    int ret = m_xPositions.size() - 1;
+    
+    return ret < 0
+        ? 0
+        : ret;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-int DataPlot::getCurrentWidthForPlot() const
-    throw ()
+int DataPlot::getCurrentWidthForPlot() const throw ()
 {
     return width() - static_cast<int>( 2.0 / 3.0 * (height() / NUMBER_OF_BITS_PER_BYTE) );
 }

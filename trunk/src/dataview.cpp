@@ -14,8 +14,6 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <algorithm>
-
 #include <qframe.h>
 #include <qlayout.h>
 #include <qpixmap.h>
@@ -29,9 +27,6 @@
 #include "dataview.h"
 #include "dataplot.h"
 #include "tfla01.h"
-
-using std::min;
-using std::max;
 
 #define SCROLL_SAMPLES_PER_LINE 3
 #define LINESTEP_DIVISOR 5.0
@@ -151,7 +146,7 @@ void DataView::zoomMarkers() throw ()
         double diff = DABS(m_dataPlot->getRightMarker() - m_dataPlot->getLeftMarker());
         m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 2) / 
                               m_dataPlot->getPointsPerSample() / diff );
-        m_dataPlot->setStartIndex(min(m_dataPlot->getLeftMarker(), m_dataPlot->getRightMarker()));
+        m_dataPlot->setStartIndex(QMIN(m_dataPlot->getLeftMarker(), m_dataPlot->getRightMarker()));
     }
     else
     {
@@ -288,7 +283,7 @@ void DataView::scrollValueChanged(int value) throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateLeft() throw ()
 {
-    m_dataPlot->setStartIndex(  max(0,   m_dataPlot->getStartIndex() -
+    m_dataPlot->setStartIndex( QMAX(0,  m_dataPlot->getStartIndex() -
                                         qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()
                                                / 10.0)) );
 }
@@ -297,7 +292,7 @@ void DataView::navigateLeft() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateRight() throw ()
 {
-    m_dataPlot->setStartIndex( min(m_dataPlot->getStartIndex() +
+    m_dataPlot->setStartIndex( QMIN(m_dataPlot->getStartIndex() +
                                    qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0),
                                    static_cast<int>(m_currentData.bytes().size())) );
 }
@@ -306,7 +301,7 @@ void DataView::navigateRight() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateLeftPage() throw ()
 {
-    int si = max(0,   m_dataPlot->getStartIndex() -
+    int si = QMAX(0,  m_dataPlot->getStartIndex() -
                       qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()));
     m_dataPlot->setStartIndex(si);
 }
@@ -315,7 +310,7 @@ void DataView::navigateLeftPage() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateRightPage() throw ()
 {
-    int si = min( m_dataPlot->getStartIndex() +
+    int si = QMIN( m_dataPlot->getStartIndex() +
                   qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()),
                   static_cast<int>(m_currentData.bytes().size()));
     m_dataPlot->setStartIndex(si);
@@ -327,7 +322,7 @@ void DataView::jumpToLeftMarker() throw ()
 {
     if (m_dataPlot->getLeftMarker() >= 0)
     {
-        m_dataPlot->setStartIndex(max(0, m_dataPlot->getLeftMarker()));
+        m_dataPlot->setStartIndex(QMAX(0, m_dataPlot->getLeftMarker()));
     }
 }
 
@@ -338,7 +333,7 @@ void DataView::jumpToRightMarker() throw ()
     if (m_dataPlot->getRightMarker() >= 0)
     {
         // 3 instead of 2 because in end() size() is lastElementIndex + 1
-        m_dataPlot->setStartIndex(max(0, m_dataPlot->getRightMarker() -
+        m_dataPlot->setStartIndex(QMAX(0, m_dataPlot->getRightMarker() -
                                        m_dataPlot->getNumberOfDisplayedSamples() + 3)  );
     }
 }
