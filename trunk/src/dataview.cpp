@@ -120,6 +120,7 @@ void DataView::zoomFit()
 {
     if (m_currentData.bytes().size() != 0)
     {
+        m_dataPlot->setStartIndex(0);
         m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 1) / 
                               m_dataPlot->getPointsPerSample() / m_currentData.bytes().size() );
     }
