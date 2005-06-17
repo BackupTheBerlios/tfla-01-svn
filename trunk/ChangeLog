@@ -1,3 +1,8 @@
+2005-06-17  Bernhard Walle <bernhard.walle@gmx.de>
+	* Changed documentation to use Qt Assistant on all plattforms
+	* Removed browser settings
+	* Added assistant profile
+
 2005-06-15  Bernhard Walle <bernhard.walle@gmx.de>
 	* Bugfix: ZoomFit sets now the start index to 0
 

@@ -35,7 +35,7 @@
 
 <xsl:variable name="admon.graphics.path">stylesheet-images/</xsl:variable>
 
-<xsl:variable name="admon.graphics.extension">.gif</xsl:variable>
+<xsl:variable name="admon.graphics.extension">.png</xsl:variable>
 
 <xsl:param name="table.border.thickness" select="'0.2pt'"/>
 

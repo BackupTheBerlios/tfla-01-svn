@@ -293,7 +293,7 @@ void Tfla01::initMenubar() throw ()
     m_actions.changeForegroundColorAction->addTo(settingsMenu);
     m_actions.changeLeftColorAction->addTo(settingsMenu);
     m_actions.changeRightColorAction->addTo(settingsMenu);
-    m_actions.changeBrowserAction->addTo(settingsMenu);
+    //m_actions.changeBrowserAction->addTo(settingsMenu);
     
     m_portsMenu = new QPopupMenu(this);
     settingsMenu->insertItem(tr("&Port"), m_portsMenu);

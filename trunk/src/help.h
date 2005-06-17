@@ -17,18 +17,22 @@
 #ifndef HELP_H
 #define HELP_H
 
+#include <qassistantclient.h>
 #include <qobject.h>
 
 class Help : public QObject
 {
     Q_OBJECT
     
+    public:
+        Help() throw ();
+    
     public slots:
         void showAbout();
         void showHelp();
         
-    public:
-        static void openURL(QWidget* parent, const QString& url);
+    private:
+        QAssistantClient* m_client;
 };
 
 

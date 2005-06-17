@@ -30,6 +30,15 @@
 #include "settings.h"
 #include "aboutdialog.h"
 
+
+// -------------------------------------------------------------------------------------------------
+Help::Help() throw ()
+{
+    m_client = new QAssistantClient("", this);
+    
+    
+}
+
 // -------------------------------------------------------------------------------------------------
 void Help::showAbout()
 {
@@ -44,14 +53,23 @@ void Help::showHelp()
 {
     QString base = QDir(qApp->applicationDirPath() + "/../share/tfla-01/doc/").canonicalPath();
     QString loc = QString(QTextCodec::locale()).section("_", 0, 0);
+    QStringList args;
     
     if (QFile::exists(base + "/" + loc + "/index.html"))
     {
-        openURL(qApp->mainWidget(), "file:///" + base + "/" + loc + "/index.html");
+        args += "-profile";
+        args += QString(base + "/" + loc + "assistantconfig.xml");
+        m_client->setArguments(args);
+        m_client->openAssistant();
+        m_client->showPage(base + "/" + loc + "/index.html");
     }
     else if (QFile::exists(base + "/en/index.html"))
     {
-        openURL(qApp->mainWidget(), "file:///" + base + "/en/index.html");
+        args += "-profile";
+        args += QString(base + "/en/assistantconfig.xml");
+        m_client->setArguments(args);
+        m_client->openAssistant();
+        m_client->showPage(base + "/en/index.html");
     }
     else
     {
@@ -61,20 +79,4 @@ void Help::showHelp()
     }
 }
 
-
-// -------------------------------------------------------------------------------------------------
-void Help::openURL(QWidget* parent, const QString& url)
-{
-    QString command = Settings::set().readEntry("General/Webbrowser");
-    QProcess* process = new QProcess(command, parent);
-    process->addArgument(url);
-    
-    if (! process->start())
-    {
-        QMessageBox::critical(parent, "TFLA-01",
-            tr("<qt><p>Failed to open the link <tt>%1</tt> in the specified web browser."
-                " The command was:</p><p><tt><nobr>%2</tt></nobr></p></qt>").arg(url).arg(
-                command+" " + url), QMessageBox::Ok, QMessageBox::NoButton);
-    }
-}
 

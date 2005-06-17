@@ -47,8 +47,8 @@
   <sect1 id="intro">
     <title>Introduction to &application;</title>
 
-    <sect2>
-      <title>What is this logic analyzer?</title>
+    <sect2 id="whatislogicanalyzer">
+      <title>What is a logic analyzer?</title>
 
       <para>
         A logic analyzer is a device which can monitor the high and low states of several
@@ -64,8 +64,8 @@
       </para>
     </sect2>
     
-    <sect2>
-      <title>What's special about TFLA-01</title>
+    <sect2 id="whatsspecial">
+      <title>What's special about TFLA-01?</title>
       
       <para>
         This logic analyzer is designed to be cheap, somehing like a logic analyzer for poor
@@ -112,7 +112,7 @@
       
     </sect2>
     
-    <sect2>
+    <sect2 id="sysreqs">
       <title>System requirements</title>
       
       <para>
@@ -191,6 +191,13 @@
             
             or add a shortcut to your desktop's start menu. In <filename>/usr/share/pixmaps</filename>
             you find some icons which you can use for that.
+          </para>
+          
+          <para>
+            For displaying the help from TFLA-01, you must have installed
+            <application>Qt Assistant</application> and the binary <application>assistant</application>
+            must be in <envar>PATH</envar> environment. For example on SuSE, just install the
+            package <literal>qt3-devel-doc</literal>.
           </para>
           
         </sect4>
@@ -355,7 +362,7 @@ $ su
         <title>Image of my hand-made Logic Analyzer</title>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/board.jpg" format="JPG"/>
+            <imagedata  fileref="images/board.jpg" format="JPG"/>
           </imageobject>
           <textobject>
             <phrase>Image of my hand-made Logic Analyzer</phrase>
@@ -397,7 +404,7 @@ $ su
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/shot-getting-started.png" format="PNG"/>
+              <imagedata fileref="images/shot-getting-started.png" format="PNG" />
             </imageobject>
             <textobject>
               <phrase>Image of my hand-made Logic Analyzer</phrase>
@@ -736,7 +743,7 @@ $ su
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/shot-markers.png" format="PNG"/>
+              <imagedata fileref="images/shot-markers.png" format="PNG" />
             </imageobject>
             <textobject>
               <phrase>Screenshot of the TFLA-01 showing the use of markers</phrase>
@@ -781,7 +788,7 @@ $ su
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/shot-triggering.png" format="PNG"/>
+              <imagedata fileref="images/shot-triggering.png" format="PNG" />
             </imageobject>
             <textobject>
               <phrase>Triggering selection in different GUI styles</phrase>
@@ -865,7 +872,7 @@ $ su
       </para>
     </sect2>
     
-    <sect2 id="browser">
+  <!--  <sect2 id="browser">
       <title>Browser settings</title>
       
       <para>The web browser is used to display HTML help in the application. On Windows,
@@ -882,7 +889,7 @@ $ su
         The HTML file to display, prefixed with <literal>file://</literal> is the first
         and only argument of the browser start action.
       </para>
-    </sect2>
+    </sect2> -->
     
     <sect2 id="parport">
       <title>Parallel port</title>
