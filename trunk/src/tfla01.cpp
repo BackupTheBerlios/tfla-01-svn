@@ -82,19 +82,17 @@ Tfla01::Tfla01()
 
 
 // -------------------------------------------------------------------------------------------------
-void Tfla01::portChange(int id)
-    throw ()
+void Tfla01::portChange(int id) throw ()
 {
     Settings::set().writeEntry("Hardware/Parport", id);
     m_portsMenu->clear();
     
-    ParportList* list = ParportList::findPorts(0);
+    ParportList* list = ParportList::instance(0);
     for (int i = 0; i < list->getNumberOfPorts(); i++)
     {
-        m_portsMenu->insertItem(list->getPort(i)->getName(), i);
+        m_portsMenu->insertItem(list->getPort(i).getName(), i);
         m_portsMenu->setItemChecked(i, i == Settings::set().readNumEntry("Hardware/Parport"));
     }
-    delete list;
 }
 
 

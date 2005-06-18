@@ -19,7 +19,7 @@
 
 // -------------------------------------------------------------------------------------------------
 Parport::Parport(struct parport* port)
-    : m_isOpen(false)
+    : m_isOpen(false), m_isClaimed(false)
 {
     m_parport = port;
 }
@@ -43,8 +43,7 @@ Parport::~Parport()
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::open(int flags, int* capabilities)
-    throw (ParportError)
+void Parport::open(int flags, int* capabilities) throw (ParportError)
 {
     int ret;
     
@@ -58,13 +57,14 @@ void Parport::open(int flags, int* capabilities)
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::close()
-    throw (ParportError)
+void Parport::close() throw (ParportError)
 {
     if (!m_isOpen)
     {
         return;
     }
+    
+    release();
     
     int ret;
     
@@ -76,16 +76,16 @@ void Parport::close()
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::release()
-    throw ()
+void Parport::release() throw ()
 {
     ieee1284_release(m_parport);
+    
+    m_isClaimed = false;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::claim()
-    throw (ParportError)
+void Parport::claim() throw (ParportError)
 {
     int err;
     
@@ -93,12 +93,13 @@ void Parport::claim()
     {
         throw ParportError(err);
     }
+    
+    m_isClaimed = true;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-byte Parport::readData()
-    throw (ParportError)
+byte Parport::readData() throw (ParportError)
 {
     int ret;
     
@@ -112,16 +113,14 @@ byte Parport::readData()
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::writeData(byte data)
-    throw ()
+void Parport::writeData(byte data) throw ()
 {
     ieee1284_write_data(m_parport, data);
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::setDataDirection(bool reverse)
-    throw (ParportError)
+void Parport::setDataDirection(bool reverse) throw (ParportError)
 {
     int ret;
     
@@ -133,8 +132,7 @@ void Parport::setDataDirection(bool reverse)
 
 
 // -------------------------------------------------------------------------------------------------
-bool Parport::waitData(int mask, int val, struct timeval* timeout)
-    throw (ParportError)
+bool Parport::waitData(int mask, int val, struct timeval* timeout) throw (ParportError)
 {
     int ret;
     
@@ -156,32 +154,28 @@ bool Parport::waitData(int mask, int val, struct timeval* timeout)
 
 
 // -------------------------------------------------------------------------------------------------
-QString Parport::getName() const
-    throw ()
+QString Parport::getName() const throw ()
 {
     return QString::fromLocal8Bit(m_parport->name);
 }
 
 
 // -------------------------------------------------------------------------------------------------
-unsigned long Parport::getBaseAddress() const
-    throw ()
+unsigned long Parport::getBaseAddress() const throw ()
 {
     return m_parport->base_addr;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-unsigned long Parport::getHighBaseAddress() const
-    throw ()
+unsigned long Parport::getHighBaseAddress() const throw ()
 {
     return m_parport->hibase_addr;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-QString Parport::getFileName() const
-    throw ()
+QString Parport::getFileName() const throw ()
 {
     return QString::fromLocal8Bit(m_parport->filename);
 }

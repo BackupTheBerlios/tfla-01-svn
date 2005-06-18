@@ -23,11 +23,8 @@
 #include <qmessagebox.h>
 #include <qtextcodec.h>
 
-#include "hardware/parport.h"
-#include "hardware/parportlist.h"
 #include "tferror.h"
 #include "tfla01.h"
-#include "datacollector.h"
 
 // -------------------------------------------------------------------------------------------------
 using std::auto_ptr;

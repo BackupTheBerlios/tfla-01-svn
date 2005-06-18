@@ -19,25 +19,32 @@
 #include "hardware/parportlist.h"
 
 // -------------------------------------------------------------------------------------------------
-ParportList* ParportList::findPorts(int flags)
-    throw (ParportError)
+ParportList* ParportList::m_theInstance = 0;
+
+
+// -------------------------------------------------------------------------------------------------
+ParportList* ParportList::instance(int flags) throw (ParportError)
 {
-    parport_list* list = new parport_list;
-    int err;
-    
-    if ((err = ieee1284_find_ports(list, flags)) != E1284_OK)
+    if (!m_theInstance)
     {
-        delete list;
-        throw ParportError(err);
+        parport_list* list = new parport_list;
+        int err;
+        
+        if ((err = ieee1284_find_ports(list, flags)) != E1284_OK)
+        {
+            delete list;
+            throw ParportError(err);
+        }
+        
+        m_theInstance = new ParportList(list);
     }
     
-    return new ParportList(list);
+    return m_theInstance;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-ParportList::ParportList(struct parport_list* list)
-    throw ()
+ParportList::ParportList(struct parport_list* list) throw ()
 {
     m_list = list;
 }
@@ -51,16 +58,14 @@ ParportList::~ParportList()
 
 
 // -------------------------------------------------------------------------------------------------
-int ParportList::getNumberOfPorts() const
-    throw ()
+int ParportList::getNumberOfPorts() const throw ()
 {
     return m_list->portc;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-Parport* ParportList::getPort(int number) const
-    throw ()
+Parport ParportList::getPort(int number) const throw ()
 {
-    return new Parport(m_list->portv[number]);
+    return Parport(m_list->portv[number]);
 }

@@ -39,10 +39,10 @@ class ParportList
          * for details.
          *
          * @param flags see http://cyberelk.net/tim/libieee1284/interface/find-ports.html
+         *        relevant only on the first call!
          * @exception ParportError on error
          */
-        static ParportList* findPorts(int flags = 0)
-        throw (ParportError);
+        static ParportList* instance(int flags = 0) throw (ParportError);
     
         /**
          * Frees a ParportList. See class description. 
@@ -54,16 +54,14 @@ class ParportList
          *
          * @return the number of available ports
          */
-        int getNumberOfPorts() const
-        throw ();
+        int getNumberOfPorts() const throw ();
         
         /**
          * Returns a port with the specified number which must be smaller than getNumberOfPorts().
          *
          * @param number the port number
          */
-        Parport* getPort(int number) const
-        throw ();
+        Parport getPort(int number) const throw ();
         
     protected:
         
@@ -73,12 +71,11 @@ class ParportList
          *
          * @param list the parport list which is allocated using ParportList::findPorts().
          */
-        ParportList(struct parport_list* list)
-        throw ();    
+        ParportList(struct parport_list* list) throw ();    
     
     private:
         struct parport_list* m_list;
-       
+        static ParportList* m_theInstance;
 };
 
 #endif /* PARPORTLIST_H */

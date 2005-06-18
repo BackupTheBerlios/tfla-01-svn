@@ -175,6 +175,7 @@ class Parport
     private:
         struct parport* m_parport;
         bool   m_isOpen;
+        bool   m_isClaimed;
 };
 
 

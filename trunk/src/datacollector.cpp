@@ -95,24 +95,21 @@ int DataCollector::getNumberOfSkips() const throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-Data DataCollector::getData() const
-    throw ()
+Data DataCollector::getData() const throw ()
 {
     return m_data;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-QString DataCollector::getErrorString() const
-    throw ()
+QString DataCollector::getErrorString() const throw ()
 {
     return m_errorString;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void DataCollector::stop() 
-    throw ()
+void DataCollector::stop()  throw ()
 {
     m_stop = true;
 }
@@ -124,12 +121,11 @@ void DataCollector::run()
     try
     {
         // open the port and claim it
-        ParportList* list = ParportList::findPorts();
-        Parport port = *(list->getPort(m_portNumber));
+        ParportList* list = ParportList::instance();
+        Parport port = list->getPort(m_portNumber);
         
         // I tried F1284_EXCL here, but if I set this, claim failed with a system error
         port.open(0);
-        delete list;
         port.claim();
         port.setDataDirection(true);
         
