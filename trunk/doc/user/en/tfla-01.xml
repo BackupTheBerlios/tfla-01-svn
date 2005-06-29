@@ -129,7 +129,7 @@
           <para>Linux</para>
         </listitem>
         <listitem>
-          <para>Windows with <ulink url="http://www.cygwin.com">Cygwin</ulink></para>
+          <para>Windows</para>
         </listitem>
         <listitem>
           <para>OpenBSD (i386 only)</para>
@@ -279,9 +279,22 @@ $ su
           <title>Windows</title>
           
           <para>
-            Description will follow as soon as binaries are available. You'll have to 
-            install a dummy driver which gives the user access to the parallel port. Not very good
-            but most other programs use the same.
+            To install TFLA-01 on windows you need the zip-file supplied in the download section.
+            After downloading this file extract it in the directory you want. 
+          </para>
+          
+          <para>
+            If you want to use a not parallel port that has an address unlike 0x278, 0x378 or 0x3bc
+            you have to create the config file <filename>ieee1284.conf</filename> in the directory
+            <filename>\dokumente und einstellungen\all users\Anwendungsdaten\</filename> (or 
+            <filename>\documents and settings\all users\application data\</filename>). In this
+            file you have to insert something like that:
+<programlisting>
+parport_address 0xFFF0
+</programlisting>
+            where 0xFFF0 is the address of the parallel port. To get more user defined parallel ports 
+            you can add multiple lines like this. To find out the address of your parallel port you
+            can use <ulink url="http://members.datafast.net.au/dft0802/">Craig's PCI Software</ulink>.
           </para>
         </sect4>
       </sect3>
@@ -332,6 +345,15 @@ $ su
             so nothing needs do be done. However, we don't recommend it for using with
             the TFLA-01, it's instable, insecure, we didn't test it and we will not test it.
             In short: it's unsupported but it may work, though.
+          </para>
+        </sect4>
+        <sect4>
+          <title>Windows 2000/XP</title>
+           
+          <para>
+            If you want to run it in user mode you need to use the giveio driver that is supplied 
+            with <ulink url="http://savannah.nongnu.org/projects/avrdude/">avrdude</ulink>. The
+            installation of giveio is described in the documentation of avrdude.
           </para>
         </sect4>
       </sect3>
