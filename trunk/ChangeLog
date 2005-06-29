@@ -1,3 +1,7 @@
+2005-06-29  Bernhard Walle <bernhard.walle@gmx.de>
+	* Added Windows documentation (thanks to Stefan Holzer)
+	* Released 0.1.2.
+
 2005-06-18  Bernhard Walle <bernhard.walle@gmx.de>
 	* make ParportList a singleton object, so ieee1284_find_ports
 	  is only called once, this doesn't reset other parallel ports
