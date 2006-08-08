@@ -47,7 +47,7 @@ class ParportList
         /**
          * Frees a ParportList. See class description. 
          */
-        virtual ParportList::~ParportList();
+        virtual ~ParportList();
         
         /**
          * Returns the number of ports.
