@@ -64,12 +64,6 @@ Data::LineState Data::getLineState(int line) const throw ()
     return m_lineStates[line];
 }
 
-#define bit_is_set(b, i) \
-     (b & (1 << i))
-
-#define bit_is_clear(b, i) \
-     (!bit_is_set(b, i))
-
 // -------------------------------------------------------------------------------------------------
 void Data::calculateLineStates() throw ()
 {

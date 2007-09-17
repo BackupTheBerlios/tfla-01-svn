@@ -1,8 +1,14 @@
+2007-09-17  Bernhard Walle <bernhard.walle@gmx.de>
+
+	* implemented CSV export option (suggested by Philippe Langlois)
+
 2005-06-29  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* Added Windows documentation (thanks to Stefan Holzer)
 	* Released 0.1.2.
 
 2005-06-18  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* make ParportList a singleton object, so ieee1284_find_ports
 	  is only called once, this doesn't reset other parallel ports
 	  (that are currently unsued) at each measure which is
@@ -10,14 +16,17 @@
 	  schematic
 
 2005-06-17  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* Changed documentation to use Qt Assistant on all plattforms
 	* Removed browser settings
 	* Added assistant profile
 
 2005-06-15  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* Bugfix: ZoomFit sets now the start index to 0
 
 2005-06-14  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* Added schematic in Eagle format to both documentation paths
 	* Added schematic to the share/tfla-01/ path
 	* Critial bugfix: DataPlot::getNumberOfPossiblyDisplayedSamples()
@@ -26,6 +35,7 @@
 	* Released 0.1.1.
 
 2005-06-13  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* Many bugfixes
 	* Changed shortcuts for navigation and zooming
 	* Changed mouse wheel action in plot area (Shift: page, None: normal, 
@@ -34,12 +44,14 @@
 	* Added help skeleton (XML Docbook) and added build system
 
 2005-06-12  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* Changed directory structure so that translation works in the source
 	  directory structure
 	* Implemented "zoom to fit markers" action
 	* Implemented "save current plot" action
 
 2005-06-11  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* Bugfix: Don't use QTimer in non-GUI thread. Replaced by QTime()
 	  polling operation (polling is not bad here because the parport data
 	  collection is collecting 100 % CPU anyway
@@ -53,6 +65,7 @@
 	* added status message that displays the number of collected samples
 
 2005-06-10  Bernhard Walle <bernhard.walle@gmx.de>
+
 	* Changed schematic:
 	  - Changed inputs and outputs for MAX232 (of course, use only RS232
 	    inputs and TTL outputs)

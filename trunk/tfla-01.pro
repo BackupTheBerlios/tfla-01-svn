@@ -23,10 +23,10 @@ unix:LIBS         += -lieee1284
 
 ################################################################################
 
-VERSION_STRING     = 0.1.2
+VERSION_STRING     = 0.1.3
 MAJOR_VERSION      = 0
 MINOR_VERSION      = 1
-PATCH_VERSION      = 2
+PATCH_VERSION      = 3
 
 ################################################################################
 
@@ -119,7 +119,9 @@ IMAGES =                                        \
     images/stock_previous-page_16.png           \
     images/stock_previous-page_24.png           \
     images/stock_next-page_16.png               \
-    images/stock_next-page_24.png 
+    images/stock_next-page_24.png               \
+    images/stock_export_16.png                  \
+    images/stock_export_24.png
 
     
 

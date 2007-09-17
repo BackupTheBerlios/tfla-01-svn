@@ -22,6 +22,7 @@
 #include <qfiledialog.h>
 #include <qstatusbar.h>
 #include <qmessagebox.h>
+#include <qcursor.h>
 
 #include "settings.h"
 #include "dataview.h"
@@ -361,3 +362,52 @@ void DataView::saveScreenshot() throw ()
     }
 }
 
+
+// -------------------------------------------------------------------------------------------------
+void DataView::exportToCSV()
+    throw ()
+{
+    QString fileName = QFileDialog::getSaveFileName(
+            QString::null, tr("CSV files (*.csv)"),
+            this, "", tr("Choose file to save"));
+    if (!fileName)
+    {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(IO_WriteOnly))
+    {
+        return;
+    }
+
+    QTextStream stream(&file);
+    QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+    // write header
+    stream << "number;1;2;3;4;5;6;7;8\n";
+
+    for (unsigned int i = 0; i < m_currentData.bytes().size(); ++i)
+    {
+        unsigned char byte = m_currentData.bytes()[i];
+
+        stream << i << ';';
+        for (int j = 0; j < NUMBER_OF_BITS_PER_BYTE; ++j)
+        {
+            stream << (int)(bit_is_set(byte, j) ? 1 : 0);
+            if (j != NUMBER_OF_BITS_PER_BYTE - 1)
+            {
+                stream << ';';
+            }
+        }
+
+        stream << '\n';
+        qApp->processEvents();
+    }
+
+    QApplication::restoreOverrideCursor();
+
+    file.close();
+}
+
+// vim: set sw=4 ts=4 et:

@@ -47,4 +47,10 @@ class Data
         LineState  m_lineStates[NUMBER_OF_BITS_PER_BYTE];
 };
 
+#define bit_is_set(b, i) \
+     (b & (1 << (i)))
+
+#define bit_is_clear(b, i) \
+     (!bit_is_set(b, i))
+
 #endif /* DATA_H */

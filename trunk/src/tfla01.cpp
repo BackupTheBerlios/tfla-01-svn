@@ -250,6 +250,7 @@ void Tfla01::initMenubar() throw ()
     QPopupMenu* fileMenu = new QPopupMenu(this);
     menuBar()->insertItem(tr("&File"), fileMenu);
 
+    m_actions.exportAction->addTo(fileMenu);
     m_actions.saveViewAction->addTo(fileMenu);
     fileMenu->insertSeparator();
     m_actions.quitAction->addTo(fileMenu);
@@ -317,6 +318,9 @@ void Tfla01::initActions()
     throw ()
 {
     // ----- File ----------------------------------------------------------------------------------
+    m_actions.exportAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_export_16.png"),
+        QPixmap::fromMimeSource("stock_export_24.png") ), tr("&Export data..."),
+        QKeySequence(CTRL|Key_E), this);
     m_actions.saveViewAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_convert_16.png"),
         QPixmap::fromMimeSource("stock_convert_24.png") ), tr("&Save current plot..."),
         QKeySequence(CTRL|Key_S), this);
@@ -442,6 +446,8 @@ void Tfla01::connectSignalsAndSlots()
 {
     connect(m_actions.saveViewAction,              SIGNAL(activated()), 
             m_centralWidget->getDataView(),        SLOT(saveScreenshot()));
+    connect(m_actions.exportAction,                SIGNAL(activated()), 
+            m_centralWidget->getDataView(),        SLOT(exportToCSV()));
     connect(m_actions.quitAction,                  SIGNAL(activated()), 
             this,                                  SLOT(close()));
     connect(m_actions.helpAction,                  SIGNAL(activated()), 

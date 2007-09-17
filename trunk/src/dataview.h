@@ -54,6 +54,7 @@ class DataView : public QWidget
         void jumpToLeftMarker() throw ();
         void jumpToRightMarker() throw ();
         void saveScreenshot() throw ();
+	void exportToCSV() throw ();
         
     signals:
         void leftMarkerValueChanged(double value);

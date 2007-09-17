@@ -63,12 +63,16 @@
         <source>Current view could not be saved. Maybe you you don&apos;t have permissions to that location.</source>
         <translation>Aktueller Plot konnte nicht gespeichert werden. Möglicherweise haben Sie keine Zugriffsrechte auf das gewählte Verzeichnis.</translation>
     </message>
+    <message>
+        <source>CSV files (*.csv)</source>
+        <translation>CSV-Dateien (*.csv)</translation>
+    </message>
 </context>
 <context>
     <name>Help</name>
     <message>
         <source>&lt;qt&gt;&lt;p&gt;Failed to open the link &lt;tt&gt;%1&lt;/tt&gt; in the specified web browser. The command was:&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;nobr&gt;%2&lt;/tt&gt;&lt;/nobr&gt;&lt;/p&gt;&lt;/qt&gt;</source>
-        <translation>&lt;qt&gt;&lt;p&gt;Der Link &lt;tt&gt;%1&lt;/tt&gt; konnte im angegebenen Browser nicht geöffnet werden. Der Befehl war:&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;nobr&gt;%2&lt;/tt&gt;&lt;/nobr&gt;&lt;/p&gt;&lt;/qt&gt;</translation>
+        <translation type="obsolete">&lt;qt&gt;&lt;p&gt;Der Link &lt;tt&gt;%1&lt;/tt&gt; konnte im angegebenen Browser nicht geöffnet werden. Der Befehl war:&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;nobr&gt;%2&lt;/tt&gt;&lt;/nobr&gt;&lt;/p&gt;&lt;/qt&gt;</translation>
     </message>
     <message>
         <source>TFLA-01</source>
@@ -324,6 +328,10 @@ wird beendet.</translation>
     <message>
         <source>Page r&amp;ight</source>
         <translation>Se&amp;ite nach rechts</translation>
+    </message>
+    <message>
+        <source>&amp;Export data...</source>
+        <translation>Daten &amp;exportieren...</translation>
     </message>
 </context>
 </TS>
