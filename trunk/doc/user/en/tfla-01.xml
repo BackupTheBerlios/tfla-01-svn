@@ -866,6 +866,17 @@ parport_address 0xFFF0
         and the only supported format is PNG. This may change in future.
       </para>
     </sect2>
+
+    <sect2 id="export">
+      <title>Export data</title>
+      
+      <para>The current data can be exported as CSV (comma separated value) with
+        <menuchoice><guimenu>File</guimenu> <guimenuitem>Export data</guimenuitem>
+        </menuchoice>. Each sample is a line and each bit is a column. This can
+        be used with in a spreadsheet application like OpenOffice or in custom
+        scripts.
+      </para>
+    </sect2>
     
   </sect1>
   
