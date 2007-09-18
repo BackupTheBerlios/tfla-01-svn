@@ -65,7 +65,22 @@
     </message>
     <message>
         <source>CSV files (*.csv)</source>
+        <translation type="obsolete">CSV-Dateien (*.csv)</translation>
+    </message>
+</context>
+<context>
+    <name>ExportDialog</name>
+    <message>
+        <source>Save only &amp;state changes (reduces file size)</source>
+        <translation>Nur &amp;Zustandsänderungen speichern (reduziert Dateigröße)</translation>
+    </message>
+    <message>
+        <source>CSV files (*.csv)</source>
         <translation>CSV-Dateien (*.csv)</translation>
+    </message>
+    <message>
+        <source>Choose file name for exported data</source>
+        <translation>Wählen Sie den Dateinamen für die exportierten Daten</translation>
     </message>
 </context>
 <context>

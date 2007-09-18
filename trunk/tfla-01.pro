@@ -48,6 +48,7 @@ SOURCES     =                                   \
     src/dataview.cpp                            \
     src/data.cpp                                \
     src/tfla01.cpp                              \
+    src/exportdialog.cpp                        \
     src/wheelscrollbar.cpp
 
 # -----------------------------------------------------------------------------
@@ -67,6 +68,7 @@ HEADERS     =                                   \
     src/dataview.h                              \
     src/data.h                                  \
     src/tfla01.h                                \
+    src/exportdialog.h                          \
     src/wheelscrollbar.h
 
 # -----------------------------------------------------------------------------

@@ -1,3 +1,8 @@
+2007-09-18  Bernhard Walle <bernhard.walle@gmx.de>
+
+	* implemented saving only the changed positions (suggested by Philippe
+	  Langlois)
+
 2007-09-17  Bernhard Walle <bernhard.walle@gmx.de>
 
 	* implemented CSV export option (suggested by Philippe Langlois)

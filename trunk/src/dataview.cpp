@@ -28,6 +28,7 @@
 #include "dataview.h"
 #include "dataplot.h"
 #include "tfla01.h"
+#include "exportdialog.h"
 
 #define SCROLL_SAMPLES_PER_LINE 3
 #define LINESTEP_DIVISOR 5.0
@@ -367,13 +368,19 @@ void DataView::saveScreenshot() throw ()
 void DataView::exportToCSV()
     throw ()
 {
-    QString fileName = QFileDialog::getSaveFileName(
-            QString::null, tr("CSV files (*.csv)"),
-            this, "", tr("Choose file to save"));
-    if (!fileName)
+    QString fileName;
+    bool diff;
+
+    ExportDialog* ed = new ExportDialog(QDir::currentDirPath(), this);
+    ed->setMode(QFileDialog::AnyFile);
+  
+    if (ed->exec() != QDialog::Accepted)
     {
         return;
     }
+
+    fileName = ed->selectedFile();
+    diff = ed->getDiffMode();
 
     QFile file(fileName);
     if (!file.open(IO_WriteOnly))
@@ -387,9 +394,24 @@ void DataView::exportToCSV()
     // write header
     stream << "number;1;2;3;4;5;6;7;8\n";
 
-    for (unsigned int i = 0; i < m_currentData.bytes().size(); ++i)
+    unsigned int size = m_currentData.bytes().size();
+    for (unsigned int i = 0; i < size; ++i)
     {
         unsigned char byte = m_currentData.bytes()[i];
+
+        // keep the event loop running
+        if (i % 100 == 0)
+        {
+            qApp->processEvents();
+        }
+
+        // check for a state change
+        if (diff && i != 0 && i != (size - 1) &&
+                byte == m_currentData.bytes()[i-1] &&
+                byte == m_currentData.bytes()[i+1])
+        {
+            continue;
+        }
 
         stream << i << ';';
         for (int j = 0; j < NUMBER_OF_BITS_PER_BYTE; ++j)
@@ -402,7 +424,6 @@ void DataView::exportToCSV()
         }
 
         stream << '\n';
-        qApp->processEvents();
     }
 
     QApplication::restoreOverrideCursor();
