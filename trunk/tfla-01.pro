@@ -169,9 +169,9 @@ maketarball.commands       += qmake tfla-01.pro &&
 maketarball.commands       += make documentation &&
 maketarball.commands       += rm Makefile &&
 maketarball.commands       += cd /tmp &&
-maketarball.commands       += tar cvfz tfla-01-$${VERSION_STRING}.tar.gz tfla-01-$$VERSION_STRING &&
+maketarball.commands       += tar cvfj tfla-01-$${VERSION_STRING}.tar.bz2 tfla-01-$$VERSION_STRING &&
 maketarball.commands       += popd &&
-maketarball.commands       += mv /tmp/tfla-01-$${VERSION_STRING}.tar.gz . &&
+maketarball.commands       += mv /tmp/tfla-01-$${VERSION_STRING}.tar.bz2 . &&
 maketarball.commands       += rm -r /tmp/tfla-01-$$VERSION_STRING
 QMAKE_EXTRA_UNIX_TARGETS   += maketarball
 
