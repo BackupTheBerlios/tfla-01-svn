@@ -1,3 +1,8 @@
+2007-09-21  Bernhard Walle <bernhard.walle@gmx.de>
+
+	* adapt documentation to udev and add the links to the openSUSE
+	  BuildService
+
 2007-09-18  Bernhard Walle <bernhard.walle@gmx.de>
 
 	* implemented saving only the changed positions (suggested by Philippe

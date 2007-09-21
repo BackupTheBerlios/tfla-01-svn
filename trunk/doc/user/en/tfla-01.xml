@@ -171,20 +171,16 @@
         <title>Primary installation</title>
       
         <sect4>
-          <title>Linux RPM</title>
+          <title>Linux packages</title>
+          
           
           <para>
-            If you have a RPM based Linux distribution which is mostly up to date (which means
-            glibc 2.3, <ulink url="http://www.trolltech.com/products/qt/">Qt</ulink> 3.3 and  
-            <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink> installed), 
-            then just running
-            
-<screen>$ su
-# rpm -Uvh tfla-01-&version;-0.i586.rpm</screen>
-          
-            should do it.
+            Packages for openSUSE and SUSE Linux Enterprise 10 can be obtained
+            in the 
+            <ulink
+              url="http://software.opensuse.org/search?q=tfla-01&amp;baseproject=home%3Abwalle">openSUSE
+              BuildService</ulink>.
           </para>
-          
           <para>
             Start the logic analyzer via command line by running
             
@@ -193,11 +189,10 @@
             or add a shortcut to your desktop's start menu. In <filename>/usr/share/pixmaps</filename>
             you find some icons which you can use for that.
           </para>
-          
           <para>
             For displaying the help from TFLA-01, you must have installed
             <application>Qt Assistant</application> and the binary <application>assistant</application>
-            must be in <envar>PATH</envar> environment. For example on SuSE, just install the
+            must be in <envar>PATH</envar> environment. For example on SUSE, just install the
             package <literal>qt3-devel-doc</literal>.
           </para>
           
@@ -280,23 +275,12 @@ $ su
           <title>Windows</title>
           
           <para>
-            To install TFLA-01 on windows you need the zip-file supplied in the download section.
-            After downloading this file extract it in the directory you want. 
+            The Windows port is not maintained any more, so no new binaries are
+            available. If you would like to maintain it, please drop me a
+            message. Probably it's easier to port it to Qt 4 if you don't have a Qt 3 version
+            for Windows (only Qt 4 was released under the conditions of GPL).
           </para>
           
-          <para>
-            If you want to use a not parallel port that has an address unlike 0x278, 0x378 or 0x3bc
-            you have to create the config file <filename>ieee1284.conf</filename> in the directory
-            <filename>\dokumente und einstellungen\all users\Anwendungsdaten\</filename> (or 
-            <filename>\documents and settings\all users\application data\</filename>). In this
-            file you have to insert something like that:
-<programlisting>
-parport_address 0xFFF0
-</programlisting>
-            where 0xFFF0 is the address of the parallel port. To get more user defined parallel ports 
-            you can add multiple lines like this. To find out the address of your parallel port you
-            can use <ulink url="http://members.datafast.net.au/dft0802/">Craig's PCI Software</ulink>.
-          </para>
         </sect4>
       </sect3>
       <sect3>
@@ -316,9 +300,21 @@ parport_address 0xFFF0
           <para>
             On recent Linux versions (Kernel 2.4 and higher), the applications uses internally
             the <application>ppdev</application> kernel module. It should be loaded automatically.
-            The only thing you have to make sure is that the user which runs the TFLA-01
+            If not, use
+          </para>
+
+          <screen># modprobe ppdev </screen>
+
+          <para>
+            to load the module once. On SUSE, you can add the module to
+            <literal>MODULES_LOADED_ON_BOOT</literal> variable in 
+            <filename>/etc/sysconfig/kernel</filename>.
+          </para>
+
+          <para>
+            The other thing you have to make sure is that the user which runs the TFLA-01
             program has read and write permissions to the <filename>/dev/paraportX</filename>
-            device file where <literal>X</literal> means the number of the parallelport you
+            device file where <literal>X</literal> means the number of the parallel port you
             want to access.
           </para>
           
@@ -326,15 +322,24 @@ parport_address 0xFFF0
             The classical approach is to create a group <emphasis>parport</emphasis>, set
             the owning group of the parallel port device to <emphasis>parport</emphasis>, change
             the parallel port to <literal>crw-rw----</literal> and add the users to the group
-            as necessary. Read the manual of your Linux distribution for details. SuSE users
-            may use <application>YaST</application> to create the group and add the users
-            to the group, just add
+            as necessary. Read the manual of your Linux distribution for details. Since the
+            device files are normally created by <application>udev</application> in a modern
+            distribution, you have to add a file
+            <filename>/etc/udev/rules.d/90-parport.rules</filename> that
+            contains
+          </para>
+            
 <programlisting>
-/dev/parport0                    root.parport   0660
+KERNEL="parport[0-9]", MODE="664", GROUP="parport"
 </programlisting>
-            to <filename>/etc/permissions.local</filename> and finally run
-            <application>SuSEconfig</application> to apply the permissions. Of course, you
-            have to logout and login again to apply the new group for the current user.
+
+          <para>
+            It's also possible to add this to an existing rules files, but
+            that's problematic for updates. Creating a new file is the cleaner
+            approach. The number determines the order in which the files are
+            used -- for the parallel port, that doesn't matter.  Add all users
+            that should have permission to use the parallel port to that group.
+            You have to log out and log in again to apply this.
           </para>
         </sect4>
         
@@ -344,7 +349,7 @@ parport_address 0xFFF0
           <para>
             This is a single user operating system where the current user has all permissions
             so nothing needs do be done. However, we don't recommend it for using with
-            the TFLA-01, it's instable, insecure, we didn't test it and we will not test it.
+            the TFLA-01, it's unstable, insecure, we didn't test it and we will not test it.
             In short: it's unsupported but it may work, though.
           </para>
         </sect4>
