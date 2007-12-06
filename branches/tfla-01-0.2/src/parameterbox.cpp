@@ -23,6 +23,7 @@
 #include <qdatetimeedit.h>
 #include <qdatetime.h>
 #include <qpushbutton.h>
+#include <math.h>
 
 #include "parameterbox.h"
 #include "triggerwidget.h"
@@ -62,7 +63,7 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     
     // set the font for the labels
     QFont font = qApp->font(this);
-    font.setPixelSize(15);
+	font.setPointSize(font.pointSize()*3/2);
     font.setBold(true);
     m_leftMarker->setFont(font);
     m_rightMarker->setFont(font);
@@ -81,30 +82,35 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     sampleSlider->setValue(MAX_SLIDER_VALUE - set.readNumEntry("Measuring/Number_Of_Skips"));
     
     // - layout the stuff --------------------------------------------------------------------------
-                                   // row, col
-    layout->addWidget(timeLabel,           0,    1);
-    layout->addWidget(sampleLabel,         1,    1);
-    layout->addWidget(triggerLabel,        2,    1,    Qt::AlignTop);
-    layout->addWidget(timeedit,            0,    3);
-    layout->addWidget(sampleSlider,        1,    3);
-    layout->addMultiCellWidget(triggering, 2, 3, 3, 3);
-    layout->addWidget(leftMarkerLabel,     0,    5);
-    layout->addWidget(rightMarkerLabel,    1,    5);
-    layout->addWidget(diffLabel,           2,    5);
-    layout->addWidget(m_leftMarker,        0,    7,    Qt::AlignRight);
-    layout->addWidget(m_rightMarker,       1,    7,    Qt::AlignRight);
-    layout->addWidget(m_diff,              2,    7,    Qt::AlignRight);
-    layout->setColStretch(0, 2);
+                                   		//  row, col
+    layout->addWidget(timeLabel,           	0,    1);
+    layout->addWidget(sampleLabel,         	1,    1);
+    layout->addWidget(triggerLabel,        	2,    1,    Qt::AlignTop);
+    layout->addWidget(timeedit,            	0,    3);
+	layout->addWidget(sampleSlider,        	1,    3);
+
+	layout->addMultiCellWidget(triggering, 	2, 3, 3, 3);
+
+	layout->addWidget(leftMarkerLabel,      0,    5);
+    layout->addWidget(rightMarkerLabel,    	1,    5);
+    layout->addWidget(diffLabel,         	2,    5);
+    
+	layout->addWidget(m_leftMarker,        	0,    7,    Qt::AlignRight);
+    layout->addWidget(m_rightMarker,       	1,    7,    Qt::AlignRight);
+    layout->addWidget(m_diff,           	2,    7,    Qt::AlignRight);
+
+	layout->setColStretch(0, 2);
     layout->setColSpacing(2, 20);
-    layout->setColStretch(4, 4);
+
+	layout->setColStretch(4, 4);
     layout->setColSpacing(6, 20);
-    layout->setColSpacing(7, 150);
+	layout->setColSpacing(7, 150);
     layout->setColStretch(8, 2);
     
     connect(timeedit,                   SIGNAL(valueChanged(const QTime&)), 
             this,                       SLOT(timeValueChanged(const QTime&)));
-    connect(triggering,                 SIGNAL(valueChanged(byte, byte)), 
-            this,                       SLOT(triggerValueChanged(byte, byte)));
+    connect(triggering,                 SIGNAL(valueChanged(unsigned, unsigned)), 
+            this,                       SLOT(triggerValueChanged(unsigned, unsigned)));
     connect(sampleSlider,               SIGNAL(valueChanged(int)),
             this,                       SLOT(sliderValueChanged(int)));
     
@@ -124,12 +130,12 @@ void ParameterBox::timeValueChanged(const QTime& time)
 
 
 // -------------------------------------------------------------------------------------------------
-void ParameterBox::triggerValueChanged(byte mask, byte value)
+void ParameterBox::triggerValueChanged(unsigned mask, unsigned value)
     throw ()
 {
     Settings& set = Settings::set();
-    set.writeEntry("Measuring/Triggering/Value", value);
-    set.writeEntry("Measuring/Triggering/Mask", mask);
+    set.writeEntry("Measuring/Triggering/Value", (int)value);
+    set.writeEntry("Measuring/Triggering/Mask", (int)mask);
 }
 
 
@@ -155,12 +161,53 @@ void ParameterBox::setRightMarker(double ms) throw ()
     updateValues();
 }
 
+static void TimeToStr(QString &ss,double tm)
+{
+	QLocale loc;
+	double bs;
+	bs = fabs(tm);
+	
+	if (bs ==0)
+	{
+		ss="0.0000 ms";
+		return;
+	}
+	int 
+	kk=(int)log10(bs/1000);
+	kk = 2 - (kk%3);
+
+	
+	if (bs >= 1.0)
+	{
+	
+		if (bs > 2000)
+		{
+			ss=loc.toString(tm/1000, 'f', 3) + " s";
+		}
+		else
+		{
+			ss=loc.toString(tm, 'f', kk) + " ms";
+		}
+	}
+	else if (bs >= 1E-3)
+	{
+		ss=loc.toString(tm*1E3, 'f', kk) + " us";
+	}
+	else if (bs >= 1E-6)
+	{
+		ss=loc.toString(tm*1E6, 'f', kk) + " ns";
+	}
+	else
+	{
+		ss=loc.toString(tm*1E9, 'f', kk) + " ps";
+	}
+}
 
 // -------------------------------------------------------------------------------------------------
 void ParameterBox::updateValues() throw ()
 {
     QLocale loc;
-    
+    QString tm;
     // update the left value
     if (m_leftValue < 0.0)
     {
@@ -168,7 +215,8 @@ void ParameterBox::updateValues() throw ()
     }
     else
     {
-        m_leftMarker->setText(loc.toString(m_leftValue, 'f', 4) + " ms");
+    	TimeToStr(tm,m_leftValue);
+        m_leftMarker->setText(tm);
     }
     
     
@@ -179,7 +227,8 @@ void ParameterBox::updateValues() throw ()
     }
     else
     {
-        m_rightMarker->setText(loc.toString(m_rightValue, 'f', 4) + " ms");
+    	TimeToStr(tm,m_rightValue);
+        m_rightMarker->setText(tm);
     }
     
     // update the diff display
@@ -189,6 +238,7 @@ void ParameterBox::updateValues() throw ()
     }
     else
     {
-        m_diff->setText(loc.toString(m_rightValue - m_leftValue, 'f', 4) + " ms");
+    	TimeToStr(tm,m_rightValue - m_leftValue);
+        m_diff->setText(tm);
     }
 }

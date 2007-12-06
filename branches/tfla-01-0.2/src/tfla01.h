@@ -51,7 +51,11 @@ class Tfla01 : public QMainWindow
         struct
         {
             QAction* saveViewAction;
-	    QAction* exportAction;
+	    	QAction* exportAction;
+	    	QAction* importAction;
+	    	QAction* resampleAction;
+	    	QAction* trimsampleAction;
+            
             QAction* quitAction;
             QAction* whatsThisAction;
             QAction* helpAction;

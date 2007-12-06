@@ -36,7 +36,7 @@ class ParameterBox : public QFrame
         
     protected slots:
         void timeValueChanged(const QTime& time) throw (); 
-        void triggerValueChanged(byte mask, byte value) throw ();
+        void triggerValueChanged(unsigned mask, unsigned value) throw ();
         void sliderValueChanged(int newValue) throw ();
         void updateValues() throw ();
         

@@ -33,7 +33,7 @@ TriggerWidget::TriggerWidget(QWidget* parent, const char* name)
     hbox->setSpacing(2);
     
     // create the checkboxes with their labels
-    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
+    for (int i = 0; i < NUMBER_OF_WIRE_PER_SAPMPLE; i++)
     {
         QVBox* box = new QVBox(hbox);
         box->setSpacing(2);
@@ -55,12 +55,12 @@ TriggerWidget::TriggerWidget(QWidget* parent, const char* name)
 
 
 // -------------------------------------------------------------------------------------------------
-byte TriggerWidget::getMask() const
+uint TriggerWidget::getMask() const
     throw ()
 {
-    byte ret = 0;
+    uint ret = 0;
     
-    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
+    for (int i = 0; i < NUMBER_OF_WIRE_PER_SAPMPLE; i++)
     {
         ret |= (m_checkboxes[i]->state() != QButton::NoChange) << i;
     }
@@ -71,12 +71,12 @@ byte TriggerWidget::getMask() const
 
 
 // -------------------------------------------------------------------------------------------------
-byte TriggerWidget::getValue() const
+uint TriggerWidget::getValue() const
     throw ()
 {
-    byte ret = 0;
+    uint ret = 0;
     
-    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
+    for (int i = 0; i < NUMBER_OF_WIRE_PER_SAPMPLE; i++)
     {
         ret |= (m_checkboxes[i]->state() == QButton::On) << i;
     }
@@ -95,10 +95,10 @@ void TriggerWidget::valueChangedHandler()
 
 
 // -------------------------------------------------------------------------------------------------
-void TriggerWidget::setValue(byte value, byte mask)
+void TriggerWidget::setValue(uint value, uint mask)
     throw ()
 {
-    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
+    for (int i = 0; i < NUMBER_OF_WIRE_PER_SAPMPLE; i++)
     {
         if (!(mask & (1 << i)))
         {

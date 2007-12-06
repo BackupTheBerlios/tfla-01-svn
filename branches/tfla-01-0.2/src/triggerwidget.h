@@ -30,19 +30,19 @@ class TriggerWidget : public QWidget
      
      public:
         TriggerWidget(QWidget* parent, const char* name = 0) throw (); 
-        byte getMask() const throw ();
-        byte getValue() const throw ();
-        void setValue(byte mask, byte value) throw ();
+        unsigned getMask() const throw ();
+        unsigned getValue() const throw ();
+        void setValue(unsigned mask, unsigned value) throw ();
         
     protected slots:
         void valueChangedHandler() throw ();
         
     signals:
-        void valueChanged(byte mask, byte value);
+        void valueChanged(unsigned mask, unsigned value);
         
     private:
-        QLabel*         m_labels[NUMBER_OF_BITS_PER_BYTE];
-        QCheckBox*      m_checkboxes[NUMBER_OF_BITS_PER_BYTE];
+        QLabel*         m_labels[NUMBER_OF_WIRE_PER_SAPMPLE];
+        QCheckBox*      m_checkboxes[NUMBER_OF_WIRE_PER_SAPMPLE];
 };
 
 #endif /* TRIGGERWIDGET_H */

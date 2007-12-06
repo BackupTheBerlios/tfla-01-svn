@@ -25,7 +25,7 @@
 Settings::Settings()
     throw ()
 {
-    m_qSettings.setPath( "bwalle.de", "tfla-01", QSettings::User );
+    m_qSettings.setPath( "bwalle.de", "TFLogAnalizer", QSettings::User );
     m_qSettings.beginGroup("/tfla-01");
     
 #define DEF_STRING(a, b) ( m_stringMap.insert( (a), (b) ) )

@@ -146,11 +146,11 @@ void Tfla01::startAnalyze()
     }
     
     statusBar()->message(tr("Collected %1 samples successfully.").arg( 
-                         loc.toString(  static_cast<double>(coll->getData().bytes().size()), 
+                         loc.toString(  static_cast<double>(coll->getData().NumSamples()), 
                                          'g', 
-                                         QString::number(coll->getData().bytes().size()).length() 
+                                         QString::number(coll->getData().NumSamples()).length() 
                                      )), 
-                         2000);
+                         4000);
     
     m_centralWidget->getDataView()->setData(coll->getData());
     
@@ -251,6 +251,8 @@ void Tfla01::initMenubar() throw ()
     menuBar()->insertItem(tr("&File"), fileMenu);
 
     m_actions.exportAction->addTo(fileMenu);
+    m_actions.importAction->addTo(fileMenu);
+    
     m_actions.saveViewAction->addTo(fileMenu);
     fileMenu->insertSeparator();
     m_actions.quitAction->addTo(fileMenu);
@@ -261,6 +263,15 @@ void Tfla01::initMenubar() throw ()
     m_actions.startAction->addTo(analyzeMenu);
     m_actions.stopAction->addTo(analyzeMenu);
     
+    // ----- Edit ----------------------------------------------------------------------------------
+    QPopupMenu* editMenu = new QPopupMenu(this);
+    menuBar()->insertItem(tr("&Edit"), editMenu);
+
+    m_actions.zoomInAction->addTo(editMenu);
+    m_actions.zoomOutAction->addTo(editMenu);
+    m_actions.resampleAction->addTo(editMenu);
+    m_actions.trimsampleAction->addTo(editMenu);
+
     // ----- View ----------------------------------------------------------------------------------
     QPopupMenu* viewMenu = new QPopupMenu(this);
     menuBar()->insertItem(tr("&View"), viewMenu);
@@ -321,13 +332,29 @@ void Tfla01::initActions()
     m_actions.exportAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_export_16.png"),
         QPixmap::fromMimeSource("stock_export_24.png") ), tr("&Export data..."),
         QKeySequence(CTRL|Key_E), this);
+
+    m_actions.importAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_last_16.png"),
+        QPixmap::fromMimeSource("stock_last_24.png") ), tr("&Read vcd file..."),
+        QKeySequence(CTRL|Key_R), this);
+
     m_actions.saveViewAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_convert_16.png"),
         QPixmap::fromMimeSource("stock_convert_24.png") ), tr("&Save current plot..."),
         QKeySequence(CTRL|Key_S), this);
+
     m_actions.quitAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_exit_16.png"),
         QPixmap::fromMimeSource("stock_exit_24.png") ), tr("E&xit"),
         QKeySequence(CTRL|Key_Q), this);
     
+    // ----- Edit ----------------------------------------------------------------------------------
+    
+    m_actions.resampleAction = new QAction(
+        tr("&Re-sample Data"), QKeySequence(), this);
+    
+    m_actions.trimsampleAction = new QAction(
+        tr("&Trim sample Data"), QKeySequence(), this);
+
+//    m_actions.clearsampleAction = new QAction(tr("&Clear sample Data"), QKeySequence(), this);
+
     // ----- View ----------------------------------------------------------------------------------
     m_actions.zoomInAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_zoom_in_16.png"),
         QPixmap::fromMimeSource("stock_zoom_in_24.png") ), tr("Zoom &In"), 
@@ -446,10 +473,22 @@ void Tfla01::connectSignalsAndSlots()
 {
     connect(m_actions.saveViewAction,              SIGNAL(activated()), 
             m_centralWidget->getDataView(),        SLOT(saveScreenshot()));
+
     connect(m_actions.exportAction,                SIGNAL(activated()), 
-            m_centralWidget->getDataView(),        SLOT(exportToCSV()));
+            m_centralWidget->getDataView(),        SLOT(exportToVcd()));
+
+    connect(m_actions.importAction,                SIGNAL(activated()), 
+            m_centralWidget->getDataView(),        SLOT(importFromVcd()));
+
+    connect(m_actions.resampleAction,              SIGNAL(activated()), 
+            m_centralWidget->getDataView(),        SLOT(resampleData()));
+
+    connect(m_actions.trimsampleAction,            SIGNAL(activated()), 
+            m_centralWidget->getDataView(),        SLOT(trimsampleData()));
+
     connect(m_actions.quitAction,                  SIGNAL(activated()), 
             this,                                  SLOT(close()));
+
     connect(m_actions.helpAction,                  SIGNAL(activated()), 
             &m_help,                               SLOT(showHelp()));
     connect(m_actions.aboutAction,                 SIGNAL(activated()) , 
