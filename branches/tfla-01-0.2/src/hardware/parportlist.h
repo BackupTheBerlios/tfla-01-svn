@@ -17,8 +17,6 @@
 #ifndef PARPORTLIST_H
 #define PARPORTLIST_H
 
-#include <ieee1284.h>
-
 #include "hardware/parport.h"
 
 /**
@@ -42,7 +40,7 @@ class ParportList
          *        relevant only on the first call!
          * @exception ParportError on error
          */
-        static ParportList* instance(int flags = 0) throw (ParportError);
+        static ParportList* instance(int flags = 0);
     
         /**
          * Frees a ParportList. See class description. 

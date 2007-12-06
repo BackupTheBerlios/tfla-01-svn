@@ -23,7 +23,7 @@ ParportList* ParportList::m_theInstance = 0;
 
 
 // -------------------------------------------------------------------------------------------------
-ParportList* ParportList::instance(int flags) throw (ParportError)
+ParportList* ParportList::instance(int flags)
 {
     if (!m_theInstance)
     {

@@ -14,8 +14,22 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
+ /*
+  * Thu Dec 6 2007 A.Kass remove few extra throw() for compatibility MSVC+ poor dialect
+  * pushing struct timeva.h toward hardware end
+  */
+  
+
 #include "parport.h"
 #include "global.h"
+
+#include <stdio.h>
+#ifndef _MSC_VER
+#include <sys/time.h> /* for struct timeval */
+#else
+#include <winsock2.h> /* for struct timeval */
+#endif
+#include <ieee1284.h>
 
 // -------------------------------------------------------------------------------------------------
 Parport::Parport(struct parport* port)
@@ -43,21 +57,19 @@ Parport::~Parport()
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::open(int flags, int* capabilities) throw (ParportError)
+void Parport::open(int flags, int* capabilities)
 {
     int ret;
-    
     if ((ret = ieee1284_open(m_parport, flags, capabilities)) != E1284_OK)
     {
         throw ParportError(ret);
     }
-    
     m_isOpen = true;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::close() throw (ParportError)
+void Parport::close()
 {
     if (!m_isOpen)
     {
@@ -65,65 +77,60 @@ void Parport::close() throw (ParportError)
     }
     
     release();
-    
-    int ret;
+
+	int ret;
     
     if ((ret = ieee1284_close(m_parport)) != E1284_OK)
     {
         throw ParportError(ret);
     }
+
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void Parport::release() throw ()
 {
-    ieee1284_release(m_parport);
-    
-    m_isClaimed = false;
+	ieee1284_release(m_parport);
+	m_isClaimed = false;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::claim() throw (ParportError)
+void Parport::claim()
 {
     int err;
-    
     if ((err = ieee1284_claim(m_parport)) != E1284_OK)
     {
         throw ParportError(err);
     }
-    
     m_isClaimed = true;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-byte Parport::readData() throw (ParportError)
+unsigned Parport::readData()
 {
     int ret;
-    
     if ((ret = ieee1284_read_data(m_parport)) < 0)
     {
         throw ParportError(ret);
     }
-    
-    return (byte)ret;
+    return ret;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::writeData(byte data) throw ()
+void Parport::writeData(unsigned data) throw ()
 {
     ieee1284_write_data(m_parport, data);
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void Parport::setDataDirection(bool reverse) throw (ParportError)
+void Parport::setDataDirection(bool reverse)
 {
     int ret;
-    
     if ((ret = ieee1284_data_dir(m_parport, reverse)) != E1284_OK)
     {
         throw ParportError(ret);
@@ -132,11 +139,12 @@ void Parport::setDataDirection(bool reverse) throw (ParportError)
 
 
 // -------------------------------------------------------------------------------------------------
-bool Parport::waitData(int mask, int val, struct timeval* timeout) throw (ParportError)
+bool Parport::waitData(int mask, int val, unsigned timeout_sec)
 {
     int ret;
-    
-    if ((ret = ieee1284_wait_data(m_parport, mask, val, timeout)) != E1284_OK)
+	struct timeval timeout = {timeout_sec,0};
+
+    if ((ret = ieee1284_wait_data(m_parport, mask, val, &timeout)) != E1284_OK)
     {
         if (ret == E1284_TIMEDOUT)
         {
@@ -147,7 +155,6 @@ bool Parport::waitData(int mask, int val, struct timeval* timeout) throw (Parpor
             throw ParportError(ret);
         }
     }
-    
     return true;
 }
         

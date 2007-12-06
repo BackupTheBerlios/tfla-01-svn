@@ -19,9 +19,6 @@
 
 #include <qstring.h>
 
-#include <ieee1284.h>
-
-#include "global.h"
 #include "parporterror.h"
 
 /**
@@ -40,6 +37,9 @@
  * @author $Author$
  * @version $Rev$
  */
+
+struct parport;
+
 class Parport
 {
     friend class ParportList;
@@ -65,16 +65,14 @@ class Parport
          *        as a set of flags, one per bit, which the library sets or clears as appropriate.
          * @exception ParportError if the opening failed
          */
-        void open(int flags = 0, int* capabilities = NULL)
-        throw (ParportError);
+        void open(int flags = 0, int* capabilities = NULL);
         
         /**
          * Closes the port.
          *
          * @exception ParportError if the closing failed
          */
-        void close()
-        throw (ParportError);
+        void close(void);
         
         /**
          * Claim access to the port. claim() must be called on an open port before any other
@@ -82,15 +80,13 @@ class Parport
          *
          * @exception ParportError if the closing failed
          */
-        void claim()
-        throw (ParportError);
+        void claim();
         
         /**
          * This function undoes the effect of claim() by releasing the port for use by other 
          * drivers. It is good practice to release the port whenever convenient.  
          */
-        void release()
-        throw ();
+        void release() throw ();
         
         /**
          * Reads data. See http://cyberelk.net/tim/libieee1284/interface/data-pin-access.html.
@@ -98,8 +94,7 @@ class Parport
          * @return the read data value
          * @exception ParportError if an error occured
          */
-        byte readData()
-        throw (ParportError);
+        unsigned readData(void);
         
         /**
          * Writes data to the data pins. See
@@ -107,8 +102,7 @@ class Parport
          *
          * @param data the data to write
          */
-        void writeData(byte data)
-        throw ();
+        void writeData(unsigned data)  throw ();
         
         /**
          * Sets the data direction.
@@ -117,8 +111,7 @@ class Parport
          * @param reverse @c true for read mode, @c false for write mode
          * @exception ParportError if an error occured
          */
-        void setDataDirection(bool reverse)
-        throw (ParportError);
+        void setDataDirection(bool reverse);
         
         /**
          * Wait for data.
@@ -127,8 +120,7 @@ class Parport
          * @return @c true if wait was successful, @c false if timed out
          * @throw ParportError if an error occured
          */
-        bool waitData(int mask, int val, struct timeval* timeout)
-        throw (ParportError);
+        bool waitData(int mask, int val, unsigned  timeout_ms);
         
         /**
          * Returns the name of the parallel port.
@@ -173,7 +165,7 @@ class Parport
         Parport(struct parport* port);
         
     private:
-        struct parport* m_parport;
+       struct parport* m_parport;
         bool   m_isOpen;
         bool   m_isClaimed;
 };
