@@ -28,10 +28,18 @@ class ExportDialog : public QFileDialog
         ExportDialog(const QString &dirName, QWidget * parent);
 
     public:
-        bool getDiffMode() const;
+        bool getStateOption() const;
+        bool getCvsMode() const;
+        bool getCutMode() const;
+
+private slots:
+		void clickedCvsMode();
 
     private:
-        QCheckBox *m_diffModeCB;
+		void changeCvsMode();
+        QCheckBox *m_StateOptCB;
+        QCheckBox *m_cvsModeCB;
+        QCheckBox *m_cutModeCB;
 };
 
 #endif // EXPORTDIALOG_H

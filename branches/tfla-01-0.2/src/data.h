@@ -17,10 +17,22 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include <qmainwindow.h>
-#include <qaction.h>
-
+#include <qdatetime.h>
 #include "global.h"
+
+struct _SampleHold
+{
+	unsigned int	sample_time;
+	unsigned char 	value;
+};
+
+typedef _SampleHold SampleHold;
+/**
+ * ByteVector is shorter than QValueVector\<byte\> or even QValueVector\<unsigned char\>.
+ */
+typedef QValueVector<SampleHold> SampleVector;
+
+#define DATA_MAX_WIRE_SLOTS 24
 
 class Data
 {
@@ -29,28 +41,36 @@ class Data
         
     public:
         Data() throw ();
+               
+        double getMsecsForSample(long long sample) const throw();
+        unsigned NumSamples(void) const throw();
         
-        ByteVector& bytes() throw();
-        const ByteVector& bytes() const throw();
-        
-        double getMsecsForSample(int sample) const throw();
-        
-        uint getMeasuringTime() const throw ();
-        void setMeasuringTime(uint time) throw ();
+        double getMeasuringTimeS() const throw ();
+        double getTimeStep() const throw ();
+
+        void setMeasuringTime(uint time_ms) throw ();	/* round to msec */
+        void setSampleTime(double step);
         
         LineState getLineState(int line) const throw ();
         void calculateLineStates() throw ();
         
+        QDateTime     m_StartTime;
+        unsigned GetSampleValue(unsigned time_pos);
+        bool	 GetWire(unsigned time_pos,unsigned nr_wire);
+        void	 AddSample(unsigned value, unsigned rep_counter);
+        void     Open(unsigned vector_range);
+        
     private:
-        ByteVector m_bytes;
-        uint       m_measuringTime;
-        LineState  m_lineStates[NUMBER_OF_BITS_PER_BYTE];
+        SampleVector m_samples;
+        double       m_measuringTime;
+        double		 m_sample_time;
+        LineState    m_lineStates[DATA_MAX_WIRE_SLOTS];
+        unsigned	 m_last_index;
+        unsigned     m_start_time;
+        unsigned	 m_stop_time;
+        unsigned	 m_current_value;
+        unsigned	 num_events;
+        unsigned	 num_samples;
 };
-
-#define bit_is_set(b, i) \
-     (b & (1 << (i)))
-
-#define bit_is_clear(b, i) \
-     (!bit_is_set(b, i))
 
 #endif /* DATA_H */

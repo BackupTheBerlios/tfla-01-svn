@@ -16,29 +16,19 @@
  */
 #ifndef GLOBAL_H
 #define GLOBAL_H
-
 #include <qvaluevector.h>
-
-/**
- * Byte is shorter than unsigned char.
- */
-typedef unsigned char byte;
-
-/**
- * ByteVector is shorter than QValueVector\<byte\> or even QValueVector\<unsigned char\>.
- */
-typedef QValueVector<byte> ByteVector;
 
 /**
  * uint is shorter than unsigned int.
  */
-typedef unsigned int uint;
+typedef unsigned int  uint;
+
+typedef unsigned char uchar;
 
 
-/**
- * Number of bytes in a bit. 
- */
-#define NUMBER_OF_BITS_PER_BYTE 8
+
+#define NUMBER_OF_WIRE_PER_SAPMPLE 8
+
 
 
 // Copyright (c) 2003 Benedikt Meurer (benedikt.meurer@unix-ag.uni-siegen.de)
@@ -89,26 +79,43 @@ typedef unsigned int uint;
 #ifdef TRACE
 
 #  ifdef _MSC_VER
+
 #    define PRINT_TRACE(fmt, args)                                \
      {                                                            \
          qDebug("TRACE[%s:%d] %s(): "fmt, __FILE__, __LINE__,     \
                  __DBG_FUNC__, ##args);                           \
      }
-#  else
+
+#    define PRINT_TRACE2(fmt, arg1,args,)                         \
+     {                                                            \
+         qDebug("TRACE[%s:%d] %s(): "fmt, __FILE__, __LINE__,     \
+                 __DBG_FUNC__,arg1, ##args);                      \
+     }
+
+# else
+
 #    define PRINT_TRACE(fmt, ...)                                 \
      {                                                            \
          qDebug("TRACE[%s:%d] %s(): "fmt, __FILE__, __LINE__,     \
                 __DBG_FUNC__, ## __VA_ARGS__);                    \
      }
 
-#  endif
+#    define PRINT_TRACE2(fmt, ...)                                \
+     {                                                            \
+         qDebug("TRACE[%s:%d] %s(): "fmt, __FILE__, __LINE__,     \
+                __DBG_FUNC__, ## __VA_ARGS__);                    \
+     }
+
+# endif
 
 #else  
 
 #  ifdef _MSC_VER
-#    define PRINT_TRACE(fmt, args)   { do {} while(0); }
+#    define PRINT_TRACE(fmt, args)      { do {} while(0); }
+#    define PRINT_TRACE2(fmt,arg, args) { do {} while(0); }
 #  else
-#    define PRINT_TRACE(fmt, ...)   { do {} while(0); }
+#    define PRINT_TRACE(fmt, ...)    { do {} while(0); }
+#    define PRINT_TRACE2(fmt, ...)   { do {} while(0); }
 #  endif
 
 #endif

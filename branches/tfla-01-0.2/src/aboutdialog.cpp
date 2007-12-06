@@ -37,7 +37,7 @@ AboutDialog::AboutDialog(QWidget* parent, const char* name)
     QHBox* titleBox = new QHBox(this);
     QLabel* titleIcon = new QLabel(titleBox);
     titleIcon->setPixmap(QPixmap::fromMimeSource("tfla-01_32.png"));
-    QLabel* titleText = new QLabel(tr("<p><b>The Fabulous Logic Analyzer "VERSION_STRING"</b></p>"),
+    QLabel* titleText = new QLabel(tr("<p><b>The Fabulous Logic Analyzer " VERSION_STRING "</b></p>"),
             titleBox);
     titleBox->setStretchFactor(titleIcon, 0);
     titleBox->setStretchFactor(titleText, 5);
