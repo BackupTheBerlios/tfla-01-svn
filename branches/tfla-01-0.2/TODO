@@ -1,0 +1,13 @@
+TODO
+====
+
+ * Support for "I2C bus monitor board"
+   http://www.i2cchip.com/pdfs/busmon_sch.pdf
+
+   _SDA is pin 13 select
+   _SCL is pin 12 paper empty
+   _IRQ is pin 11 busy
+   unused is pin 10
+   
+   The data pins D7,6,5 must be set high to power the isolator circuit.
+

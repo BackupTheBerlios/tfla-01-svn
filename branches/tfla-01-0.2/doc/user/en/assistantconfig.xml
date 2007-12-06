@@ -1,0 +1,42 @@
+<assistantconfig version="3.3.0">
+     <profile>
+        <property name="name">TFLA-01 Documentation</property>
+        <property name="title">TFLA-01 Documentation</property>
+        <property name="applicationicon">images/tfla-01_32.png</property>
+        <property name="startpage">index.html</property>
+ <!--       <property name="assistantdocs">../../../doc/html</property> -->
+    </profile>
+    <DCF ref="index.html"  imagedir="." title="TFLA-01 manual">
+        <section ref="./index.html#intro" title="Introduction to TFLA-01">
+          <section ref="./index.html#whatislogicanalyzer" title="What is a logic analyzer?" />
+          <section ref="./index.html#whatsspecial" title="What's special about TFLA-01?" />
+          <section ref="./index.html#sysreqs" title="System requirements" />
+        </section>
+        <section ref="./gettingstarted.html" title="Getting started">
+          <section ref="./gettingstarted.html#installingsoftware" title="Installing the software"/>
+          <section ref="./gettingstarted.html#buildhardware" title="Building the hardware" />
+          <section ref="gettingstarted.html#tryitout" title="Now try it out" />
+        </section>
+        <section ref="hardwareconfig.html" title="Hardware description and configuration">
+          <section ref="hardwareconfig.html#connectors" title="Connections" />
+          <section ref="hardwareconfig.html#jumpers" title="Jumpers" />
+          <section ref="hardwareconfig.html#leds" title="LEDs" />
+        </section>
+        <section ref="extendedusage.html" title="Extended usage">
+          <section ref="extendedusage.html#navigation" title="Navigation" />
+          <section ref="extendedusage.html#zooming" title="Zooming" />
+          <section ref="extendedusage.html#markers" title="Markers" />
+          <section ref="extendedusage.html#triggering" title="Triggering" />
+          <section ref="extendedusage.html#datameasuringsettings" title="Data measuring settings" />
+          <section ref="extendedusage.html#save" title="Save plot" />
+        </section>
+        <section ref="settings.html" title="Settings">
+          <section ref="settings.html#colorsettings" title="Color settings" />
+          <section ref="settings.html#parport" title="Parallel port" />
+        </section>
+        <section ref="aboutapplication.html" title="About TFLA-01">
+          <section ref="aboutapplication.html#copyright" title="Copyright" />
+          <section ref="aboutapplication.html#credits" title="Credits" />
+        </section>
+    </DCF>
+</assistantconfig>
