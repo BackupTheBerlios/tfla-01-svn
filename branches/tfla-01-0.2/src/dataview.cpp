@@ -29,6 +29,10 @@
 #include "dataplot.h"
 #include "tfla01.h"
 #include "exportdialog.h"
+#include "importdialog.h"
+#include "VCD_symbol.h"
+#include "VcdReader.h"
+#include "io_vcl.h"
 
 #define SCROLL_SAMPLES_PER_LINE 3
 #define LINESTEP_DIVISOR 5.0
@@ -86,10 +90,12 @@ void DataView::setData(const Data& data)
     //   bar->setPageStep(2962973);
     // to solve this, we connect to the pagestep / linestep signals directly and use a smaller
     // pagestep and range value here
+   
     m_currentData = data;
-    m_scrollDivisor =  m_currentData.bytes().size()  == 0
+    m_currentData.GetSampleValue(0);
+    m_scrollDivisor =  m_currentData.NumSamples()  == 0
                        ? 1
-                       : m_currentData.bytes().size() / 1000;
+                       : m_currentData.NumSamples() / 1000;
                        
     m_dataPlot->setStartIndex(0);
     m_dataPlot->updateData(true, true);
@@ -112,7 +118,10 @@ void DataView::zoomIn()
 void DataView::zoomOut()
     throw ()
 {
-    m_dataPlot->setZoomFactor(m_dataPlot->getZoomFactor() / 2.0);
+	if (m_dataPlot->getNumberOfDisplayedSamples() < (int) m_currentData.NumSamples())
+	{
+    	m_dataPlot->setZoomFactor(m_dataPlot->getZoomFactor() / 2.0);
+	}
 }
 
 
@@ -120,16 +129,16 @@ void DataView::zoomOut()
 void DataView::zoomFit()
     throw ()
 {
-    if (m_currentData.bytes().size() != 0)
+    if (m_currentData.NumSamples() > 0)
     {
         m_dataPlot->setStartIndex(0);
         m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 1) / 
-                              m_dataPlot->getPointsPerSample() / m_currentData.bytes().size() );
+                              m_dataPlot->getPointsPerSample() / m_currentData.NumSamples() );
     }
     else
     {
         static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
-            tr("Function only available if data is displayed."), 4000); 
+            tr("Function only available if data is gathered"), 4000); 
     }
 }
 
@@ -170,9 +179,9 @@ void DataView::pos1() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::end() throw ()
 {
-    if (m_currentData.bytes().size() > 0)
+    if (m_currentData.NumSamples() > 0)
     {
-        m_dataPlot->setStartIndex(m_currentData.bytes().size() - 
+        m_dataPlot->setStartIndex(m_currentData.NumSamples() - 
                                   m_dataPlot->getNumberOfPossiblyDisplayedSamples() + 2);
     }
 }
@@ -231,11 +240,11 @@ void DataView::updateScrollInfo()
 {
     int ps = m_dataPlot->getNumberOfDisplayedSamples();
     
-    m_scrollBar->setRange(0, (m_currentData.bytes().size() - ps) / m_scrollDivisor);
+    m_scrollBar->setRange(0, (m_currentData.NumSamples() - ps) / m_scrollDivisor);
     m_scrollBar->setValue(m_dataPlot->getStartIndex() / m_scrollDivisor);
     
     // set this to calculate the size
-    if ((m_currentData.bytes().size() - ps) == 0)
+    if ((m_currentData.NumSamples() - ps) == 0)
     {
         m_scrollBar->setPageStep(0);
     }
@@ -244,13 +253,14 @@ void DataView::updateScrollInfo()
         m_scrollBar->setPageStep(ps / m_scrollDivisor);
         m_scrollBar->setLineStep(qRound(ps / 10.0 / m_scrollDivisor)); 
 
-#if 0
+#if 1
         PRINT_TRACE("div = %d", m_scrollDivisor);
-        PRINT_TRACE("range = %d to %d", m_scrollBar->minValue(), m_scrollBar->maxValue());
+        PRINT_TRACE2( "range = %d to %d", m_scrollBar->minValue(), m_scrollBar->maxValue());
         PRINT_TRACE("ps = %d", m_scrollBar->pageStep());
 #endif
     }
 }
+
 
 
 // -------------------------------------------------------------------------------------------------
@@ -297,7 +307,7 @@ void DataView::navigateRight() throw ()
 {
     m_dataPlot->setStartIndex( QMIN(m_dataPlot->getStartIndex() +
                                    qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0),
-                                   static_cast<int>(m_currentData.bytes().size())) );
+                                   static_cast<int>(m_currentData.NumSamples())) );
 }
 
 
@@ -315,7 +325,7 @@ void DataView::navigateRightPage() throw ()
 {
     int si = QMIN( m_dataPlot->getStartIndex() +
                   qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()),
-                  static_cast<int>(m_currentData.bytes().size()));
+                  static_cast<int>(m_currentData.NumSamples()));
     m_dataPlot->setStartIndex(si);
 }
 
@@ -345,8 +355,11 @@ void DataView::jumpToRightMarker() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::saveScreenshot() throw ()
 {
+	Settings& set = Settings::set();
+	QString BaseDir = set.readEntry("Measuring/ExportDir",QDir::currentDirPath());
+
     QString fileName = QFileDialog::getSaveFileName(
-        QString::null, tr("PNG files (*.png)"),
+        BaseDir, tr("PNG files (*.png)"),
         this, "", tr("Choose file to save"));
     if (!fileName)
     {
@@ -365,22 +378,25 @@ void DataView::saveScreenshot() throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-void DataView::exportToCSV()
-    throw ()
+void DataView::exportToVcd()  throw ()
 {
     QString fileName;
     bool diff;
-
-    ExportDialog* ed = new ExportDialog(QDir::currentDirPath(), this);
+    unsigned i;
+    unsigned start_sample;
+    unsigned last_sample;
+	Settings& set = Settings::set();
+	QString BaseDir = set.readEntry("Measuring/ExportDir",QDir::currentDirPath());
+    ExportDialog* ed = new ExportDialog(BaseDir, this);
     ed->setMode(QFileDialog::AnyFile);
   
     if (ed->exec() != QDialog::Accepted)
     {
         return;
     }
-
+	set.writeEntry("Measuring/ExportDir",ed->dirPath());
     fileName = ed->selectedFile();
-    diff = ed->getDiffMode();
+    diff = ed->getStateOption();
 
     QFile file(fileName);
     if (!file.open(IO_WriteOnly))
@@ -388,47 +404,207 @@ void DataView::exportToCSV()
         return;
     }
 
-    QTextStream stream(&file);
+//    QTextStream stream(&file);
     QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
+	io_vcl stream;
+    unsigned int size = m_currentData.NumSamples();
+
+
+	stream.num_wires = NUMBER_OF_WIRE_PER_SAPMPLE;
+	stream.valid_wires = 0xFFFF;
+	stream.SetTimeScale(size,m_currentData.getMeasuringTimeS());
     // write header
-    stream << "number;1;2;3;4;5;6;7;8\n";
-
-    unsigned int size = m_currentData.bytes().size();
-    for (unsigned int i = 0; i < size; ++i)
+    if (ed->getCvsMode())
     {
-        unsigned char byte = m_currentData.bytes()[i];
-
+		stream.Open(file,(diff)?1:0, m_currentData.m_StartTime);
+    }
+    else
+    {
+		stream.Open(file,2,m_currentData.m_StartTime);
+    }
+	if (ed->getCutMode())
+	{
+		int l=m_dataPlot->getLeftMarker();
+		int p=m_dataPlot->getRightMarker();
+		if (l>p)
+		{
+			// zamiana markerow
+			start_sample = (p<1)?0:p;
+			last_sample   = (l<1 || (unsigned)l>= size)?size:l+1;
+		}
+		else
+		{
+			start_sample = (l<1)?0:l;
+			last_sample   = (p<1 || (unsigned)p>=size)?size:p+1;
+		}
+	}
+	else
+	{
+		start_sample = 0;
+		last_sample = size;
+	}
+    unsigned val_s = m_currentData.GetSampleValue(start_sample);
+	stream.SendFirstSample(val_s);
+	
+    for (i = start_sample+1; i < last_sample-1; ++i)
+    {
+        val_s = m_currentData.GetSampleValue(i);
+        stream.SendSample(val_s);
         // keep the event loop running
-        if (i % 100 == 0)
+        if ((i & 0x3FF) == 0)
         {
             qApp->processEvents();
         }
 
-        // check for a state change
-        if (diff && i != 0 && i != (size - 1) &&
-                byte == m_currentData.bytes()[i-1] &&
-                byte == m_currentData.bytes()[i+1])
-        {
-            continue;
-        }
+    }
+    val_s = m_currentData.GetSampleValue(i);
+    stream.SendLastSample(val_s);
+    stream.Close();
+    QApplication::restoreOverrideCursor();
+    file.close();
+}
 
-        stream << i << ';';
-        for (int j = 0; j < NUMBER_OF_BITS_PER_BYTE; ++j)
-        {
-            stream << (int)(bit_is_set(byte, j) ? 1 : 0);
-            if (j != NUMBER_OF_BITS_PER_BYTE - 1)
-            {
-                stream << ';';
-            }
-        }
+// -------------------------------------------------------------------------------------------------
+void DataView::importFromVcd()  throw ()
+{
+    QString fileName;
+	int result;
+   	unsigned line_count;
+	long 	num_records;
+	unsigned nw,k;
+	unsigned c_value,n_value;
+	long	 c_time,n_time;
+	
+	Settings& set = Settings::set();
+	QString BaseDir = set.readEntry("Measuring/ImportDir",QDir::currentDirPath());
 
-        stream << '\n';
+    ImportDialog* ed = new ImportDialog(BaseDir, this);
+    ed->setMode(QFileDialog::ExistingFile);
+  
+    if (ed->exec() != QDialog::Accepted)
+    {
+        return;
     }
 
-    QApplication::restoreOverrideCursor();
+    fileName = ed->selectedFile();
+    QFile file(fileName);
+    if (!file.open(IO_ReadOnly))
+    {
+        return;
+    }
+	set.writeEntry("Measuring/ImportDir",ed->dirPath());
 
+
+	QTextStream stream( &file );
+    QCString line;
+	VcdReader src_f;
+
+    QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+   	line_count =0;
+   	num_records = -1;
+    src_f.SetMode(ed->getCsvMode()?1:2);
+    Data DataBuffer;
+    DataBuffer.Open(100000);
+    c_time = c_value =0;
+
+	while ( !stream.atEnd() ) 
+    {
+    	line = stream.readLine(); // line of text excluding '\n'
+      	src_f.InputLine(line);
+  		line_count+=1;
+  		do
+  		{
+  			result=src_f.ScanData();
+	  		if (result == VCD_RC_EOF)
+	  		{
+	  			break;
+	  		}
+	  		switch(result)
+	  		{
+	  			case VCD_RC_NOP:
+	  			break;
+	  			
+	  			case VCD_RC_DATA_START:
+					num_records =0;
+					c_time = 0;
+					nw = (src_f.wire_num < NUMBER_OF_WIRE_PER_SAPMPLE) ?src_f.wire_num: NUMBER_OF_WIRE_PER_SAPMPLE;
+	  			break;
+
+	  			case VCD_RC_DATA:
+					n_value = 0;
+					for (k=0; k<nw; k+=1)
+					{
+						if (src_f.c_val[k])
+						{
+							n_value |= (1<<k);
+						}
+					}
+					n_time = src_f.c_time;
+	  				if (num_records)
+	  				{
+						DataBuffer.AddSample(c_value,n_time-c_time);
+	  				}
+					c_time =n_time;	  					
+	  				c_value=n_value;
+					c_time = src_f.c_time;
+					num_records +=1;
+	  			break;
+
+	  			case VCD_RC_COMMENT:
+		  		break;
+		  		case VCD_RC_ERROR:
+		  		break;
+	  		}
+  		} while (result != VCD_RC_NO_DATA);
+  		
+  		if (result == VCD_RC_EOF)
+	  	{
+	  		break;
+	  	}
+  		
+   	}
+    QApplication::restoreOverrideCursor();
+	if (num_records >= 0)
+	{
+		if (src_f.EndOfData()==VCD_RC_DATA)
+		{
+			n_value = 0;
+			for (k=0; k<nw; k+=1)
+			{
+				if (src_f.c_val[k])
+				{
+						n_value |= (1<<k);
+				}
+			}
+			n_time = src_f.c_time;
+			DataBuffer.AddSample(c_value,n_time-c_time);
+		}
+		DataBuffer.setSampleTime(src_f.GetSampleTime());
+	    setData(DataBuffer);
+	}
     file.close();
+}
+
+void DataView::resampleData()  throw ()
+{
+	if (m_currentData.NumSamples()<2)
+	{
+        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
+            tr("Function only available if data is gathered"), 4000); 
+		return;
+	}
+}
+
+void DataView::trimsampleData()  throw ()
+{
+	if (m_currentData.NumSamples()<2)
+	{
+        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
+            tr("Function only available if data is gathered"), 4000); 
+		return;
+	}
 }
 
 // vim: set sw=4 ts=4 et:

@@ -16,6 +16,7 @@
  */
 #include <qpixmap.h>
 #include <qpainter.h>
+#include <qfontmetrics.h>
 #include <qevent.h>
 #include <qapplication.h>
 #include <qstatusbar.h>
@@ -143,7 +144,7 @@ void DataPlot::clearMarkers() throw ()
 // -------------------------------------------------------------------------------------------------
 int DataPlot::getNumberOfDisplayedSamples () const throw ()
 {
-    uint dataToDisplayMax = m_dataView->m_currentData.bytes().size() - m_startIndex;
+    uint dataToDisplayMax = m_dataView->m_currentData.NumSamples() - m_startIndex;
     
     return  (dataToDisplayMax > (m_xPositions.size() - 1)) 
           ? m_xPositions.size() - 1
@@ -166,7 +167,7 @@ int DataPlot::getNumberOfPossiblyDisplayedSamples() const throw()
 // -------------------------------------------------------------------------------------------------
 int DataPlot::getCurrentWidthForPlot() const throw ()
 {
-    return width() - static_cast<int>( 2.0 / 3.0 * (height() / NUMBER_OF_BITS_PER_BYTE) );
+    return width() - static_cast<int>( 2.0 / 3.0 * (height() / NUMBER_OF_WIRE_PER_SAPMPLE) );
 }
 
 
@@ -239,7 +240,7 @@ void DataPlot::recalculateXPositions() throw ()
     int leftBegin = getLeftBegin();
     
     // calculate the X positions -------------------------------------------------------------------
-    if (m_dataView->m_currentData.bytes().size() > 0)
+    if (m_dataView->m_currentData.NumSamples() > 0)
     {
         int i = 0;
         int currentX = leftBegin;
@@ -262,7 +263,7 @@ void DataPlot::recalculateXPositions() throw ()
 // -------------------------------------------------------------------------------------------------
 int DataPlot::getLeftBegin() const throw ()
 {
-    return static_cast<int>( 2.0 / 3.0 * height() / NUMBER_OF_BITS_PER_BYTE );
+    return static_cast<int>( 2.0 / 3.0 * height() / NUMBER_OF_WIRE_PER_SAPMPLE );
 }
 
 
@@ -270,13 +271,19 @@ int DataPlot::getLeftBegin() const throw ()
 void DataPlot::plot(QPainter* painter)
     throw ()
 {
-    int heightPerField = height() / NUMBER_OF_BITS_PER_BYTE;
-    ByteVector data = m_dataView->m_currentData.bytes();
-    
+	int i,kk;
+	int heightPerField = height() / NUMBER_OF_WIRE_PER_SAPMPLE;
+//    ByteVector data = m_dataView->m_currentData.bytes();
+    unsigned NumSamples = m_dataView->m_currentData.NumSamples();
     // set font ------------------------------------------------------------------------------------
     QFont textFont;
-    textFont.setPixelSize(heightPerField / 2);
-    painter->setFont(textFont);
+	QFontMetrics fm(textFont);
+	kk = textFont.pointSize();
+	i   = fm.height();
+	textFont.setPointSize(kk*heightPerField/i);
+//  textFont.setPointSize(textFont.pointSize()*2);
+
+	painter->setFont(textFont);
     
     // try to recalculate x positions --------------------------------------------------------------
     if (m_xPositions.size() == 0)
@@ -293,17 +300,21 @@ void DataPlot::plot(QPainter* painter)
     // draw the fields and the text ----------------------------------------------------------------
     {
         int current = heightPerField;
-        for (int i = 0; i < (NUMBER_OF_BITS_PER_BYTE - 1); i++)
+		QString lab;
+        for (int i = 0; i < NUMBER_OF_WIRE_PER_SAPMPLE ; i++)
         {
-            painter->setPen(linePen);
-            painter->drawLine(0, current, width(), current);
-            
+			if (i != NUMBER_OF_WIRE_PER_SAPMPLE-1)
+			{
+				painter->setPen(linePen);
+				painter->drawLine(0, current, width(), current);
+			}
+			
             painter->setPen(textPen);
-            painter->drawText(10, current - heightPerField / 3, QString::number(i+1));
+            painter->drawText(10, current - heightPerField / 3,lab.number(i+1));
             current += heightPerField;
         }
-        painter->setPen(textPen);
-        painter->drawText(10, current - 15, QString::number(NUMBER_OF_BITS_PER_BYTE));
+//        painter->setPen(textPen);
+//        painter->drawText(10, current - 15, QString::number(NUMBER_OF_WIRE_PER_SAPMPLE));
     }
     
     // draw vertical lines ("grid") ----------------------------------------------------------------
@@ -318,13 +329,13 @@ void DataPlot::plot(QPainter* painter)
     }
     
     // draw the lines
-    if (data.size() != 0)
+    if (NumSamples > 1)
     {
         painter->setPen(dataPen);
         int currentY = 4 * heightPerField / 5;
         int lastXOnScreen = m_xPositions[getNumberOfDisplayedSamples()];
         
-        for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++, currentY += heightPerField)
+        for (int i = 0; i < NUMBER_OF_WIRE_PER_SAPMPLE; i++, currentY += heightPerField)
         {
             int currentLowY = currentY;
             int currentHighY = currentY - 3 * heightPerField / 5;
@@ -351,14 +362,16 @@ void DataPlot::plot(QPainter* painter)
                     uint j = m_startIndex, j0 = 0;
                     
                     // handle the first point
-                    bool oldHigh = data[j] & (1 << i);
+                    bool oldHigh = m_dataView->m_currentData.GetWire(j,i);
+                    
+                    
                     bool newHigh = oldHigh;
                     points.setPoint(j0++, *it, oldHigh ? currentHighY : currentLowY);
                     ++it;
                     
-                    while (it != m_xPositions.end() && j < (data.size()))
+                    while (it != m_xPositions.end() && j < NumSamples)
                     {
-                        newHigh = data[j] & (1 << i);
+                        newHigh = m_dataView->m_currentData.GetWire(j,i);
                         
                         if (newHigh != oldHigh)
                         {
@@ -418,13 +431,13 @@ void DataPlot::mousePressEvent(QMouseEvent* evt)
 {
     if (evt->button() == Qt::LeftButton || evt->button() == Qt::RightButton)
     {
-        ByteVector data = m_dataView->m_currentData.bytes();
-        
-        // check if there is data displayed
-        if (data.size() <= 0)
+        if (m_dataView->m_currentData.NumSamples() < 1)
         {
             return;
         }
+//        SampleVector data_x = m_dataView->m_currentData.bytes();
+        
+        // check if there is data displayed
         
         double leftDistance = evt->x() - getLeftBegin();
         
