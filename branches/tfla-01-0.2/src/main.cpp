@@ -22,7 +22,9 @@
 #include <qtranslator.h>
 #include <qmessagebox.h>
 #include <qtextcodec.h>
-
+#include <qfileinfo.h>
+#include "global.h"
+#include "data.h"
 #include "tferror.h"
 #include "tfla01.h"
 
@@ -36,9 +38,25 @@ int main(int argc, char* argv[])
     
     // translation
     QTranslator translator(0), ttranslator(0);
-    QString loc = QTextCodec::locale();
-    translator.load(loc, qApp->applicationDirPath() + "/../share/tfla-01/translations/");
-    ttranslator.load(QString("qt_") + loc, QString(getenv("QTDIR")) + "/translations/");
+    QString lang = QTextCodec::locale();
+
+    QString lang_f = "tfla-01_" + lang + ".qm";
+    QString a_path = qApp->applicationDirPath() + "/../share/tfla-01/translations/";
+
+#if 0    
+    QFileInfo fi( a_path + lang_f );
+
+    if ( !fi.exists() ) 
+    {
+//        QMessageBox::warning( 0, "File error",
+//                              QString("Cannot find translation for language: "+lang+
+//                                      "\n"+a_path +lang_f) );
+//        return 0;
+    }
+#endif
+
+    translator.load(lang_f,a_path );
+    ttranslator.load(QString("qt_") + lang, QString(getenv("QTDIR")) + "/translations/");
     app.installTranslator(&translator);
     app.installTranslator(&ttranslator);
  

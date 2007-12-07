@@ -1,3 +1,107 @@
+TEMPLATE	= app
+LANGUAGE	= C++
+
+CONFIG	+= warn_on qt exceptions thread
+
+LIBS	+= -lqassistantclient
+
+win32:LIBS	+= c:\openssl\lib\vc\ssleay32.lib c:\openssl\lib\vc\libeay32.lib
+
+unix:LIBS	+= -lieee1284
+
+DEFINES	+= VERSION_STRING=\"$$VERSION_STRING\"
+
+INCLUDEPATH	+= src/
+
+win32:INCLUDEPATH	+= c:\openssl\include
+
+HEADERS	+= src/hardware/parport.h \
+	src/hardware/parporterror.h \
+	src/hardware/parportlist.h \
+	src/triggerwidget.h \
+	src/settings.h \
+	src/centralwidget.h \
+	src/datacollector.h \
+	src/parameterbox.h \
+	src/dataplot.h \
+	src/aboutdialog.h \
+	src/help.h \
+	src/dataview.h \
+	src/data.h \
+	src/tfla01.h \
+	src/exportdialog.h \
+	src/importdialog.h \
+	src/wheelscrollbar.h \
+	src/VcdReader.h \
+	src/VCD_symbol.h \
+	src/io_vcl.h
+
+SOURCES	+= src/main.cpp \
+	src/hardware/parporterror.cpp \
+	src/hardware/parport.cpp \
+	src/hardware/parportlist.cpp \
+	src/triggerwidget.cpp \
+	src/settings.cpp \
+	src/centralwidget.cpp \
+	src/datacollector.cpp \
+	src/parameterbox.cpp \
+	src/dataplot.cpp \
+	src/aboutdialog.cpp \
+	src/help.cpp \
+	src/dataview.cpp \
+	src/data.cpp \
+	src/tfla01.cpp \
+	src/exportdialog.cpp \
+	src/importdialog.cpp \
+	src/wheelscrollbar.cpp \
+	src/VcdReader.cpp \
+	src/VCD_symbol.cpp \
+	src/io_vcl.cpp 
+	
+IMAGES	= images/tfla-01_32.png \
+	images/stock_exit_16.png \
+	images/stock_exit_24.png \
+	images/stock_help_16.png \
+	images/stock_help_24.png \
+	images/info_16.png \
+	images/info_24.png \
+	images/whats_this.png \
+	images/qt_16.png \
+	images/stock_redo_16.png \
+	images/stock_redo_24.png \
+	images/stock_stop_16.png \
+	images/stock_stop_24.png \
+	images/stock_zoom-1_16.png \
+	images/stock_zoom-1_24.png \
+	images/stock_zoom_in_16.png \
+	images/stock_zoom_in_24.png \
+	images/stock_zoom-out_16.png \
+	images/stock_zoom-out_24.png \
+	images/stock_zoom-page-width_16.png \
+	images/stock_zoom-page-width_24.png \
+	images/stock_3d-color-picker_16.png \
+	images/stock_3d-color-picker_24.png \
+	images/stock_last_16.png \
+	images/stock_last_24.png \
+	images/stock_first_16.png \
+	images/stock_first_24.png \
+	images/stock_right_arrow_16.png \
+	images/stock_right_arrow_24.png \
+	images/stock_left_arrow_16.png \
+	images/stock_left_arrow_24.png \
+	images/stock_convert_16.png \
+	images/stock_convert_24.png \
+	images/stock_zoom-optimal_16.png \
+	images/stock_zoom-optimal_24.png \
+	images/network_16.png \
+	images/network_24.png \
+	images/stock_previous-page_16.png \
+	images/stock_previous-page_24.png \
+	images/stock_next-page_16.png \
+	images/stock_next-page_24.png \
+	images/stock_export_16.png \
+	images/stock_export_24.png
+
 #
 #  Use "qmake -o Makefile tfla-01.pro" for release code, and
 #  use "qmake -o Makefile tfla-01.pro debug=1" for debug code.
@@ -16,114 +120,31 @@ BINDIR             = $${PREFIX}/bin
 # On Windows, this is the default installation path of ieee1284. Change this
 # if needed. 
 # TODO: Change for that ... (this is partly OpenSSL)
-win32:INCLUDEPATH += c:\openssl\include
-win32:LIBS        += c:\openssl\lib\vc\ssleay32.lib \
-                     c:\openssl\lib\vc\libeay32.lib
-unix:LIBS         += -lieee1284
 
 ################################################################################
 
-VERSION_STRING     = 0.1.3
-MAJOR_VERSION      = 0
-MINOR_VERSION      = 1
-PATCH_VERSION      = 3
+VERSION_STRING     = 0.2.0
+MAJOR_VERSION       = 0
+MINOR_VERSION      = 2
+PATCH_VERSION       = 0
 
 ################################################################################
 
-INCLUDEPATH += src/
 
-SOURCES     =                                   \
-    src/main.cpp                                \
-    src/hardware/parporterror.cpp               \
-    src/hardware/parport.cpp                    \
-    src/hardware/parportlist.cpp                \
-    src/triggerwidget.cpp                       \
-    src/settings.cpp                            \
-    src/centralwidget.cpp                       \
-    src/datacollector.cpp                       \
-    src/parameterbox.cpp                        \
-    src/dataplot.cpp                            \
-    src/aboutdialog.cpp                         \
-    src/help.cpp                                \
-    src/dataview.cpp                            \
-    src/data.cpp                                \
-    src/tfla01.cpp                              \
-    src/exportdialog.cpp                        \
-    src/wheelscrollbar.cpp
 
 # -----------------------------------------------------------------------------
 
-HEADERS     =                                   \
-    src/hardware/parport.h                      \
-    src/hardware/parporterror.h                 \
-    src/hardware/parportlist.h                  \
-    src/triggerwidget.h                         \
-    src/settings.h                              \
-    src/centralwidget.h                         \
-    src/datacollector.h                         \
-    src/parameterbox.h                          \
-    src/dataplot.h                              \
-    src/aboutdialog.h                           \
-    src/help.h                                  \
-    src/dataview.h                              \
-    src/data.h                                  \
-    src/tfla01.h                                \
-    src/exportdialog.h                          \
-    src/wheelscrollbar.h
 
 # -----------------------------------------------------------------------------
 
 DOC_LANGS    = en
 TRANSLATIONS =                                  \
-    share/tfla-01/translations/de.ts
+    share/tfla-01/translations/tfla-01_de.ts \
+    share/tfla-01/translations/tfla-01_pl_PL.ts
 
 # -----------------------------------------------------------------------------
 
 UI_DIR = out
-IMAGES =                                        \
-    images/tfla-01_32.png                       \
-    images/stock_exit_16.png                    \
-    images/stock_exit_24.png                    \
-    images/stock_help_16.png                    \
-    images/stock_help_24.png                    \
-    images/info_16.png                          \
-    images/info_24.png                          \
-    images/whats_this.png                       \
-    images/qt_16.png                            \
-    images/stock_redo_16.png                    \
-    images/stock_redo_24.png                    \
-    images/stock_stop_16.png                    \
-    images/stock_stop_24.png                    \
-    images/stock_zoom-1_16.png                  \
-    images/stock_zoom-1_24.png                  \
-    images/stock_zoom_in_16.png                 \
-    images/stock_zoom_in_24.png                 \
-    images/stock_zoom-out_16.png                \
-    images/stock_zoom-out_24.png                \
-    images/stock_zoom-page-width_16.png         \
-    images/stock_zoom-page-width_24.png         \
-    images/stock_3d-color-picker_16.png         \
-    images/stock_3d-color-picker_24.png         \
-    images/stock_last_16.png                    \
-    images/stock_last_24.png                    \
-    images/stock_first_16.png                   \
-    images/stock_first_24.png                   \
-    images/stock_right_arrow_16.png             \
-    images/stock_right_arrow_24.png             \
-    images/stock_left_arrow_16.png              \
-    images/stock_left_arrow_24.png              \
-    images/stock_convert_16.png                 \
-    images/stock_convert_24.png                 \
-    images/stock_zoom-optimal_16.png            \
-    images/stock_zoom-optimal_24.png            \
-    images/network_16.png                       \
-    images/network_24.png                       \
-    images/stock_previous-page_16.png           \
-    images/stock_previous-page_24.png           \
-    images/stock_next-page_16.png               \
-    images/stock_next-page_24.png               \
-    images/stock_export_16.png                  \
-    images/stock_export_24.png
 
     
 
@@ -132,12 +153,9 @@ IMAGES =                                        \
 
 # -----------------------------------------------------------------------------
 
-CONFIG     += warn_on qt exceptions thread
-LIBS       += -lqassistantclient
 
 # -----------------------------------------------------------------------------
 
-DEFINES    += VERSION_STRING=\"$$VERSION_STRING\" 
 DEFINES    += MAJOR_VERSION=$$MAJOR_VERSION
 DEFINES    += MINOR_VERSION=$$MINOR_VERSION
 DEFINES    += PATCH_VERSION=$$PATCH_VERSION

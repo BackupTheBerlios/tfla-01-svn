@@ -43,8 +43,8 @@ class DataCollector : public QThread
         void setTriggering(bool enabled, unsigned char value = 0x00, unsigned char mask = 0x00)
         throw ();
         bool isTriggeringEnabled() const throw ();
-        byte getTriggeringValue() const throw ();
-        byte getTriggeringMask() const throw ();
+        unsigned getTriggeringValue() const throw ();
+        unsigned getTriggeringMask() const throw ();
         
         void setCollectingTime(int msecs) throw ();
         int getCollectingTime() const throw ();
@@ -56,15 +56,15 @@ class DataCollector : public QThread
         QString getErrorString() const throw ();
         
         void stop()  throw ();
-        
+
     protected:
         void run();
     
     private:
         unsigned int  m_portNumber;
         bool          m_triggering;
-        byte          m_triggeringMask;
-        byte          m_triggeringValue;
+        unsigned      m_triggeringMask;
+        unsigned      m_triggeringValue;
         Data          m_data;
         int           m_collectingTime;
         QString       m_errorString;
