@@ -22,18 +22,20 @@
 #include <qtranslator.h>
 #include <qmessagebox.h>
 #include <qtextcodec.h>
+#include <cstdlib>
 
 #include "tferror.h"
 #include "tfla01.h"
 
 // -------------------------------------------------------------------------------------------------
 using std::auto_ptr;
+using std::getenv;
 
 // -------------------------------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
-    
+
     // translation
     QTranslator translator(0), ttranslator(0);
     QString loc = QTextCodec::locale();
@@ -41,17 +43,17 @@ int main(int argc, char* argv[])
     ttranslator.load(QString("qt_") + loc, QString(getenv("QTDIR")) + "/translations/");
     app.installTranslator(&translator);
     app.installTranslator(&ttranslator);
- 
-    
+
+
     try
     {
         auto_ptr<Tfla01> tfla01(new Tfla01);
-        
+
         app.setMainWidget(tfla01.get());
-        
+
         tfla01->show();
         app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
-        
+
         return app.exec();
     }
     catch (const TfError& e)
@@ -74,6 +76,6 @@ int main(int argc, char* argv[])
             .arg(e.what()),
             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
-    
+
     return 1;
 }
