@@ -24,6 +24,7 @@
 #include <qmessagebox.h>
 #include <qcursor.h>
 
+#include "global.h"
 #include "settings.h"
 #include "dataview.h"
 #include "dataplot.h"
@@ -93,13 +94,13 @@ void DataView::setData(const Data& data)
    
     m_currentData = data;
     m_currentData.GetSampleValue(0);
-    m_scrollDivisor =  m_currentData.NumSamples()  == 0
+    m_scrollDivisor =  m_currentData.getNumSamples()  == 0
                        ? 1
-                       : m_currentData.NumSamples() / 1000;
+                       : m_currentData.getNumSamples() / 1000;
                        
     m_dataPlot->setStartIndex(0);
-    m_dataPlot->updateData(true, true);
     m_dataPlot->clearMarkers();
+    m_dataPlot->updateData(true, true);
 }
 
 
@@ -107,7 +108,7 @@ void DataView::setData(const Data& data)
 void DataView::zoomIn()
     throw ()
 {
-    if (m_dataPlot->getNumberOfDisplayedSamples() > 5)
+    if (m_dataPlot->getNumberOfDisplayedSamples() > 8)
     {
         m_dataPlot->setZoomFactor(m_dataPlot->getZoomFactor() * 2.0);
     }
@@ -118,7 +119,9 @@ void DataView::zoomIn()
 void DataView::zoomOut()
     throw ()
 {
-	if (m_dataPlot->getNumberOfDisplayedSamples() < (int) m_currentData.NumSamples())
+	sample_time_t new_ps = m_dataPlot->getNumberOfPossiblyDisplayedSamples()+m_dataPlot->getStartIndex();
+
+	if (3*new_ps/4 < m_currentData.getNumSamples())
 	{
     	m_dataPlot->setZoomFactor(m_dataPlot->getZoomFactor() / 2.0);
 	}
@@ -129,11 +132,11 @@ void DataView::zoomOut()
 void DataView::zoomFit()
     throw ()
 {
-    if (m_currentData.NumSamples() > 0)
+    if (m_currentData.DataLoaded())
     {
-        m_dataPlot->setStartIndex(0);
-        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 1) / 
-                              m_dataPlot->getPointsPerSample() / m_currentData.NumSamples() );
+        double nscale = (m_dataPlot->getCurrentWidthForPlot() - 1 )/m_dataPlot->getPointsPerSample();
+        m_dataPlot->setZoomFactor(nscale/ m_currentData.getNumSamples() );
+    	m_dataPlot->setStartIndex(0);
     }
     else
     {
@@ -153,12 +156,26 @@ void DataView::zoom1() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::zoomMarkers() throw ()
 {
-    if (m_dataPlot->getLeftMarker() > 0 && m_dataPlot->getRightMarker() > 0)
+    if (valid_sample_pos(m_dataPlot->getLeftMarker()) && valid_sample_pos(m_dataPlot->getRightMarker()))
     {
         double diff = DABS(m_dataPlot->getRightMarker() - m_dataPlot->getLeftMarker());
-        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 2) / 
-                              m_dataPlot->getPointsPerSample() / diff );
-        m_dataPlot->setStartIndex(QMIN(m_dataPlot->getLeftMarker(), m_dataPlot->getRightMarker()));
+        double nscale = m_dataPlot->getNumberOfPossiblyDisplayedSamples();
+        /* calculate Magnum factor 100%-(2*2%) Left and right border for make markers visables */
+        double nFactor = m_dataPlot->getZoomFactor() * nscale * 0.96 / diff;
+
+        m_dataPlot->setZoomFactor(nFactor);
+        /* calculate %2 Left and right border for make markers visables */
+        sample_time_t qn = qRound(diff*0.02);
+        sample_time_t ps = QMIN(m_dataPlot->getLeftMarker(), m_dataPlot->getRightMarker());
+        if (ps > qn )
+        {
+        	ps -= qn;
+    	}
+        else
+        {
+        	ps = 0;
+        }
+        m_dataPlot->setStartIndex(ps);
     }
     else
     {
@@ -179,10 +196,18 @@ void DataView::pos1() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::end() throw ()
 {
-    if (m_currentData.NumSamples() > 0)
+    if (m_currentData.DataLoaded())
     {
-        m_dataPlot->setStartIndex(m_currentData.NumSamples() - 
-                                  m_dataPlot->getNumberOfPossiblyDisplayedSamples() + 2);
+    	sample_time_t pos = m_currentData.getNumSamples() - 
+    	                    m_dataPlot->getNumberOfPossiblyDisplayedSamples() + 2;
+    	if (pos > 0)
+    	{
+    		m_dataPlot->setStartIndex(pos);
+    	}
+    	else
+    	{
+    		m_dataPlot->setStartIndex(0);
+       	}
     }
 }
 
@@ -240,11 +265,11 @@ void DataView::updateScrollInfo()
 {
     int ps = m_dataPlot->getNumberOfDisplayedSamples();
     
-    m_scrollBar->setRange(0, (m_currentData.NumSamples() - ps) / m_scrollDivisor);
+    m_scrollBar->setRange(0, (m_currentData.getNumSamples() - ps) / m_scrollDivisor);
     m_scrollBar->setValue(m_dataPlot->getStartIndex() / m_scrollDivisor);
     
     // set this to calculate the size
-    if ((m_currentData.NumSamples() - ps) == 0)
+    if ((m_currentData.getNumSamples() - ps) == 0)
     {
         m_scrollBar->setPageStep(0);
     }
@@ -296,46 +321,56 @@ void DataView::scrollValueChanged(int value) throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateLeft() throw ()
 {
-    m_dataPlot->setStartIndex( QMAX(0,  m_dataPlot->getStartIndex() -
-                                        qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()
-                                               / 10.0)) );
+	sample_time_t ds = qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0);
+    sample_time_t ps = m_dataPlot->getStartIndex()-ds;
+	m_dataPlot->setStartIndex((ps > 0 )?ps:0);
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateRight() throw ()
 {
-    m_dataPlot->setStartIndex( QMIN(m_dataPlot->getStartIndex() +
-                                   qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0),
-                                   static_cast<int>(m_currentData.NumSamples())) );
+	sample_time_t ds = qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0);
+	sample_time_t ps = m_dataPlot->getStartIndex()+ ds;
+	if (ps+5*ds <  m_currentData.getNumSamples())
+	{
+		m_dataPlot->setStartIndex(ps);
+	}
 }
-
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateLeftPage() throw ()
 {
-    int si = QMAX(0,  m_dataPlot->getStartIndex() -
-                      qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()));
-    m_dataPlot->setStartIndex(si);
+	sample_time_t ds = qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() * 0.9);
+    sample_time_t ps = m_dataPlot->getStartIndex()-ds;
+    m_dataPlot->setStartIndex((ps > 0 )?ps:0);
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateRightPage() throw ()
 {
-    int si = QMIN( m_dataPlot->getStartIndex() +
-                  qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()),
-                  static_cast<int>(m_currentData.NumSamples()));
-    m_dataPlot->setStartIndex(si);
+	sample_time_t ds = qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() * 0.9);
+    sample_time_t ps = m_dataPlot->getStartIndex()-ds;
+    if (ps+ds/9 <  m_currentData.getNumSamples())
+    {
+    	m_dataPlot->setStartIndex(ps);
+    }
+    else
+    {
+    	end();
+    }
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::jumpToLeftMarker() throw ()
 {
-    if (m_dataPlot->getLeftMarker() >= 0)
+	sample_time_t ps = m_dataPlot->getLeftMarker();
+    sample_time_t ds = m_dataPlot->getNumberOfDisplayedSamples()/2;
+    if (valid_sample_pos(ps) )
     {
-        m_dataPlot->setStartIndex(QMAX(0, m_dataPlot->getLeftMarker()));
+        m_dataPlot->setStartIndex( (ps > ds ) ? ps-ds : 0);
     }
 }
 
@@ -343,11 +378,11 @@ void DataView::jumpToLeftMarker() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::jumpToRightMarker() throw ()
 {
-    if (m_dataPlot->getRightMarker() >= 0)
+	sample_time_t ps = m_dataPlot->getRightMarker();
+    sample_time_t ds = m_dataPlot->getNumberOfDisplayedSamples()/2;
+	if (valid_sample_pos(ps) )
     {
-        // 3 instead of 2 because in end() size() is lastElementIndex + 1
-        m_dataPlot->setStartIndex(QMAX(0, m_dataPlot->getRightMarker() -
-                                       m_dataPlot->getNumberOfDisplayedSamples() + 3)  );
+		m_dataPlot->setStartIndex( (ps > ds ) ? ps-ds : 0);
     }
 }
 
@@ -408,7 +443,7 @@ void DataView::exportToVcd()  throw ()
     QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
 	io_vcl stream;
-    unsigned int size = m_currentData.NumSamples();
+    sample_time_t size = m_currentData.getNumSamples();
 
 
 	stream.num_wires = NUMBER_OF_WIRE_PER_SAPMPLE;
@@ -425,8 +460,8 @@ void DataView::exportToVcd()  throw ()
     }
 	if (ed->getCutMode())
 	{
-		int l=m_dataPlot->getLeftMarker();
-		int p=m_dataPlot->getRightMarker();
+		sample_time_t l=m_dataPlot->getLeftMarker();
+		sample_time_t p=m_dataPlot->getRightMarker();
 		if (l>p)
 		{
 			// zamiana markerow
@@ -589,7 +624,7 @@ void DataView::importFromVcd()  throw ()
 
 void DataView::resampleData()  throw ()
 {
-	if (m_currentData.NumSamples()<2)
+	if (!m_currentData.DataLoaded())
 	{
         static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
             tr("Function only available if data is gathered"), 4000); 
@@ -599,7 +634,7 @@ void DataView::resampleData()  throw ()
 
 void DataView::trimsampleData()  throw ()
 {
-	if (m_currentData.NumSamples()<2)
+	if (!m_currentData.DataLoaded())
 	{
         static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
             tr("Function only available if data is gathered"), 4000); 

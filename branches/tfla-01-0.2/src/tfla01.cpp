@@ -101,6 +101,7 @@ void Tfla01::startAnalyze()
     throw ()
 {
     QLocale loc;
+    sample_time_t nsa;
     
     m_actions.startAction->setEnabled(false);
     m_actions.stopAction->setEnabled(true);
@@ -111,8 +112,8 @@ void Tfla01::startAnalyze()
     auto_ptr<DataCollector> coll(new DataCollector(set.readNumEntry("Hardware/Parport")));
     coll->setCollectingTime(  (  set.readNumEntry("Measuring/Triggering/Minutes") * 60 + 
                                  set.readNumEntry("Measuring/Triggering/Seconds") ) * 1000  );
-    coll->setTriggering(true, set.readNumEntry("Measuring/Triggering/Value"), 
-                              set.readNumEntry("Measuring/Triggering/Mask") );
+    coll->setTriggering(true,    set.readNumEntry("Measuring/Triggering/Value"), 
+                                 set.readNumEntry("Measuring/Triggering/Mask") );
     coll->setNumberOfSkips(set.readNumEntry("Measuring/Number_Of_Skips"));
     
     QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
@@ -144,11 +145,11 @@ void Tfla01::startAnalyze()
             QMessageBox::Ok, QMessageBox::NoButton);
         goto end;
     }
-    
+    nsa = coll->getData().getNumSamples();
     statusBar()->message(tr("Collected %1 samples successfully.").arg( 
-                         loc.toString(  static_cast<double>(coll->getData().NumSamples()), 
+                         loc.toString(  static_cast<double>(nsa), 
                                          'g', 
-                                         QString::number(coll->getData().NumSamples()).length() 
+                                         QString::number(coll->getData().getNumSamples()).length() 
                                      )), 
                          4000);
     

@@ -20,8 +20,16 @@
 #include <qframe.h>
 #include <qvaluevector.h>
 #include <qpixmap.h>
+#include "global.h"
 
 class DataView;
+
+typedef struct
+{
+	int  x;		/* Screen position  */
+	sample_time_t spos;	/* First Sample Time */
+} PLOT_POINT;
+
 
 class DataPlot : public QWidget
 {
@@ -38,23 +46,26 @@ class DataPlot : public QWidget
         void updateData(bool forceRedraw, bool forceRecalculatePositions = false) throw ();
         
         void setZoomFactor(double factor) throw ();
-        double getZoomFactor() const throw ();
-        int getNumberOfDisplayedSamples() const throw ();
-        int getNumberOfPossiblyDisplayedSamples() const throw();
+        double getZoomFactor() const ;
+        sample_time_t getNumberOfDisplayedSamples() const throw ();
+        sample_time_t getNumberOfPossiblyDisplayedSamples() const throw();
         int getCurrentWidthForPlot() const throw ();
         int getPointsPerSample(double zoom = 1.0) const throw ();
+        sample_time_t getSampleNr(int x_position);
+        int getSampleOnScreenPosition(sample_time_t sample_nr); /* -1 below or above  screen area */ 
+        
         QPixmap getScreenshot() throw ();
         
         // start index ----------------------------------------------------------------------------
-        void setStartIndex(int startIndex) throw (); 
-        int getStartIndex() const throw ();
+        void setStartIndex(sample_time_t startIndex) throw (); 
+        sample_time_t getStartIndex() const;
         
         // marker handling ------------------------------------------------------------------------
-        int getLeftMarker() const throw ();
-        void setLeftMarker(int markerPosition) throw ();
+        sample_time_t getLeftMarker() const throw ();
+        void setLeftMarker(sample_time_t markerPosition) throw ();
         
-        int getRightMarker() const throw ();
-        void setRightMarker(int markerPosition) throw ();
+        sample_time_t getRightMarker() const throw ();
+        void setRightMarker(sample_time_t markerPosition) throw ();
         
         void clearMarkers() throw ();
         
@@ -76,15 +87,18 @@ class DataPlot : public QWidget
         
     private:
         DataView*           m_dataView;
-        int                 m_startIndex;
-        double              m_zoomFactor;
+        double              m_zoomFactor; /* scale */
+        long long           m_startIndex; /* Index to first sample to display */
+        long long		    m_stopIndex;   /* index to last sample to display  */
+        long long           m_SampleLeftMarker;		/* sample_NR for left marker  */
+        long long           m_SampleRightMarker;     /* sample_NR for right marker */
+        
+        QValueVector<PLOT_POINT>  m_xPositions; /* array mapping smaples to screen (X) */
+                                                /* starting from m_start_index         */
         QPixmap             m_lastPixmap;
         int                 m_lastWidth;
         int                 m_lastHeight;
-        bool                m_gridEnabled;
-        QValueVector<uint>  m_xPositions;
-        int                 m_leftMarker;
-        int                 m_rightMarker;
+        bool                m_gridEnabled;      /* sample/raster < 1          */
 };
 
 #endif /* DATAPLOT_H */

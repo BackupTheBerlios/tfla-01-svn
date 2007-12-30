@@ -43,7 +43,8 @@ class Data
         Data() throw ();
                
         double getMsecsForSample(long long sample) const throw();
-        unsigned NumSamples(void) const throw();
+        sample_time_t getNumSamples(void) const ;
+        bool     DataLoaded(void) { return (num_samples > 1); }
         
         double getMeasuringTimeS() const throw ();
         double getTimeStep() const throw ();
@@ -55,11 +56,11 @@ class Data
         void calculateLineStates() throw ();
         
         QDateTime     m_StartTime;
-        unsigned GetSampleValue(unsigned time_pos);
-        bool	 GetWire(unsigned time_pos,unsigned nr_wire);
+        unsigned GetSampleValue(sample_time_t time_pos);
+        bool	 GetWire(sample_time_t time_pos,unsigned nr_wire);
+        int	 	 ScanWire(sample_time_t time_start,sample_time_t num_samples, unsigned nr_wire);
         void	 AddSample(unsigned value, unsigned rep_counter);
         void     Open(unsigned vector_range);
-        
     private:
         SampleVector m_samples;
         double       m_measuringTime;

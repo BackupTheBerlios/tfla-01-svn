@@ -134,12 +134,12 @@ Data::LineState Data::getLineState(int line) const throw ()
 }
 
 // -------------------------------------------------------------------------------------------------
-unsigned  Data::NumSamples(void) const throw ()
+sample_time_t  Data::getNumSamples(void) const
 {
     return num_samples;
 }
 
-unsigned Data::GetSampleValue(unsigned time_pos)
+unsigned Data::GetSampleValue(sample_time_t time_pos)
 {
     if (num_events)
     {
@@ -147,16 +147,16 @@ unsigned Data::GetSampleValue(unsigned time_pos)
 		{
 			return(m_current_value);
 		}
-		if (time_pos >= m_samples.back().sample_time)
+		if (time_pos >= m_samples.last().sample_time)
 		{
-			return (m_samples.back().value);
+			return (m_samples.last().value);
 		}
-		if (time_pos < m_samples.front().sample_time)
+		if (time_pos < m_samples.first().sample_time)
 		{
 			m_last_index=0;
         	m_start_time=0;
-        	m_stop_time  = m_samples.front().sample_time;
-            m_current_value = m_samples.front().value;
+        	m_stop_time  = m_samples.first().sample_time;
+            m_current_value = m_samples.first().value;
 			return(m_current_value);
 		}
 		if (time_pos >= m_samples[m_last_index].sample_time)
@@ -183,12 +183,60 @@ unsigned Data::GetSampleValue(unsigned time_pos)
     return(0);	
 }
 
-bool Data:: GetWire(unsigned time_pos,unsigned nr_wire)
+bool Data:: GetWire(sample_time_t time_pos,unsigned nr_wire)
 {
 	return( GetSampleValue(time_pos) & (1<<nr_wire));	
 }
 
+int	 Data:: ScanWire(sample_time_t time_start,sample_time_t delta_time, unsigned nr_wire)
+{
+	bool c_value;
+	int change_count;
+	bool vn;
+	unsigned mask;
+	sample_time_t kt , k_last;
+	kt      = time_start;
+	k_last  = kt+delta_time;
 
+	if (kt >= num_samples)
+	{
+		return(0);
+	}
+	else if (kt < 0)
+	{
+		if (k_last < 1)
+		{
+			return(0);
+		}
+		kt = 0;
+	}
+	if (k_last > num_samples)
+	{
+		// protected to search to far
+		k_last = num_samples;
+	}
+	c_value = GetWire(time_start,nr_wire);
+	change_count = 0;
+	mask = (1<<nr_wire);
+	while (kt < k_last)
+	{
+		vn = (GetSampleValue(kt) & mask);
+		if (vn != c_value)
+		{
+			c_value = !c_value;
+			change_count +=1;
+		}
+		if (kt >= m_start_time && kt < m_stop_time)
+		{
+			kt = m_stop_time;
+		}
+		else
+		{
+			kt +=1;
+		}
+	}
+	return(change_count);
+}
 // -------------------------------------------------------------------------------------------------
 void Data::calculateLineStates() throw ()
 {

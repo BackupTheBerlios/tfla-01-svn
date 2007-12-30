@@ -30,11 +30,17 @@
 // -------------------------------------------------------------------------------------------------
 #define DEFAULT_POINTS_PER_SAMPLE 10
 
+/* for detect too many samples per pixel
+ * Change mode of plot, condense samples in two pixels (begin-end) or plot gliches only once
+ */
+#define MAXIMUM_POINTS_PER_LINE	(2*4096)
+
+
 // -------------------------------------------------------------------------------------------------
 DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name) throw ()
     : QWidget(parent, name, WRepaintNoErase), 
-      m_dataView(dataView), m_startIndex(0), m_zoomFactor(1.0),
-      m_lastPixmap(0, 0), m_leftMarker(-1), m_rightMarker(-1)
+      m_dataView(dataView),  m_zoomFactor(1.0),m_startIndex(0),
+       m_SampleLeftMarker(-1), m_SampleRightMarker(-1),m_lastPixmap(0, 0)
 {
     setFocusPolicy(QWidget::WheelFocus);
     setBackgroundMode( QWidget::NoBackground );
@@ -58,43 +64,65 @@ void DataPlot::setZoomFactor(double factor) throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-double DataPlot::getZoomFactor() const throw ()
+double DataPlot::getZoomFactor() const 
 {
     return m_zoomFactor;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void DataPlot::setStartIndex(int startIndex) throw ()
+void DataPlot::setStartIndex(sample_time_t startIndex) throw ()
 {
     m_startIndex = startIndex;
-    updateData(true);
+    if (!m_xPositions.isEmpty() && startIndex != m_xPositions.first().spos )
+    {
+        updateData(true,true);
+    }
+    else
+    {
+        updateData(true,false);
+    }
 }
 
 
 // -------------------------------------------------------------------------------------------------
-int DataPlot::getStartIndex() const
-    throw ()
+sample_time_t DataPlot::getStartIndex() const
 {
     return m_startIndex;
 }
 
-
-// -------------------------------------------------------------------------------------------------
-int DataPlot::getLeftMarker() const throw ()
+sample_time_t DataPlot::getSampleNr(int x_position)
 {
-    return m_leftMarker;
+	if (x_position < 0)
+	{
+		return(0);
+	}
+	else if ((unsigned)x_position >= m_xPositions.size() )
+	{
+		if (m_dataView->m_currentData.DataLoaded())
+		{
+			return(m_dataView->m_currentData.getNumSamples());
+		}
+	}
+	return(m_xPositions[x_position].spos);
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void DataPlot::setLeftMarker(int markerpos)  throw ()
+sample_time_t DataPlot::getLeftMarker() const throw ()
+{
+    return m_SampleLeftMarker;
+}
+
+
+// -------------------------------------------------------------------------------------------------
+void DataPlot::setLeftMarker(sample_time_t markerpos)  throw ()
 {
     double ms = m_dataView->m_currentData.getMsecsForSample(markerpos);
     
     if (markerpos == -1 || ms >= 0.0)
     {
-        m_leftMarker = markerpos;
+        m_SampleLeftMarker = markerpos;
         updateData(false);
         leftMarkerValueChanged(ms);
     }
@@ -107,20 +135,20 @@ void DataPlot::setLeftMarker(int markerpos)  throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-int DataPlot::getRightMarker() const throw ()
+sample_time_t DataPlot::getRightMarker() const throw ()
 {
-    return m_rightMarker;
+    return m_SampleRightMarker;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void DataPlot::setRightMarker(int markerpos) throw ()
+void DataPlot::setRightMarker(sample_time_t  markerpos) throw ()
 {
     double ms = m_dataView->m_currentData.getMsecsForSample(markerpos);
     
     if (markerpos == -1 || ms >= 0.0)
     {
-        m_rightMarker = markerpos;
+        m_SampleRightMarker = markerpos;
         updateData(false);
         rightMarkerValueChanged(ms);
     }
@@ -142,25 +170,25 @@ void DataPlot::clearMarkers() throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-int DataPlot::getNumberOfDisplayedSamples () const throw ()
+sample_time_t DataPlot::getNumberOfDisplayedSamples () const throw ()
 {
-    uint dataToDisplayMax = m_dataView->m_currentData.NumSamples() - m_startIndex;
-    
-    return  (dataToDisplayMax > (m_xPositions.size() - 1)) 
-          ? m_xPositions.size() - 1
+    sample_time_t dataToDisplayMax = m_dataView->m_currentData.getNumSamples() - m_startIndex;
+    sample_time_t ScreenSpace = getNumberOfPossiblyDisplayedSamples();
+    return  (dataToDisplayMax > ScreenSpace) 
+          ? ScreenSpace
           : dataToDisplayMax;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-int DataPlot::getNumberOfPossiblyDisplayedSamples() const throw()
+sample_time_t DataPlot::getNumberOfPossiblyDisplayedSamples() const throw()
 {
-    // -1 because we have one outside the draw area
-    int ret = m_xPositions.size() - 1;
+    int ret = m_xPositions.size();
     
-    return ret < 0
+    // last sample at ret-2 because we have one outside the draw area
+    return ret < 3
         ? 0
-        : ret;
+        : m_xPositions[ret-2].spos - m_xPositions.first().spos;
 }
 
 
@@ -176,6 +204,79 @@ int DataPlot::getPointsPerSample(double zoom ) const throw ()
 {
     return static_cast<int>(DEFAULT_POINTS_PER_SAMPLE * zoom);
 }
+
+// -------------------------------------------------------------------------------------------------
+int DataPlot::getSampleOnScreenPosition(sample_time_t  pos)
+{
+	if (valid_sample_pos(pos))
+	{
+		if (m_xPositions.empty())
+		{
+			return(-1);
+		}
+		int top=m_xPositions.size();  
+		if (top < 2 || pos < m_xPositions.first().spos || pos > m_xPositions.last().spos)
+		{
+			return(-1);
+		}
+		// linear search (faste will be bisection search) 
+		for (int k=0; k<top; k+=1)
+		{
+			if (pos <= m_xPositions[k].spos  )
+			{
+				return(k);
+			}
+		}
+	}
+	return(-1);
+}
+
+// -------------------------------------------------------------------------------------------------
+void DataPlot::recalculateXPositions() throw ()
+{
+    int leftBegin = getLeftBegin();
+    
+    // calculate the X positions -------------------------------------------------------------------
+    if (m_dataView->m_currentData.DataLoaded())
+    {
+        m_xPositions.clear();
+        sample_time_t tp = 0;m_startIndex;
+        int w = width();
+        int sample_per_point;
+        PLOT_POINT currentX; 
+        
+        if (DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor < 1.0)
+        {
+        	sample_per_point = qRound(1.0/(DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor));
+        }
+        else
+        {
+        	sample_per_point=1;
+        }
+        currentX.x = leftBegin;
+        currentX.spos = tp+m_startIndex;
+        m_xPositions.push_back(currentX);
+        tp +=sample_per_point;
+        while (currentX.x < w)
+        {
+            currentX.x = qRound(leftBegin + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor * tp);
+            currentX.spos = tp+m_startIndex;
+            m_xPositions.push_back(currentX);
+            tp+=sample_per_point;
+        }
+        
+        // last because to have one point outside the draw area
+        currentX.x = qRound(leftBegin + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor * tp );
+        currentX.spos =tp+m_startIndex;
+        m_xPositions.push_back(currentX);
+    }
+    else
+    {
+        m_xPositions.clear();
+    }
+}
+
+
 
 
 // -------------------------------------------------------------------------------------------------
@@ -232,34 +333,6 @@ void DataPlot::updateData(bool forceRedraw, bool forceRecalculatePositions) thro
     p.end();
 }
 
-
-// -------------------------------------------------------------------------------------------------
-void DataPlot::recalculateXPositions() throw ()
-{
-    m_xPositions.clear();
-    int leftBegin = getLeftBegin();
-    
-    // calculate the X positions -------------------------------------------------------------------
-    if (m_dataView->m_currentData.NumSamples() > 0)
-    {
-        int i = 0;
-        int currentX = leftBegin;
-        int w = width();
-        while (currentX < w)
-        {
-            currentX = qRound(leftBegin + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor * i);
-            m_xPositions.push_back(currentX);
-            
-            i++;
-        }
-        
-        // last because to have one point outside the draw area
-        currentX = qRound(leftBegin + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor * i);
-        m_xPositions.push_back(currentX);
-    }
-}
-
-
 // -------------------------------------------------------------------------------------------------
 int DataPlot::getLeftBegin() const throw ()
 {
@@ -271,10 +344,11 @@ int DataPlot::getLeftBegin() const throw ()
 void DataPlot::plot(QPainter* painter)
     throw ()
 {
-	int i,kk;
+	int i,kk,x;
 	int heightPerField = height() / NUMBER_OF_WIRE_PER_SAPMPLE;
 //    ByteVector data = m_dataView->m_currentData.bytes();
-    unsigned NumSamples = m_dataView->m_currentData.NumSamples();
+    sample_time_t NumSamples = m_dataView->m_currentData.getNumSamples();
+//    bool sample_condesed = (NumSamples >)
     // set font ------------------------------------------------------------------------------------
     QFont textFont;
 	QFontMetrics fm(textFont);
@@ -318,13 +392,15 @@ void DataPlot::plot(QPainter* painter)
     }
     
     // draw vertical lines ("grid") ----------------------------------------------------------------
-    if (m_xPositions.size() >= 2 && (m_xPositions[1] - m_xPositions[0]) > 3)
+    if (m_xPositions.size() >= 2 && (m_xPositions[1].x - m_xPositions[0].x) > 3)
     {
-        painter->setPen(gridPen);
-        
-        for (QValueVector<uint>::iterator it = m_xPositions.begin(); it != m_xPositions.end(); ++it)
+        /* Draw Vertical lines for magnificient samples */
+    	painter->setPen(gridPen);
+          
+        for (QValueVector<PLOT_POINT>::iterator it = m_xPositions.begin(); it != m_xPositions.end(); ++it)
         {
-            painter->drawLine(*it, 0, *it, height());
+        	x=it->x; 
+            painter->drawLine(x, 0,x, height());
         }
     }
     
@@ -333,7 +409,8 @@ void DataPlot::plot(QPainter* painter)
     {
         painter->setPen(dataPen);
         int currentY = 4 * heightPerField / 5;
-        int lastXOnScreen = m_xPositions[getNumberOfDisplayedSamples()];
+        int lastXOnScreen = m_xPositions.last().x;
+        int firstXOnScreen = m_xPositions.first().x;
         
         for (int i = 0; i < NUMBER_OF_WIRE_PER_SAPMPLE; i++, currentY += heightPerField)
         {
@@ -345,12 +422,12 @@ void DataPlot::plot(QPainter* painter)
             switch (ls)
             {
                 case Data::LS_ALWAYS_L:
-                    painter->drawLine(m_xPositions.first(), currentLowY, 
+                    painter->drawLine(firstXOnScreen, currentLowY, 
                                       lastXOnScreen, currentLowY);
                     break;
                     
                 case Data::LS_ALWAYS_H:
-                    painter->drawLine(m_xPositions.first(), currentHighY, 
+                    painter->drawLine(firstXOnScreen, currentHighY, 
                                       lastXOnScreen, currentHighY);
                     break;
                     
@@ -358,33 +435,52 @@ void DataPlot::plot(QPainter* painter)
                 {
                     QPointArray points(m_xPositions.size());
                     
-                    QValueVector<uint>::iterator it = m_xPositions.begin();
-                    uint j = m_startIndex, j0 = 0;
-                    
+                    QValueVector<PLOT_POINT>::iterator it = m_xPositions.begin();
+                    uint j0 = 0;
+                    sample_time_t tp;
+                    uint xp,xk,glich;
+                    bool newHigh,oldHigh;
                     // handle the first point
-                    bool oldHigh = m_dataView->m_currentData.GetWire(j,i);
                     
-                    
-                    bool newHigh = oldHigh;
-                    points.setPoint(j0++, *it, oldHigh ? currentHighY : currentLowY);
+                    tp =it->spos;
+                    oldHigh = m_dataView->m_currentData.GetWire(tp,i);
+                    newHigh = oldHigh;
+                    points.setPoint(j0++, it->x, oldHigh ? currentHighY : currentLowY);
                     ++it;
-                    
-                    while (it != m_xPositions.end() && j < NumSamples)
+
+                    while (it != m_xPositions.end() && tp < NumSamples)
                     {
-                        newHigh = m_dataView->m_currentData.GetWire(j,i);
-                        
-                        if (newHigh != oldHigh)
+                        glich =  m_dataView->m_currentData.ScanWire(tp,it->spos-tp,i);
+                        if (glich & 1)
                         {
-                            points.setPoint(j0++, *(it - 1), oldHigh ? currentHighY : currentLowY);
-                            points.setPoint(j0++, *it,       newHigh ? currentHighY : currentLowY);
-                            
-                            oldHigh = newHigh;
+                        	newHigh = !oldHigh;
+                    		oldHigh = newHigh;
                         }
-                        ++it, ++j;
+                        tp = it->spos;
+                        if (glich)
+                        {
+                        	xp=(it - 1)->x;
+                        	xk=it->x;
+                        	if ( glich == 1)
+                        	{
+                        		points.setPoint(j0++, xp, !newHigh ? currentHighY : currentLowY);
+                        		points.setPoint(j0++, xk,  newHigh ? currentHighY : currentLowY);
+                        	}
+                        	else
+                        	{
+                        		if ((glich & 1) == 0)
+                        		{
+                            		points.setPoint(j0++, xp, newHigh ? currentHighY : currentLowY);
+                        		}
+                        		points.setPoint(j0++, xp, !newHigh ? currentHighY+4 : currentLowY+4);
+                        		points.setPoint(j0++, xk, newHigh ? currentHighY : currentLowY);
+                        	}
+                        }
+                        ++it;
                     }
                     
                     // end handling
-                    points.setPoint(j0++, *(it - 1), newHigh ? currentHighY : currentLowY);
+                    points.setPoint(j0++, (it - 1)->x, newHigh ? currentHighY : currentLowY);
                     
                     painter->drawPolyline(points, 0, j0);
                     break;
@@ -401,24 +497,24 @@ void DataPlot::drawMarkers(QPainter* painter) throw ()
     QPen leftMarkerPen = QPen(Settings::set().readEntry("UI/Left_Marker_Color"), 2, Qt::SolidLine);
     QPen rightMarkerPen = QPen(Settings::set().readEntry("UI/Right_Marker_Color"), 2, Qt::SolidLine);
     
-    if (m_leftMarker != -1)
+    if (valid_sample_pos(m_SampleLeftMarker) )
     {
-        int displaySample = m_leftMarker - m_startIndex;
+        int displaySample =  getSampleOnScreenPosition(m_SampleLeftMarker);
         
-        if (displaySample >= 0 && displaySample < static_cast<int>(m_xPositions.size()))
+        if (displaySample >= 0)
         {
-            int x = m_xPositions[displaySample];
+            int x = m_xPositions[displaySample].x;
             painter->setPen(leftMarkerPen);
             painter->drawLine(x, 0, x, height());
         }
     }
-    if (m_rightMarker != -1)
+    if (valid_sample_pos(m_SampleRightMarker) )
     {
-        int displaySample = m_rightMarker - m_startIndex;
+        int displaySample = getSampleOnScreenPosition(m_SampleRightMarker);
         
-        if (displaySample >= 0 && displaySample < static_cast<int>(m_xPositions.size()))
+        if (displaySample >= 0 )
         {
-            int x = m_xPositions[displaySample];
+            int x = m_xPositions[displaySample].x;
             painter->setPen(rightMarkerPen);
             painter->drawLine(x, 0, x, height());
         }
@@ -431,33 +527,28 @@ void DataPlot::mousePressEvent(QMouseEvent* evt)
 {
     if (evt->button() == Qt::LeftButton || evt->button() == Qt::RightButton)
     {
-        if (m_dataView->m_currentData.NumSamples() < 1)
+        if (!m_dataView->m_currentData.DataLoaded() || m_xPositions.size()<3)
         {
             return;
         }
 //        SampleVector data_x = m_dataView->m_currentData.bytes();
         
         // check if there is data displayed
-        
-        double leftDistance = evt->x() - getLeftBegin();
-        
-        // user clicked in the label area
-        if (leftDistance < 0)
+        int rsample = m_xPositions.size()-2;
+        int mouse_pos = evt->x();
+        if (mouse_pos+5 < m_xPositions.first().x || mouse_pos-5 > m_xPositions[rsample].x)
         {
-            return;
+        	return;
         }
+        double NormDistance  = (mouse_pos - m_xPositions[0].x);
+        NormDistance /= (m_xPositions[rsample].x - m_xPositions[0].x);
         
-        // check if the user clicked too much right
-        if (evt->x() > static_cast<int>(m_xPositions.last()))
+        // normalize
+        sample_time_t sample = m_xPositions[qRound(NormDistance * rsample)].spos;
+        if (sample<0 || sample > m_dataView->m_currentData.getNumSamples())
         {
-            return;
+        	return;
         }
-        
-        double possibleSamplesPerScreen = static_cast<double>(width()) / 
-                                          (DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor);
-        
-        int sample = qRound(leftDistance * possibleSamplesPerScreen / width() + getStartIndex());
-        
         if (evt->button() == Qt::LeftButton)
         {
             setLeftMarker(sample);

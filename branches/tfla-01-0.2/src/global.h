@@ -25,7 +25,12 @@ typedef unsigned int  uint;
 
 typedef unsigned char uchar;
 
+typedef long long sample_time_t;
 
+typedef bool valid_sample_pos(sample_time_t x);
+#define valid_sample_pos(a) ((a) >= 0)
+#define SAMPLE_TIME_BELOW -1
+#define SAMPLE_TIME_ABOWE -2
 
 #define NUMBER_OF_WIRE_PER_SAPMPLE 8
 
