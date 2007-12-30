@@ -87,23 +87,23 @@
         <translation type="obsolete">Wählen Sie den Dateinamen für die exportierten Daten</translation>
     </message>
     <message>
-        <source>Cut to Market area only </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CVS output format </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save Raw only &amp;state changes (reduces file size)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>VCD files (*.vcd)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose file name and format for exported data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Marked area only </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CSV output format </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use numbering Change of State </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -125,10 +125,6 @@
 <context>
     <name>ImportDialog</name>
     <message>
-        <source>Cvs input format, sep=&apos;;&apos; </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>CSV files (*.csv)</source>
         <translation>CSV-Dateien (*.csv)</translation>
     </message>
@@ -138,6 +134,10 @@
     </message>
     <message>
         <source>Choose file name and format for Import data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CSV input format, separator=&apos;;&apos; </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -229,7 +229,7 @@ wird beendet.</translation>
     <name>Tfla01</name>
     <message>
         <source>The Fabulous Logic Analyzer</source>
-        <translation type="obsolete">The Fabulous Logic Analyzer</translation>
+        <translation type="unfinished">The Fabulous Logic Analyzer</translation>
     </message>
     <message>
         <source>TFLA-01</source>
@@ -390,10 +390,6 @@ wird beendet.</translation>
     <message>
         <source>&amp;Export data...</source>
         <translation>Daten &amp;exportieren...</translation>
-    </message>
-    <message>
-        <source>The Fabulous Logic Analyzer Modified</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Edit</source>
