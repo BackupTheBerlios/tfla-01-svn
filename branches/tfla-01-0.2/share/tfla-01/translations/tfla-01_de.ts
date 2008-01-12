@@ -69,7 +69,7 @@
     </message>
     <message>
         <source>Function only available if data is gathered</source>
-        <translation type="unfinished"></translation>
+        <translation>Funktion nur verfügbar wenn Daten gesammelt wurden</translation>
     </message>
 </context>
 <context>
@@ -88,23 +88,23 @@
     </message>
     <message>
         <source>VCD files (*.vcd)</source>
-        <translation type="unfinished"></translation>
+        <translation>VCD-Dateien (*.vcd)</translation>
     </message>
     <message>
         <source>Choose file name and format for exported data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Marked area only </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CSV output format </source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie einen Dateinamen und ein -format für die zu exportierenden Daten</translation>
     </message>
     <message>
         <source>Use numbering Change of State </source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Nummer nur bei Änderungen</translation>
+    </message>
+    <message>
+        <source>CVS output format </source>
+        <translation>CVS-Format</translation>
+    </message>
+    <message>
+        <source>Marked area only </source>
+        <translation>Nur markierten Bereich</translation>
     </message>
 </context>
 <context>
@@ -130,15 +130,15 @@
     </message>
     <message>
         <source>VCD files (*.vcd)</source>
-        <translation type="unfinished"></translation>
+        <translation>VCD-Dateien (*.vcd)</translation>
     </message>
     <message>
         <source>Choose file name and format for Import data</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie einen Dateinamen und ein -format für zu importierenden Daten</translation>
     </message>
     <message>
         <source>CSV input format, separator=&apos;;&apos; </source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-Format, Trenner=&apos;;&apos;</translation>
     </message>
 </context>
 <context>
@@ -229,7 +229,7 @@ wird beendet.</translation>
     <name>Tfla01</name>
     <message>
         <source>The Fabulous Logic Analyzer</source>
-        <translation type="unfinished">The Fabulous Logic Analyzer</translation>
+        <translation>The Fabulous Logic Analyzer</translation>
     </message>
     <message>
         <source>TFLA-01</source>
@@ -393,19 +393,19 @@ wird beendet.</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
         <source>&amp;Read vcd file...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;VCD-Datei lesen...</translation>
     </message>
     <message>
         <source>&amp;Trim sample Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Daten &amp;trimmen</translation>
     </message>
     <message>
         <source>&amp;Re-sample Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Daten &amp;neu lesen</translation>
     </message>
 </context>
 </TS>
