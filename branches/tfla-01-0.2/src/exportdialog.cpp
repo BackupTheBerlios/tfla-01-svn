@@ -31,7 +31,7 @@ ExportDialog::ExportDialog(const QString &dirName, QWidget *parent)
     QHBox *box1 = new QHBox(this);
     QHBox *box2 = new QHBox(this);
 
-    m_cutModeCB = new QCheckBox(tr("Market area only "), box1);
+    m_cutModeCB = new QCheckBox(tr("Marked area only "), box1);
     QWidget *f1 = new QWidget(box1);
     box1->setStretchFactor(m_cutModeCB, 0);
     box1->setStretchFactor(f1, 5);
