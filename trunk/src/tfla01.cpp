@@ -353,7 +353,7 @@ void Tfla01::initActions()
         QPixmap::fromMimeSource("stock_redo_24.png") ), tr("&Start"), 
         QKeySequence(Key_F5), this);
     m_actions.stopAction = new QAction(QIconSet( QPixmap::fromMimeSource("stock_stop_16.png"),
-        QPixmap::fromMimeSource("stock_stop_24.png") ), tr("&Start"), 
+        QPixmap::fromMimeSource("stock_stop_24.png") ), tr("&Stop"), 
         QKeySequence(Key_F6), this);
     
     // ----- Navigate ------------------------------------------------------------------------------
