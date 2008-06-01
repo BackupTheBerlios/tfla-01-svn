@@ -131,7 +131,7 @@ void DataCollector::run()
         port.setDataDirection(true);
         
         // wait for triggering
-        if (m_triggering && m_triggeringMask != 0xff)
+        if (m_triggering && m_triggeringMask != 0x00)
         {
             struct timeval timeout = { 0, 500 };
             
