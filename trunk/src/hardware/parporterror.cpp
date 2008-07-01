@@ -1,15 +1,15 @@
-/* 
+/*
  * Copyright (c) 2005, Bernhard Walle
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software Foundation; You may only use 
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; You may only use
  * version 2 of the License, you have no option to use any other version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
  * the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program; if 
+ * You should have received a copy of the GNU General Public License along with this program; if
  * not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * -------------------------------------------------------------------------------------------------
@@ -48,6 +48,9 @@ QString ParportError::what() const
         case E1284_SYS:
             return QObject::tr("There was a problem at the operating system level. The global "
                 "variable errno  has been set appropriately.");
+        case EPP_NOTRISTATE:
+            return QObject::tr("The parallel port is not capable of TRISTATE. Read "
+                "the documentation to get hints how that can be fixed.");
         default:
             return QObject::tr("Invalid error code.");
     }

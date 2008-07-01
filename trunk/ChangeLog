@@ -1,3 +1,8 @@
+2008-07-02  Bernhard Walle <bernhard.walle@gmx.de>
+
+	* check if the parallel port is TRISTATE capable (after debugging two
+      days why the schematics does not work ...)
+
 2008-01-06  Bernhard Walle <bernhard.walle@gmx.de>
 
 	* triggering is enabled when the mask is not 0x00 and not when it is not
@@ -63,7 +68,7 @@
 
 	* Many bugfixes
 	* Changed shortcuts for navigation and zooming
-	* Changed mouse wheel action in plot area (Shift: page, None: normal, 
+	* Changed mouse wheel action in plot area (Shift: page, None: normal,
 	  Ctrl: Zoom)
 	* Implemented help, removed What's This
 	* Added help skeleton (XML Docbook) and added build system
