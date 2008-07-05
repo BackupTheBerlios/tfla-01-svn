@@ -1,3 +1,9 @@
+2008-07-06  Bernhard Walle <bernhard.walle@gmx.de>
+
+	* show when measuring starts after triggering
+	* change timeout of Parport::waitData() to 1 sec
+	* accept NULL as timeout in Parport::waitData()
+
 2008-07-02  Bernhard Walle <bernhard.walle@gmx.de>
 
 	* check if the parallel port is TRISTATE capable (after debugging two

@@ -22,7 +22,10 @@
 #include <qobject.h>
 #include <qdatetime.h>
 #include <qcstring.h>
+#include <qapplication.h>
+#include <qstatusbar.h>
 
+#include "tfla01.h"
 #include "datacollector.h"
 #include "hardware/parportlist.h"
 
@@ -133,12 +136,14 @@ void DataCollector::run()
         // wait for triggering
         if (m_triggering && m_triggeringMask != 0x00)
         {
-            struct timeval timeout = { 0, 500 };
+            struct timeval timeout = { 1, 0 };
 
             while (!m_stop)
             {
                 if (port.waitData(m_triggeringMask, m_triggeringValue, &timeout))
                 {
+                    static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
+                        QObject::tr("Measuring triggered. Starting data collection."), 4000);
                     break;
                 }
             }

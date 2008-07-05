@@ -197,6 +197,12 @@ void Parport::setDataDirection(bool reverse) throw (ParportError)
 bool Parport::waitData(int mask, int val, struct timeval* timeout) throw (ParportError)
 {
     int ret;
+    struct timeval default_timeout = { 60, 0 };
+
+    if (!timeout)
+    {
+        timeout = &default_timeout;
+    }
 
     if ((ret = ieee1284_wait_data(m_parport, mask, val, timeout)) != E1284_OK)
     {

@@ -431,4 +431,4 @@ void DataView::exportToCSV()
     file.close();
 }
 
-// vim: set sw=4 ts=4 et:
+// vim: set sw=4 ts=4 tw=100 et:
