@@ -185,6 +185,10 @@ wird beendet.</translation>
         <source>The parallel port is not capable of TRISTATE. Read the documentation to get hints how that can be fixed.</source>
         <translation>Der Parallelport verfügt nicht über die TRISTATE-Fähigkeit (3 Zustände). Bitte lesen Sie die Dokumentation um Hinweise zu erhalten, wie Sie dieses Problem beheben können.</translation>
     </message>
+    <message>
+        <source>Measuring triggered. Starting data collection.</source>
+        <translation>Messung getriggert. Datenerfassung gestartet.</translation>
+    </message>
 </context>
 <context>
     <name>Tfla01</name>
