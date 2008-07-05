@@ -181,6 +181,10 @@ wird beendet.</translation>
         <source>TFLA-01</source>
         <translation>TFLA-01</translation>
     </message>
+    <message>
+        <source>The parallel port is not capable of TRISTATE. Read the documentation to get hints how that can be fixed.</source>
+        <translation>Der Parallelport verfügt nicht über die TRISTATE-Fähigkeit (3 Zustände). Bitte lesen Sie die Dokumentation um Hinweise zu erhalten, wie Sie dieses Problem beheben können.</translation>
+    </message>
 </context>
 <context>
     <name>Tfla01</name>
@@ -347,6 +351,10 @@ wird beendet.</translation>
     <message>
         <source>&amp;Export data...</source>
         <translation>Daten &amp;exportieren...</translation>
+    </message>
+    <message>
+        <source>&amp;Stop</source>
+        <translation>&amp;Stopp</translation>
     </message>
 </context>
 </TS>
