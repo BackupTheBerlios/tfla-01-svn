@@ -14,7 +14,7 @@ BINDIR             = $${PREFIX}/bin
 ################################################################################
 
 # On Windows, this is the default installation path of ieee1284. Change this
-# if needed. 
+# if needed.
 # TODO: Change for that ... (this is partly OpenSSL)
 win32:INCLUDEPATH += c:\openssl\include
 win32:LIBS        += c:\openssl\lib\vc\ssleay32.lib \
@@ -23,10 +23,10 @@ unix:LIBS         += -lieee1284
 
 ################################################################################
 
-VERSION_STRING     = 0.1.3
+VERSION_STRING     = 0.1.4
 MAJOR_VERSION      = 0
 MINOR_VERSION      = 1
-PATCH_VERSION      = 3
+PATCH_VERSION      = 4
 
 ################################################################################
 
@@ -125,7 +125,7 @@ IMAGES =                                        \
     images/stock_export_16.png                  \
     images/stock_export_24.png
 
-    
+
 
 #win32:RC_FILE = share/win32/tfla-01_win32.rc
 
@@ -137,7 +137,7 @@ LIBS       += -lqassistantclient
 
 # -----------------------------------------------------------------------------
 
-DEFINES    += VERSION_STRING=\"$$VERSION_STRING\" 
+DEFINES    += VERSION_STRING=\"$$VERSION_STRING\"
 DEFINES    += MAJOR_VERSION=$$MAJOR_VERSION
 DEFINES    += MINOR_VERSION=$$MINOR_VERSION
 DEFINES    += PATCH_VERSION=$$PATCH_VERSION

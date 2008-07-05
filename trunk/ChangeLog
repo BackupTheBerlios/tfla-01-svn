@@ -3,6 +3,7 @@
 	* show when measuring starts after triggering
 	* change timeout of Parport::waitData() to 1 sec
 	* accept NULL as timeout in Parport::waitData()
+	* bump version to 0.1.4 (don't release)
 
 2008-07-02  Bernhard Walle <bernhard.walle@gmx.de>
 
