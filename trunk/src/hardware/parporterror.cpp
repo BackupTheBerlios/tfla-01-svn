@@ -63,3 +63,5 @@ int ParportError::getErrorCode() const
 {
     return m_errorcode;
 }
+
+// vim: set sw=4 ts=4 tw=100:

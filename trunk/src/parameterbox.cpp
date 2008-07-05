@@ -1,15 +1,15 @@
-/* 
+/*
  * Copyright (c) 2005, Bernhard Walle
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software Foundation; You may only use 
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; You may only use
  * version 2 of the License, you have no option to use any other version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
  * the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program; if 
+ * You should have received a copy of the GNU General Public License along with this program; if
  * not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * -------------------------------------------------------------------------------------------------
@@ -32,26 +32,26 @@
 
 // -------------------------------------------------------------------------------------------------
 ParameterBox::ParameterBox(QWidget* parent, const char* name)
-    throw () 
+    throw ()
     : QFrame(parent, name), m_leftValue(-1.0), m_rightValue(-1.0)
 {
     QGridLayout* layout = new QGridLayout(this, 5 /* row */, 9 /* col */, 0 /* margin */, 5);
-    
+
     // - create ------------------------------------------------------------------------------------
-    
+
     // settings
     Settings& set = Settings::set();
-    
+
     // widgets
     QLabel* timeLabel = new QLabel(tr("&Measuring Time:"), this);
     QLabel* sampleLabel = new QLabel(tr("&Sampling Rate:"), this);
     QLabel* triggerLabel = new QLabel(tr("&Triggering:"), this);
-    
+
     QTimeEdit* timeedit = new QTimeEdit(this);
     timeedit->setRange(QTime(0, 0), QTime(0, 1));
     QSlider* sampleSlider = new QSlider(0, MAX_SLIDER_VALUE, 1, 0, Qt::Horizontal, this);
     TriggerWidget* triggering = new TriggerWidget(this);
-    
+
     // labels for the markers
     QLabel* leftMarkerLabel = new QLabel(tr("Left Button Marker:"), this);
     QLabel* rightMarkerLabel = new QLabel(tr("Right Button Marker:"), this);
@@ -59,7 +59,7 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     m_leftMarker = new QLabel(this);
     m_rightMarker = new QLabel(this);
     m_diff = new QLabel("zdddd", this);
-    
+
     // set the font for the labels
     QFont font = qApp->font(this);
     font.setPixelSize(15);
@@ -67,19 +67,19 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     m_leftMarker->setFont(font);
     m_rightMarker->setFont(font);
     m_diff->setFont(font);
-    
+
     // buddys
     timeLabel->setBuddy(timeedit);
     triggerLabel->setBuddy(triggering);
     sampleLabel->setBuddy(sampleSlider);
-    
+
     // load value
     triggering->setValue(set.readNumEntry("Measuring/Triggering/Value"),
                          set.readNumEntry("Measuring/Triggering/Mask"));
     timeedit->setTime(QTime(0, set.readNumEntry("Measuring/Triggering/Minutes"),
-                               set.readNumEntry("Measuring/Triggering/Seconds"))); 
+                               set.readNumEntry("Measuring/Triggering/Seconds")));
     sampleSlider->setValue(MAX_SLIDER_VALUE - set.readNumEntry("Measuring/Number_Of_Skips"));
-    
+
     // - layout the stuff --------------------------------------------------------------------------
                                    // row, col
     layout->addWidget(timeLabel,           0,    1);
@@ -100,14 +100,14 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     layout->setColSpacing(6, 20);
     layout->setColSpacing(7, 150);
     layout->setColStretch(8, 2);
-    
-    connect(timeedit,                   SIGNAL(valueChanged(const QTime&)), 
+
+    connect(timeedit,                   SIGNAL(valueChanged(const QTime&)),
             this,                       SLOT(timeValueChanged(const QTime&)));
-    connect(triggering,                 SIGNAL(valueChanged(byte, byte)), 
+    connect(triggering,                 SIGNAL(valueChanged(byte, byte)),
             this,                       SLOT(triggerValueChanged(byte, byte)));
     connect(sampleSlider,               SIGNAL(valueChanged(int)),
             this,                       SLOT(sliderValueChanged(int)));
-    
+
     // - initial values ----------------------------------------------------------------------------
     updateValues();
 }
@@ -160,7 +160,7 @@ void ParameterBox::setRightMarker(double ms) throw ()
 void ParameterBox::updateValues() throw ()
 {
     QLocale loc;
-    
+
     // update the left value
     if (m_leftValue < 0.0)
     {
@@ -170,8 +170,8 @@ void ParameterBox::updateValues() throw ()
     {
         m_leftMarker->setText(loc.toString(m_leftValue, 'f', 4) + " ms");
     }
-    
-    
+
+
     // update the right value
     if (m_rightValue < 0.0)
     {
@@ -181,7 +181,7 @@ void ParameterBox::updateValues() throw ()
     {
         m_rightMarker->setText(loc.toString(m_rightValue, 'f', 4) + " ms");
     }
-    
+
     // update the diff display
     if (m_leftValue < 0.0 || m_rightValue < 0.0)
     {
@@ -192,3 +192,5 @@ void ParameterBox::updateValues() throw ()
         m_diff->setText(loc.toString(m_rightValue - m_leftValue, 'f', 4) + " ms");
     }
 }
+
+// vim: set sw=4 ts=4 tw=100:

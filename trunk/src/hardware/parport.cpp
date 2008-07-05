@@ -240,3 +240,5 @@ QString Parport::getFileName() const throw ()
 {
     return QString::fromLocal8Bit(m_parport->filename);
 }
+
+// vim: set sw=4 ts=4 tw=100:

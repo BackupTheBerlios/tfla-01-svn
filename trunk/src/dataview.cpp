@@ -1,15 +1,15 @@
-/* 
+/*
  * Copyright (c) 2005, Bernhard Walle
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software Foundation; You may only use 
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; You may only use
  * version 2 of the License, you have no option to use any other version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
  * the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program; if 
+ * You should have received a copy of the GNU General Public License along with this program; if
  * not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * -------------------------------------------------------------------------------------------------
@@ -43,13 +43,13 @@ DataView::DataView(QWidget* parent, const char* name)
     m_dataPlot = new DataPlot(this, this);
     m_scrollBar = new WheelScrollBar(Qt::Horizontal, this);
     m_scrollBar->setTracking(false);
-    
+
     layout->addWidget(m_dataPlot);
     layout->addWidget(m_scrollBar);
-    
-    connect(m_dataPlot,              SIGNAL(leftMarkerValueChanged(double)), 
+
+    connect(m_dataPlot,              SIGNAL(leftMarkerValueChanged(double)),
             this,                    SIGNAL(leftMarkerValueChanged(double)));
-    connect(m_dataPlot,              SIGNAL(rightMarkerValueChanged(double)), 
+    connect(m_dataPlot,              SIGNAL(rightMarkerValueChanged(double)),
             this,                    SIGNAL(rightMarkerValueChanged(double)));
     connect(m_scrollBar,             SIGNAL(nextLine()),
             this,                    SLOT(navigateRight()));
@@ -63,9 +63,9 @@ DataView::DataView(QWidget* parent, const char* name)
             this,                    SLOT(navigateLeftPage()));
     connect(m_dataPlot,              SIGNAL(viewUpdated()),
             this,                    SLOT(updateScrollInfo()));
-            
+
     // don't use this because of two reasons
-    //  - if zoom is high, the user may not see all 
+    //  - if zoom is high, the user may not see all
     //  - if zoom is low, it's slow
     //connect(m_scrollBar,             SIGNAL(sliderMoved(int)),
     //        this,                    SLOT(scrollValueChanged(int)));
@@ -90,7 +90,7 @@ void DataView::setData(const Data& data)
     m_scrollDivisor =  m_currentData.bytes().size()  == 0
                        ? 1
                        : m_currentData.bytes().size() / 1000;
-                       
+
     m_dataPlot->setStartIndex(0);
     m_dataPlot->updateData(true, true);
     m_dataPlot->clearMarkers();
@@ -123,13 +123,13 @@ void DataView::zoomFit()
     if (m_currentData.bytes().size() != 0)
     {
         m_dataPlot->setStartIndex(0);
-        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 1) / 
+        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 1) /
                               m_dataPlot->getPointsPerSample() / m_currentData.bytes().size() );
     }
     else
     {
-        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
-            tr("Function only available if data is displayed."), 4000); 
+        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
+            tr("Function only available if data is displayed."), 4000);
     }
 }
 
@@ -147,16 +147,16 @@ void DataView::zoomMarkers() throw ()
     if (m_dataPlot->getLeftMarker() > 0 && m_dataPlot->getRightMarker() > 0)
     {
         double diff = DABS(m_dataPlot->getRightMarker() - m_dataPlot->getLeftMarker());
-        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 2) / 
+        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 2) /
                               m_dataPlot->getPointsPerSample() / diff );
         m_dataPlot->setStartIndex(QMIN(m_dataPlot->getLeftMarker(), m_dataPlot->getRightMarker()));
     }
     else
     {
-        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(   
-            tr("Function only available if both markers are set."), 4000); 
+        static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
+            tr("Function only available if both markers are set."), 4000);
     }
-    
+
 }
 
 
@@ -172,7 +172,7 @@ void DataView::end() throw ()
 {
     if (m_currentData.bytes().size() > 0)
     {
-        m_dataPlot->setStartIndex(m_currentData.bytes().size() - 
+        m_dataPlot->setStartIndex(m_currentData.bytes().size() -
                                   m_dataPlot->getNumberOfPossiblyDisplayedSamples() + 2);
     }
 }
@@ -193,7 +193,7 @@ void DataView::wheelEvent(QWheelEvent* e)
                 zoomOut();
             }
             break;
-            
+
         case Qt::ShiftButton:
             if (e->delta() > 0)
             {
@@ -204,7 +204,7 @@ void DataView::wheelEvent(QWheelEvent* e)
                 navigateRightPage();
             }
             break;
-            
+
         case Qt::NoButton:
             if (e->delta() > 0)
             {
@@ -215,12 +215,12 @@ void DataView::wheelEvent(QWheelEvent* e)
                 navigateRight();
             }
             break;
-            
+
         default:
             // do nothing
             break;
     }
-    
+
     e->accept();
 }
 
@@ -230,10 +230,10 @@ void DataView::updateScrollInfo()
     throw ()
 {
     int ps = m_dataPlot->getNumberOfDisplayedSamples();
-    
+
     m_scrollBar->setRange(0, (m_currentData.bytes().size() - ps) / m_scrollDivisor);
     m_scrollBar->setValue(m_dataPlot->getStartIndex() / m_scrollDivisor);
-    
+
     // set this to calculate the size
     if ((m_currentData.bytes().size() - ps) == 0)
     {
@@ -242,7 +242,7 @@ void DataView::updateScrollInfo()
     else
     {
         m_scrollBar->setPageStep(ps / m_scrollDivisor);
-        m_scrollBar->setLineStep(qRound(ps / 10.0 / m_scrollDivisor)); 
+        m_scrollBar->setLineStep(qRound(ps / 10.0 / m_scrollDivisor));
 
 #if 0
         PRINT_TRACE("div = %d", m_scrollDivisor);
@@ -352,7 +352,7 @@ void DataView::saveScreenshot() throw ()
     {
         return;
     }
-    
+
     QPixmap screenshot = m_dataPlot->getScreenshot();
     if (!screenshot.save(fileName, "PNG"))
     {
@@ -373,7 +373,7 @@ void DataView::exportToCSV()
 
     ExportDialog* ed = new ExportDialog(QDir::currentDirPath(), this);
     ed->setMode(QFileDialog::AnyFile);
-  
+
     if (ed->exec() != QDialog::Accepted)
     {
         return;
