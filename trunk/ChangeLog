@@ -1,3 +1,9 @@
+2008-07-12  Bernhard Walle <bernhard.walle@gmx.de>
+
+	* implement own polling function for Parport::waitData() because
+	  the libieee1284-provided polling uses a sleep() between polling,
+	  so the triggering is less accurate as it could be
+
 2008-07-06  Bernhard Walle <bernhard.walle@gmx.de>
 
 	* show when measuring starts after triggering

@@ -124,7 +124,7 @@ class Parport
 
         /**
          * Sets the data direction.
-         * See http://cyberelk.net/tim/libieee1284/interface/data-pin-access.html.
+         * See http://cyberelk.net/tim/libieee1284/interface/rn02re12.html.
          *
          * @param reverse @c true for read mode, @c false for write mode
          * @exception ParportError if an error occured
@@ -134,12 +134,19 @@ class Parport
 
         /**
          * Wait for data.
-         * See http://cyberelk.net/tim/libieee1284/interface/data-pin-access.html.
+         * See http://cyberelk.net/tim/libieee1284/interface/rn02re12.html.
          *
-         * @return @c true if wait was successful, @c false if timed out
+         * @param[in] mask only data bits that are set in that mask are considered
+         * @param[in] val the value for which should be watched
+         * @param[in] timeout the timeout after the function returns in any case
+         * @param[in] poll @c true if we should poll in that function or @c false
+         *            if we should use a libieee1284 function for polling
+         *
+         * @return @c true if the the function returned because the data arrived or
+         *         @c false because the timeout has been elapsed
          * @throw ParportError if an error occured
          */
-        bool waitData(int mask, int val, struct timeval* timeout)
+        bool waitData(int mask, int val, struct timeval* timeout, bool poll)
         throw (ParportError);
 
         /**
@@ -183,6 +190,18 @@ class Parport
          * to get new instances.
          */
         Parport(struct parport* port);
+
+        /**
+         * Implementation of Parport::waitData() that uses ieee1284_wait_data()
+         */
+        bool waitDataIeee1284(int mask, int val, struct timeval* timeout)
+        throw (ParportError);
+
+        /**
+         * Implementation of Parport::waitData() that uses internal polling
+         */
+        bool waitDataPoll(int mask, int val, struct timeval* timeout)
+        throw (ParportError);
 
     private:
         struct parport* m_parport;

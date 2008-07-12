@@ -24,6 +24,7 @@
 #  include <sys/ioctl.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#  include <sys/time.h>
 #  include <fcntl.h>
 #endif
 
@@ -194,7 +195,74 @@ void Parport::setDataDirection(bool reverse) throw (ParportError)
 
 
 // -------------------------------------------------------------------------------------------------
-bool Parport::waitData(int mask, int val, struct timeval* timeout) throw (ParportError)
+bool Parport::waitData(int mask, int val, struct timeval* timeout, bool poll)
+    throw (ParportError)
+{
+    if (poll)
+    {
+        return waitDataPoll(mask, val, timeout);
+    }
+    else
+    {
+        return waitDataIeee1284(mask, val, timeout);
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
+bool Parport::waitDataPoll(int mask, int val, struct timeval* timeout)
+    throw (ParportError)
+{
+#ifndef __linux__
+    // don't know about timing operations on Windows, but don't also want to
+    // break the Build on Unix
+    return waitDataIeee1284(mask, val, timeout);
+#else
+
+    struct timeval now;
+    struct timeval timeout_reached;
+
+    // check if we need to wait for data
+    if (mask == 0)
+    {
+        return true;
+    }
+
+    int ret = gettimeofday(&now, NULL);
+    if (ret != 0)
+    {
+        perror("gettimeofday() failed");
+        return false;
+    }
+
+    timeradd(&now, timeout, &timeout_reached);
+
+    do
+    {
+        byte data = readData();
+
+        if ((data & mask) == (val & 0xff))
+        {
+            return true;
+        }
+
+        ret = gettimeofday(&now, NULL);
+        if (ret != 0)
+        {
+            perror("gettimeofday() failed");
+            return false;
+        }
+
+    } while (timercmp(&now, &timeout_reached, <));
+
+
+    // timeout reached
+    return false;
+#endif
+}
+
+// -------------------------------------------------------------------------------------------------
+bool Parport::waitDataIeee1284(int mask, int val, struct timeval* timeout)
+    throw (ParportError)
 {
     int ret;
     struct timeval default_timeout = { 60, 0 };
@@ -218,6 +286,7 @@ bool Parport::waitData(int mask, int val, struct timeval* timeout) throw (Parpor
 
     return true;
 }
+
 
 
 // -------------------------------------------------------------------------------------------------

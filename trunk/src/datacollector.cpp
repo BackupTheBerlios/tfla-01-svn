@@ -140,7 +140,7 @@ void DataCollector::run()
 
             while (!m_stop)
             {
-                if (port.waitData(m_triggeringMask, m_triggeringValue, &timeout))
+                if (port.waitData(m_triggeringMask, m_triggeringValue, &timeout, true))
                 {
                     static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
                         QObject::tr("Measuring triggered. Starting data collection."), 4000);
