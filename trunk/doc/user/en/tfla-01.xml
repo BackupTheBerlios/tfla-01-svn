@@ -2,7 +2,7 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
     "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
   <!ENTITY date "September 2007">
-  <!ENTITY version "0.1.3">
+  <!ENTITY version "0.1.4">
   <!ENTITY application "TFLA-01">
 ]>
 <article id="index" lang="en">
@@ -15,7 +15,7 @@
 
     <copyright>
       <year>2005</year>
-      <year>2007</year>
+      <year>2008</year>
       <holder>Bernhard Walle</holder>
     </copyright>
 
@@ -979,8 +979,8 @@ KERNEL="parport[0-9]", MODE="664", GROUP="parport"
       <title>Credits</title>
 
       <para>
-        Stefan Holzer (<email>stefan-holzer@gmx.de</email>) is responsible for the
-        Windows port of TFLA-01.
+        Stefan Holzer (<email>stefan-holzer@gmx.de</email>) provided Windows binaries
+        in the past.
       </para>
 
       <para>
