@@ -1,3 +1,9 @@
+2008-07-13  Bernhard Walle <bernhard.walle@gmx.de>
+
+	* don't show when the measuring starts (so revert the change from
+	  2008-07-06) because then samples are lost because that takes too
+	  much time
+
 2008-07-12  Bernhard Walle <bernhard.walle@gmx.de>
 
 	* implement own polling function for Parport::waitData() because
