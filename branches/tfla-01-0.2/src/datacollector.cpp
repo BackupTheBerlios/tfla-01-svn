@@ -1,15 +1,15 @@
-/* 
+/*
  * Copyright (c) 2005, Bernhard Walle
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software Foundation; You may only use 
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; You may only use
  * version 2 of the License, you have no option to use any other version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
  * the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program; if 
+ * You should have received a copy of the GNU General Public License along with this program; if
  * not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * -------------------------------------------------------------------------------------------------
@@ -17,6 +17,7 @@
 //#include <sys/timeb.h>
 
 #include <errno.h>
+#include <cstdlib>
 
 #include <vector>
 
@@ -26,6 +27,8 @@
 
 #include "datacollector.h"
 #include "hardware/parportlist.h"
+
+using std::free;
 
 // -------------------------------------------------------------------------------------------------
 const int DataCollector::INITIAL_VECTOR_SPACE   = 1000000;
@@ -137,16 +140,16 @@ void DataCollector::run()
         unsigned  ns;
         unsigned  aa,bb;
         unsigned  aa_counter;
-        
+
 		m_collectingTime += 50;
-		
+
 		int loop_counter = m_collectingTime/20;
 
 
 
 		z_sample_num = MEGA_SAMPLE_NUM;
 		sample_rep = (unsigned *)malloc((sizeof(unsigned)+sizeof(char))*z_sample_num);
-	
+
 		if (sample_rep == NULL)
 		{
 			return;
@@ -158,19 +161,19 @@ void DataCollector::run()
     		sample_val[z_sample_pos]=0;
     	}
         z_sample_pos = 0;
-    
-        
+
+
         // I tried F1284_EXCL here, but if I set this, claim failed with a system error
         port.open(0);
         port.claim();
         port.setDataDirection(true);
-        
+
         // wait for triggering
 
         if (m_triggering && m_triggeringMask != 0xff)
         {
- 
-            
+
+
             while (!m_stop)
             {
                 if (port.waitData(m_triggeringMask, m_triggeringValue, 500))
@@ -179,7 +182,7 @@ void DataCollector::run()
                 }
             }
         }
-        
+
         // we cannot use QTimer in this thread because it's in non-GUI thread
         // this changes in Qt 4, but this is future
         // so we need to poll, and to be platform independent we use QTime
@@ -189,7 +192,7 @@ void DataCollector::run()
         unsigned      *v_counter = sample_rep;
         unsigned char *v_samples = sample_val;
 
-	
+
         QTime start = QTime::currentTime();
 
 		aa=port.readData();
@@ -210,12 +213,12 @@ void DataCollector::run()
               	if ((aa == bb)  && (aa_counter < 0xFFFFFF00))
               	{
                 	aa_counter +=1;
-              		continue;	
+              		continue;
               	}
 	          	*v_counter++ = aa_counter;
 	            *v_samples++ = aa;
          		aa = bb;
-         		aa_counter =1;  		
+         		aa_counter =1;
            		z_sample_pos++;
            		if (z_sample_pos+1 == z_sample_num)
               	{
@@ -233,10 +236,10 @@ void DataCollector::run()
         unsigned run_time = start.msecsTo(QTime::currentTime());
         v_counter = sample_rep;
         v_samples = sample_val;
-        
+
     	QDateTime  dt = QDateTime::currentDateTime();
     	dt.setTime(start);
-		for (ns=0; ns<z_sample_pos; ns+=1) 
+		for (ns=0; ns<z_sample_pos; ns+=1)
 		{
 			m_data.AddSample(*v_samples,*v_counter);
 			v_samples +=1;
