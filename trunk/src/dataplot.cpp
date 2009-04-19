@@ -39,8 +39,8 @@ DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name) throw 
       m_dataView(dataView), m_startIndex(0), m_zoomFactor(1.0),
       m_lastPixmap(0, 0), m_leftMarker(-1), m_rightMarker(-1)
 {
-    setFocusPolicy(QWidget::WheelFocus);
-    setBackgroundMode( QWidget::NoBackground );
+    setFocusPolicy(Qt::WheelFocus);
+    setBackgroundMode(Qt::NoBackground);
 }
 
 
@@ -292,7 +292,8 @@ void DataPlot::plot(QPainter* painter)
     QPen linePen = QPen(QColor(100, 100, 100), 2, Qt::SolidLine);
     QPen textPen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine);
     QPen gridPen = QPen(QColor(100, 100, 100), 1, Qt::SolidLine);
-    QPen dataPen = QPen(Settings::set().readEntry("UI/Foreground_Color_Line"), 2, Qt::SolidLine);
+    QPen dataPen = QPen(QColor(Settings::set().readEntry("UI/Foreground_Color_Line")), 2,
+			Qt::SolidLine);
 
     // draw the fields and the text ----------------------------------------------------------------
     {
@@ -389,8 +390,10 @@ void DataPlot::plot(QPainter* painter)
 // -------------------------------------------------------------------------------------------------
 void DataPlot::drawMarkers(QPainter* painter) throw ()
 {
-    QPen leftMarkerPen = QPen(Settings::set().readEntry("UI/Left_Marker_Color"), 2, Qt::SolidLine);
-    QPen rightMarkerPen = QPen(Settings::set().readEntry("UI/Right_Marker_Color"), 2, Qt::SolidLine);
+    QPen leftMarkerPen = QPen(QColor(Settings::set().readEntry("UI/Left_Marker_Color")), 2,
+			Qt::SolidLine);
+    QPen rightMarkerPen = QPen(QColor(Settings::set().readEntry("UI/Right_Marker_Color")), 2,
+			Qt::SolidLine);
 
     if (m_leftMarker != -1)
     {
