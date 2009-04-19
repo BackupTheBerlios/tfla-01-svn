@@ -65,7 +65,7 @@ byte TriggerWidget::getMask() const
 
     for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
     {
-        ret |= (m_checkboxes[i]->state() != QButton::NoChange) << i;
+        ret |= (m_checkboxes[i]->checkState() != Qt::PartiallyChecked) << i;
     }
 
     PRINT_TRACE("getMask, return %x", ret);
@@ -81,7 +81,7 @@ byte TriggerWidget::getValue() const
 
     for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
     {
-        ret |= (m_checkboxes[i]->state() == QButton::On) << i;
+        ret |= (m_checkboxes[i]->checkState() == Qt::Checked) << i;
     }
 
     PRINT_TRACE("getValue, return %x", ret);
