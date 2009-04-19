@@ -137,7 +137,7 @@ LIBS       += -lqassistantclient
 
 # -----------------------------------------------------------------------------
 
-DEFINES    += VERSION_STRING=\"$$VERSION_STRING\"
+DEFINES    += VERSION_STRING=\\\"$$VERSION_STRING\\\"
 DEFINES    += MAJOR_VERSION=$$MAJOR_VERSION
 DEFINES    += MINOR_VERSION=$$MINOR_VERSION
 DEFINES    += PATCH_VERSION=$$PATCH_VERSION
