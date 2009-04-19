@@ -15,6 +15,8 @@
  * -------------------------------------------------------------------------------------------------
  */
 #include "wheelscrollbar.h"
+//Added by qt3to4:
+#include <QWheelEvent>
 
 // -------------------------------------------------------------------------------------------------
 WheelScrollBar::WheelScrollBar(QWidget * parent, const char* name)
@@ -23,14 +25,14 @@ WheelScrollBar::WheelScrollBar(QWidget * parent, const char* name)
 
 
 // -------------------------------------------------------------------------------------------------
-WheelScrollBar::WheelScrollBar(Orientation orientation, QWidget* parent, const char* name)
+WheelScrollBar::WheelScrollBar(Qt::Orientation orientation, QWidget* parent, const char* name)
     : QScrollBar(orientation, parent, name)
 {}
 
 
 // -------------------------------------------------------------------------------------------------
 WheelScrollBar::WheelScrollBar(int minValue, int maxValue, int lineStep, int pageStep,
-                               int value,  Orientation orientation, QWidget* parent,
+                               int value,  Qt::Orientation orientation, QWidget* parent,
                                const char* name)
     : QScrollBar(minValue, maxValue, lineStep, pageStep, value, orientation, parent, name)
 {}

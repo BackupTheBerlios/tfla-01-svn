@@ -19,8 +19,10 @@
 
 #include <qtabwidget.h>
 #include <qdialog.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 
 class AboutDialog : public QDialog
 {
@@ -35,7 +37,7 @@ class AboutDialog : public QDialog
 
     private:
         QTabWidget* m_tabWidget;
-        QVBoxLayout* m_mainLayout;
+        Q3VBoxLayout* m_mainLayout;
 };
 
 

@@ -18,11 +18,13 @@
 #define CENTRALWIDGET_H
 
 #include <qwidget.h>
+//Added by qt3to4:
+#include <Q3Frame>
 
 #include "dataview.h"
 #include "parameterbox.h"
 
-class CentralWidget : public QFrame
+class CentralWidget : public Q3Frame
 {
     Q_OBJECT
 

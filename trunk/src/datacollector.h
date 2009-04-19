@@ -19,8 +19,8 @@
 
 #include <qobject.h>
 #include <qdatetime.h>
-#include <qcstring.h>
-#include <qvaluevector.h>
+#include <q3cstring.h>
+#include <q3valuevector.h>
 #include <qthread.h>
 
 #include "hardware/parport.h"

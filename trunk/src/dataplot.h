@@ -17,9 +17,12 @@
 #ifndef DATAPLOT_H
 #define DATAPLOT_H
 
-#include <qframe.h>
-#include <qvaluevector.h>
+#include <q3frame.h>
+#include <q3valuevector.h>
 #include <qpixmap.h>
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <QPaintEvent>
 
 class DataView;
 
@@ -82,7 +85,7 @@ class DataPlot : public QWidget
         int                 m_lastWidth;
         int                 m_lastHeight;
         bool                m_gridEnabled;
-        QValueVector<uint>  m_xPositions;
+        Q3ValueVector<uint>  m_xPositions;
         int                 m_leftMarker;
         int                 m_rightMarker;
 };

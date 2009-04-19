@@ -16,8 +16,11 @@
  */
 #include <qwidget.h>
 #include <qlayout.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <Q3Frame>
+#include <Q3VBoxLayout>
 
 #include "centralwidget.h"
 #include "dataview.h"
@@ -25,15 +28,15 @@
 // -------------------------------------------------------------------------------------------------
 CentralWidget::CentralWidget(QWidget* parent, const char* name)
     throw ()
-    : QFrame(parent, name)
+    : Q3Frame(parent, name)
 {
-    QVBoxLayout* layout = new QVBoxLayout(this, 6);
+    Q3VBoxLayout* layout = new Q3VBoxLayout(this, 6);
     m_dataView = new DataView(this);
 
     layout->addWidget(m_dataView);
     layout->setStretchFactor(m_dataView, 10);
 
-    QGroupBox* groupBox = new QGroupBox(1, Horizontal, this);
+    Q3GroupBox* groupBox = new Q3GroupBox(1, Horizontal, this);
     m_parametersBox = new ParameterBox(groupBox);
 
     layout->addWidget(groupBox);

@@ -14,15 +14,15 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <qhbox.h>
+#include <q3hbox.h>
 
 #include "exportdialog.h"
 
 // -----------------------------------------------------------------------------
 ExportDialog::ExportDialog(const QString &dirName, QWidget *parent)
-    : QFileDialog(dirName, NULL, parent, "ExportDialog", true)
+    : Q3FileDialog(dirName, NULL, parent, "ExportDialog", true)
 {
-    QHBox *box = new QHBox(this);
+    Q3HBox *box = new Q3HBox(this);
 
     m_diffModeCB = new QCheckBox(tr("Save only &state changes (reduces file size)"), box);
     QWidget *filler = new QWidget(box);

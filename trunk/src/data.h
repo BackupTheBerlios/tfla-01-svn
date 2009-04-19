@@ -17,7 +17,7 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
 #include <qaction.h>
 
 #include "global.h"

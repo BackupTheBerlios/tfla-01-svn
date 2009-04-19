@@ -14,15 +14,19 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlayout.h>
 #include <qpixmap.h>
 #include <qapplication.h>
 #include <qscrollbar.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qstatusbar.h>
 #include <qmessagebox.h>
 #include <qcursor.h>
+//Added by qt3to4:
+#include <Q3TextStream>
+#include <QWheelEvent>
+#include <Q3VBoxLayout>
 
 #include "settings.h"
 #include "dataview.h"
@@ -39,7 +43,7 @@ DataView::DataView(QWidget* parent, const char* name)
     throw ()
     : QWidget(parent, name), m_scrollDivisor(1)
 {
-    QVBoxLayout* layout = new QVBoxLayout(this, 0);
+    Q3VBoxLayout* layout = new Q3VBoxLayout(this, 0);
     m_dataPlot = new DataPlot(this, this);
     m_scrollBar = new WheelScrollBar(Qt::Horizontal, this);
     m_scrollBar->setTracking(false);
@@ -345,7 +349,7 @@ void DataView::jumpToRightMarker() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::saveScreenshot() throw ()
 {
-    QString fileName = QFileDialog::getSaveFileName(
+    QString fileName = Q3FileDialog::getSaveFileName(
         QString::null, tr("PNG files (*.png)"),
         this, "", tr("Choose file to save"));
     if (!fileName)
@@ -372,7 +376,7 @@ void DataView::exportToCSV()
     bool diff;
 
     ExportDialog* ed = new ExportDialog(QDir::currentDirPath(), this);
-    ed->setMode(QFileDialog::AnyFile);
+    ed->setMode(Q3FileDialog::AnyFile);
 
     if (ed->exec() != QDialog::Accepted)
     {
@@ -383,12 +387,12 @@ void DataView::exportToCSV()
     diff = ed->getDiffMode();
 
     QFile file(fileName);
-    if (!file.open(IO_WriteOnly))
+    if (!file.open(QIODevice::WriteOnly))
     {
         return;
     }
 
-    QTextStream stream(&file);
+    Q3TextStream stream(&file);
     QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
     // write header

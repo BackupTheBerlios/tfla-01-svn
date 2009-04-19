@@ -19,6 +19,10 @@
 #include <qevent.h>
 #include <qapplication.h>
 #include <qstatusbar.h>
+//Added by qt3to4:
+#include <Q3PointArray>
+#include <QPaintEvent>
+#include <QMouseEvent>
 
 #include "dataplot.h"
 #include "global.h"
@@ -31,7 +35,7 @@
 
 // -------------------------------------------------------------------------------------------------
 DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name) throw ()
-    : QWidget(parent, name, WRepaintNoErase),
+    : QWidget(parent, name, Qt::WNoAutoErase),
       m_dataView(dataView), m_startIndex(0), m_zoomFactor(1.0),
       m_lastPixmap(0, 0), m_leftMarker(-1), m_rightMarker(-1)
 {
@@ -311,7 +315,7 @@ void DataPlot::plot(QPainter* painter)
     {
         painter->setPen(gridPen);
 
-        for (QValueVector<uint>::iterator it = m_xPositions.begin(); it != m_xPositions.end(); ++it)
+        for (Q3ValueVector<uint>::iterator it = m_xPositions.begin(); it != m_xPositions.end(); ++it)
         {
             painter->drawLine(*it, 0, *it, height());
         }
@@ -345,9 +349,9 @@ void DataPlot::plot(QPainter* painter)
 
                 case Data::LS_CHANGING:
                 {
-                    QPointArray points(m_xPositions.size());
+                    Q3PointArray points(m_xPositions.size());
 
-                    QValueVector<uint>::iterator it = m_xPositions.begin();
+                    Q3ValueVector<uint>::iterator it = m_xPositions.begin();
                     uint j = m_startIndex, j0 = 0;
 
                     // handle the first point

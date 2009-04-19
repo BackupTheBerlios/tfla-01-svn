@@ -20,9 +20,12 @@
 #include <qslider.h>
 #include <qlabel.h>
 #include <qlocale.h>
-#include <qdatetimeedit.h>
+#include <q3datetimeedit.h>
 #include <qdatetime.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3Frame>
 
 #include "parameterbox.h"
 #include "triggerwidget.h"
@@ -33,9 +36,9 @@
 // -------------------------------------------------------------------------------------------------
 ParameterBox::ParameterBox(QWidget* parent, const char* name)
     throw ()
-    : QFrame(parent, name), m_leftValue(-1.0), m_rightValue(-1.0)
+    : Q3Frame(parent, name), m_leftValue(-1.0), m_rightValue(-1.0)
 {
-    QGridLayout* layout = new QGridLayout(this, 5 /* row */, 9 /* col */, 0 /* margin */, 5);
+    Q3GridLayout* layout = new Q3GridLayout(this, 5 /* row */, 9 /* col */, 0 /* margin */, 5);
 
     // - create ------------------------------------------------------------------------------------
 
@@ -47,7 +50,7 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     QLabel* sampleLabel = new QLabel(tr("&Sampling Rate:"), this);
     QLabel* triggerLabel = new QLabel(tr("&Triggering:"), this);
 
-    QTimeEdit* timeedit = new QTimeEdit(this);
+    Q3TimeEdit* timeedit = new Q3TimeEdit(this);
     timeedit->setRange(QTime(0, 0), QTime(0, 1));
     QSlider* sampleSlider = new QSlider(0, MAX_SLIDER_VALUE, 1, 0, Qt::Horizontal, this);
     TriggerWidget* triggering = new TriggerWidget(this);

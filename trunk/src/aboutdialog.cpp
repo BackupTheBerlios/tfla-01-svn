@@ -15,13 +15,18 @@
  * -------------------------------------------------------------------------------------------------
  */
 #include <qlabel.h>
-#include <qhbox.h>
-#include <qvbox.h>
+#include <q3hbox.h>
+#include <q3vbox.h>
 #include <qfile.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qapplication.h>
 #include <qdir.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3TextStream>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
 #include "aboutdialog.h"
 
@@ -30,11 +35,11 @@ AboutDialog::AboutDialog(QWidget* parent, const char* name)
     throw ()
     : QDialog(parent, name)
 {
-     m_mainLayout = new QVBoxLayout(this, 10, 6);
+     m_mainLayout = new Q3VBoxLayout(this, 10, 6);
     setCaption(tr("About The Fabulous Logic Analyzer"));
 
     // the top of the dialog
-    QHBox* titleBox = new QHBox(this);
+    Q3HBox* titleBox = new Q3HBox(this);
     QLabel* titleIcon = new QLabel(titleBox);
     titleIcon->setPixmap(QPixmap::fromMimeSource("tfla-01_32.png"));
     QLabel* titleText = new QLabel(tr("<p><b>The Fabulous Logic Analyzer "VERSION_STRING"</b></p>"),
@@ -52,7 +57,7 @@ AboutDialog::AboutDialog(QWidget* parent, const char* name)
     QPushButton* okButton = new QPushButton(tr("&Close"), this, "Close button");
     okButton->setDefault(true);
     QWidget* filler = new QWidget(this);
-    QHBoxLayout* buttonLayout = new QHBoxLayout(0, 0, 6);
+    Q3HBoxLayout* buttonLayout = new Q3HBoxLayout(0, 0, 6);
     buttonLayout->addWidget(filler);
     buttonLayout->addWidget(okButton);
     buttonLayout->setStretchFactor(filler, 1);
@@ -71,7 +76,7 @@ AboutDialog::AboutDialog(QWidget* parent, const char* name)
 // -------------------------------------------------------------------------------------------------
 void AboutDialog::setupAboutTab()
 {
-    QHBox* aboutTab = new QHBox(this);
+    Q3HBox* aboutTab = new Q3HBox(this);
     aboutTab->setMargin(15);
 
     (void)new QLabel(
@@ -92,20 +97,20 @@ void AboutDialog::setupAboutTab()
 // -------------------------------------------------------------------------------------------------
 void AboutDialog::setupLicenseTab()
 {
-    QVBox* licenseTab = new QVBox(this);
+    Q3VBox* licenseTab = new Q3VBox(this);
 
-    QTextEdit* textEdit = new QTextEdit(licenseTab);
+    Q3TextEdit* textEdit = new Q3TextEdit(licenseTab);
     textEdit->setReadOnly(true);
-    textEdit->setWordWrap(QTextEdit::FixedColumnWidth);
+    textEdit->setWordWrap(Q3TextEdit::FixedColumnWidth);
     textEdit->setWrapColumnOrWidth(100);
 
     QString fileName = qApp->applicationDirPath() + "/../share/tfla-01/COPYING";
     if (QFile::exists(fileName))
     {
         QFile file(fileName);
-        if (file.open( IO_ReadOnly ))
+        if (file.open( QIODevice::ReadOnly ))
         {
-            QTextStream stream(&file);
+            Q3TextStream stream(&file);
             textEdit->setText("<pre>" + stream.read() + "</pre>");
         }
     }

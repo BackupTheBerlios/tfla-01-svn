@@ -15,7 +15,10 @@
  * -------------------------------------------------------------------------------------------------
  */
 #include <qlayout.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <QLabel>
 
 #include "triggerwidget.h"
 
@@ -27,15 +30,15 @@ TriggerWidget::TriggerWidget(QWidget* parent, const char* name)
     throw ()
     : QWidget(parent, name)
 {
-    QVBoxLayout* boxLayout = new QVBoxLayout(this, 0, 0);
+    Q3VBoxLayout* boxLayout = new Q3VBoxLayout(this, 0, 0);
 
-    QHBox* hbox = new QHBox(this);
+    Q3HBox* hbox = new Q3HBox(this);
     hbox->setSpacing(2);
 
     // create the checkboxes with their labels
     for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
     {
-        QVBox* box = new QVBox(hbox);
+        Q3VBox* box = new Q3VBox(hbox);
         box->setSpacing(2);
 
         m_labels[i] = new QLabel(QString::number(i+1), box);

@@ -17,12 +17,12 @@
 #ifndef PARAMETERBOX_H
 #define PARAMETERBOX_H
 
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
 
 #include "global.h"
 
-class ParameterBox : public QFrame
+class ParameterBox : public Q3Frame
 {
     Q_OBJECT
 

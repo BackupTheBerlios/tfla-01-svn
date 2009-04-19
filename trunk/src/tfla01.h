@@ -17,13 +17,16 @@
 #ifndef TFLA01_H
 #define TFLA01_H
 
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
 #include <qaction.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
+#include <QCloseEvent>
 
 #include "centralwidget.h"
 #include "help.h"
 
-class Tfla01 : public QMainWindow
+class Tfla01 : public Q3MainWindow
 {
     Q_OBJECT
 
@@ -79,7 +82,7 @@ class Tfla01 : public QMainWindow
         }
         m_actions;
         CentralWidget* m_centralWidget;
-        QPopupMenu*    m_portsMenu;
+        Q3PopupMenu*    m_portsMenu;
         Help           m_help;
         bool           m_analyzingActive;
 

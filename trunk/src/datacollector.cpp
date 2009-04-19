@@ -21,7 +21,7 @@
 
 #include <qobject.h>
 #include <qdatetime.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qapplication.h>
 #include <qstatusbar.h>
 

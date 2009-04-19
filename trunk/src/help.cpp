@@ -20,7 +20,7 @@
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qwidget.h>
-#include <qprocess.h>
+#include <q3process.h>
 #include <qtextcodec.h>
 #include <qfile.h>
 

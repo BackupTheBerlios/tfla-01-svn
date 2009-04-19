@@ -17,10 +17,10 @@
 #ifndef EXPORTDIALOG_H
 #define EXPORTDIALOG_H
 
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qcheckbox.h>
 
-class ExportDialog : public QFileDialog
+class ExportDialog : public Q3FileDialog
 {
     Q_OBJECT
 
