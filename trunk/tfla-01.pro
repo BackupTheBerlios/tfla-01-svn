@@ -218,5 +218,4 @@ i_pixmaps.files            += images/tfla-01*
 INSTALLS                   += i_pixmaps
 
 
-#The following line was inserted by qt3to4
 QT +=  qt3support 
