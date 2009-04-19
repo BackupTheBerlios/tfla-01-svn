@@ -32,8 +32,8 @@ class Settings
 
         QString readEntry(const QString & key, const QString& def = QString::null) throw ();
         int readNumEntry (const QString & key, int def = 0) throw ();
-        double readDoubleEntry(const QString & key, double def = 0.0) const throw ();
-        bool readBoolEntry(const QString & key, bool def = false) const throw ();
+        double readDoubleEntry(const QString & key, double def = 0.0) throw ();
+        bool readBoolEntry(const QString & key, bool def = false) throw ();
 
      public:
         static Settings& set() throw ();

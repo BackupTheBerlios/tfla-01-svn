@@ -132,7 +132,7 @@ int Settings::readNumEntry (const QString & key, int def)
 
 
 // -------------------------------------------------------------------------------------------------
-double Settings::readDoubleEntry(const QString & key, double def) const
+double Settings::readDoubleEntry(const QString & key, double def)
     throw ()
 {
     bool read = false;
@@ -152,7 +152,7 @@ double Settings::readDoubleEntry(const QString & key, double def) const
 
 
 // -------------------------------------------------------------------------------------------------
-bool Settings::readBoolEntry(const QString & key, bool def) const
+bool Settings::readBoolEntry(const QString & key, bool def)
     throw ()
 {
     bool read = false;
