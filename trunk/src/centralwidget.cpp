@@ -36,7 +36,7 @@ CentralWidget::CentralWidget(QWidget* parent, const char* name)
     layout->addWidget(m_dataView);
     layout->setStretchFactor(m_dataView, 10);
 
-    Q3GroupBox* groupBox = new Q3GroupBox(1, Horizontal, this);
+    Q3GroupBox* groupBox = new Q3GroupBox(1, Qt::Horizontal, this);
     m_parametersBox = new ParameterBox(groupBox);
 
     layout->addWidget(groupBox);
