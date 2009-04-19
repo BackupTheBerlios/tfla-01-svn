@@ -17,7 +17,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <qvaluevector.h>
+ #include <Q3ValueVector>
 
 /**
  * Byte is shorter than unsigned char.
@@ -25,9 +25,9 @@
 typedef unsigned char byte;
 
 /**
- * ByteVector is shorter than QValueVector\<byte\> or even QValueVector\<unsigned char\>.
+ * ByteVector is shorter than Q3ValueVector\<byte\> or even Q3ValueVector\<unsigned char\>.
  */
-typedef QValueVector<byte> ByteVector;
+typedef Q3ValueVector<byte> ByteVector;
 
 /**
  * uint is shorter than unsigned int.
