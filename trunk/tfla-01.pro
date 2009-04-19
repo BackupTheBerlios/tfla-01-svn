@@ -80,52 +80,7 @@ TRANSLATIONS =                                  \
 # -----------------------------------------------------------------------------
 
 UI_DIR = out
-IMAGES =                                        \
-    images/tfla-01_32.png                       \
-    images/stock_exit_16.png                    \
-    images/stock_exit_24.png                    \
-    images/stock_help_16.png                    \
-    images/stock_help_24.png                    \
-    images/info_16.png                          \
-    images/info_24.png                          \
-    images/whats_this.png                       \
-    images/qt_16.png                            \
-    images/stock_redo_16.png                    \
-    images/stock_redo_24.png                    \
-    images/stock_stop_16.png                    \
-    images/stock_stop_24.png                    \
-    images/stock_zoom-1_16.png                  \
-    images/stock_zoom-1_24.png                  \
-    images/stock_zoom_in_16.png                 \
-    images/stock_zoom_in_24.png                 \
-    images/stock_zoom-out_16.png                \
-    images/stock_zoom-out_24.png                \
-    images/stock_zoom-page-width_16.png         \
-    images/stock_zoom-page-width_24.png         \
-    images/stock_3d-color-picker_16.png         \
-    images/stock_3d-color-picker_24.png         \
-    images/stock_last_16.png                    \
-    images/stock_last_24.png                    \
-    images/stock_first_16.png                   \
-    images/stock_first_24.png                   \
-    images/stock_right_arrow_16.png             \
-    images/stock_right_arrow_24.png             \
-    images/stock_left_arrow_16.png              \
-    images/stock_left_arrow_24.png              \
-    images/stock_convert_16.png                 \
-    images/stock_convert_24.png                 \
-    images/stock_zoom-optimal_16.png            \
-    images/stock_zoom-optimal_24.png            \
-    images/network_16.png                       \
-    images/network_24.png                       \
-    images/stock_previous-page_16.png           \
-    images/stock_previous-page_24.png           \
-    images/stock_next-page_16.png               \
-    images/stock_next-page_24.png               \
-    images/stock_export_16.png                  \
-    images/stock_export_24.png
-
-
+RESOURCES     = tfla-01.qrc
 
 #win32:RC_FILE = share/win32/tfla-01_win32.rc
 
@@ -133,7 +88,6 @@ IMAGES =                                        \
 # -----------------------------------------------------------------------------
 
 CONFIG     += warn_on qt exceptions thread
-LIBS       += -lqassistantclient
 
 # -----------------------------------------------------------------------------
 

@@ -15,6 +15,8 @@
  * -------------------------------------------------------------------------------------------------
  */
 #include <qstring.h>
+#include <QObject>
+
 #include <ieee1284.h>
 
 #include "parporterror.h"

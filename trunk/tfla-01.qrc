@@ -1,0 +1,48 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+  <file>images/info_16.png</file>
+  <file>images/info_24.png</file>
+  <file>images/network_16.png</file>
+  <file>images/network_24.png</file>
+  <file>images/qt_16.png</file>
+  <file>images/stock_3d-color-picker_16.png</file>
+  <file>images/stock_3d-color-picker_24.png</file>
+  <file>images/stock_convert_16.png</file>
+  <file>images/stock_convert_24.png</file>
+  <file>images/stock_exit_16.png</file>
+  <file>images/stock_exit_24.png</file>
+  <file>images/stock_export_16.png</file>
+  <file>images/stock_export_24.png</file>
+  <file>images/stock_first_16.png</file>
+  <file>images/stock_first_24.png</file>
+  <file>images/stock_help_16.png</file>
+  <file>images/stock_help_24.png</file>
+  <file>images/stock_last_16.png</file>
+  <file>images/stock_last_24.png</file>
+  <file>images/stock_left_arrow_16.png</file>
+  <file>images/stock_left_arrow_24.png</file>
+  <file>images/stock_next-page_16.png</file>
+  <file>images/stock_next-page_24.png</file>
+  <file>images/stock_previous-page_16.png</file>
+  <file>images/stock_previous-page_24.png</file>
+  <file>images/stock_redo_16.png</file>
+  <file>images/stock_redo_24.png</file>
+  <file>images/stock_right_arrow_16.png</file>
+  <file>images/stock_right_arrow_24.png</file>
+  <file>images/stock_stop_16.png</file>
+  <file>images/stock_stop_24.png</file>
+  <file>images/stock_zoom-1_16.png</file>
+  <file>images/stock_zoom-1_24.png</file>
+  <file>images/stock_zoom_in_16.png</file>
+  <file>images/stock_zoom_in_24.png</file>
+  <file>images/stock_zoom-optimal_16.png</file>
+  <file>images/stock_zoom-optimal_24.png</file>
+  <file>images/stock_zoom-out_16.png</file>
+  <file>images/stock_zoom-out_24.png</file>
+  <file>images/stock_zoom-page-width_16.png</file>
+  <file>images/stock_zoom-page-width_24.png</file>
+  <file>images/tfla-01_32.png</file>
+  <file>images/whats_this.png</file>
+</qresource>
+</RCC>
+<!-- vim: set ft=xml: -->

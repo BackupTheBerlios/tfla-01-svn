@@ -47,6 +47,7 @@ DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name) throw 
 // -------------------------------------------------------------------------------------------------
 void DataPlot::paintEvent(QPaintEvent*)
 {
+	qDebug("DataPlot::paintEvent(QPaintEvent*)");
     updateData(false);
 }
 
@@ -54,6 +55,7 @@ void DataPlot::paintEvent(QPaintEvent*)
 // -------------------------------------------------------------------------------------------------
 void DataPlot::setZoomFactor(double factor) throw ()
 {
+	qDebug("DataPlot::setZoomFactor(double factor) throw ()");
     m_zoomFactor = factor;
     recalculateXPositions();
     updateData(true);

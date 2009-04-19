@@ -48,7 +48,6 @@ class Tfla01 : public Q3MainWindow
         void changeForegroundColor() throw ();
         void changeLeftColor() throw ();
         void changeRightColor() throw ();
-        void changeBrowser() throw ();
 
     private:
         struct
@@ -70,7 +69,6 @@ class Tfla01 : public Q3MainWindow
             QAction* changeForegroundColorAction;
             QAction* changeLeftColorAction;
             QAction* changeRightColorAction;
-            QAction* changeBrowserAction;
             QAction* navigatePos1Action;
             QAction* navigateEndAction;
             QAction* navigateLeftAction;
