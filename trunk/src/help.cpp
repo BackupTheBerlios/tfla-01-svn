@@ -23,6 +23,7 @@
 #include <q3process.h>
 #include <qtextcodec.h>
 #include <qfile.h>
+#include <QDesktopServices>
 
 #include "global.h"
 #include "tfla01.h"
@@ -30,14 +31,6 @@
 #include "settings.h"
 #include "aboutdialog.h"
 
-
-// -------------------------------------------------------------------------------------------------
-Help::Help() throw ()
-{
-    m_client = new QAssistantClient("", this);
-
-
-}
 
 // -------------------------------------------------------------------------------------------------
 void Help::showAbout()
@@ -57,19 +50,15 @@ void Help::showHelp()
 
     if (QFile::exists(base + "/" + loc + "/index.html"))
     {
-        args += "-profile";
-        args += QString(base + "/" + loc + "assistantconfig.xml");
-        m_client->setArguments(args);
-        m_client->openAssistant();
-        m_client->showPage(base + "/" + loc + "/index.html");
+		QString url = "file:///" + base + "/" + loc + "/index.html";
+		qDebug("URL: %s", url.latin1());
+		QDesktopServices::openURL(url);
     }
     else if (QFile::exists(base + "/en/index.html"))
     {
-        args += "-profile";
-        args += QString(base + "/en/assistantconfig.xml");
-        m_client->setArguments(args);
-        m_client->openAssistant();
-        m_client->showPage(base + "/en/index.html");
+		QString url = "file:///" + base + "/en/index.html";
+		qDebug("URL: %s", url.latin1());
+		QDesktopServices::openURL(url);
     }
     else
     {

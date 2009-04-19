@@ -219,4 +219,4 @@ INSTALLS                   += i_pixmaps
 
 
 #The following line was inserted by qt3to4
-QT +=  assistant qt3support 
+QT +=  qt3support 
