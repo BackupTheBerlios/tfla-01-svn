@@ -352,7 +352,7 @@ void DataView::saveScreenshot() throw ()
     QString fileName = Q3FileDialog::getSaveFileName(
         QString::null, tr("PNG files (*.png)"),
         this, "", tr("Choose file to save"));
-    if (!fileName)
+    if (fileName.isNull())
     {
         return;
     }
