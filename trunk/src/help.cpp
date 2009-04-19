@@ -24,6 +24,7 @@
 #include <qtextcodec.h>
 #include <qfile.h>
 #include <QDesktopServices>
+#include <QUrl>
 
 #include "global.h"
 #include "tfla01.h"
@@ -52,13 +53,13 @@ void Help::showHelp()
     {
 		QString url = "file:///" + base + "/" + loc + "/index.html";
 		qDebug("URL: %s", url.latin1());
-		QDesktopServices::openURL(url);
+		QDesktopServices::openUrl(QUrl(url));
     }
     else if (QFile::exists(base + "/en/index.html"))
     {
 		QString url = "file:///" + base + "/en/index.html";
 		qDebug("URL: %s", url.latin1());
-		QDesktopServices::openURL(url);
+		QDesktopServices::openUrl(QUrl(url));
     }
     else
     {
