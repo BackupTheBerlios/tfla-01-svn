@@ -46,22 +46,22 @@ void WheelScrollBar::wheelEvent(QWheelEvent* e)
         case Qt::ShiftButton:
             if (e->delta() > 0)
             {
-                emit prevPage();
+                emit actionTriggered(QAbstractSlider::SliderPageStepSub);
             }
             else
             {
-                emit nextPage();
+                emit actionTriggered(QAbstractSlider::SliderPageStepAdd);
             }
             break;
 
         case Qt::NoButton:
             if (e->delta() > 0)
             {
-                emit prevLine();
+                emit actionTriggered(QAbstractSlider::SliderSingleStepSub);
             }
             else
             {
-                emit nextLine();
+                emit actionTriggered(QAbstractSlider::SliderSingleStepAdd);
             }
             break;
 
