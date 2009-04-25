@@ -118,7 +118,7 @@ void DataView::zoomFit()
 {
     if (m_currentData.bytes().size() != 0) {
         m_dataPlot->setStartIndex(0);
-        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 1) /
+        m_dataPlot->setZoomFactor( double(m_dataPlot->getCurrentWidthForPlot() - 1) /
                               m_dataPlot->getPointsPerSample() / m_currentData.bytes().size() );
     } else {
         static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
@@ -139,7 +139,7 @@ void DataView::zoomMarkers() throw ()
 {
     if (m_dataPlot->getLeftMarker() > 0 && m_dataPlot->getRightMarker() > 0) {
         double diff = DABS(m_dataPlot->getRightMarker() - m_dataPlot->getLeftMarker());
-        m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 2) /
+        m_dataPlot->setZoomFactor( double(m_dataPlot->getCurrentWidthForPlot() - 2) /
                               m_dataPlot->getPointsPerSample() / diff );
         m_dataPlot->setStartIndex(QMIN(m_dataPlot->getLeftMarker(), m_dataPlot->getRightMarker()));
     } else {
@@ -269,7 +269,7 @@ void DataView::navigate(QAbstractSlider::SliderAction direction) throw ()
         case QAbstractSlider::SliderPageStepAdd:
             si = QMIN( m_dataPlot->getStartIndex() +
                     qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()),
-                    static_cast<int>(m_currentData.bytes().size()));
+                    int(m_currentData.bytes().size()));
             m_dataPlot->setStartIndex(si);
             break;
 

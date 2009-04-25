@@ -54,7 +54,7 @@ void DataPlot::paintEvent(QPaintEvent*)
     const bool forceRedraw = true;
  
     QPainter p;
-    QPixmap screenPixmap( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE *  m_zoomFactor),
+    QPixmap screenPixmap( int(width() + DEFAULT_POINTS_PER_SAMPLE *  m_zoomFactor),
                          height() );
 
     if (m_lastWidth != width())
@@ -63,9 +63,7 @@ void DataPlot::paintEvent(QPaintEvent*)
     if (forceRedraw || m_lastWidth != width() || m_lastHeight != height()
             || (m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0)) {
         // larger pixmap to have space to draw the last point
-        m_lastPixmap.resize( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE *
-                                                          m_zoomFactor),
-                             height() );
+        m_lastPixmap.resize(int(width() + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor), height());
         m_lastPixmap.fill(QColor(Settings::set().readEntry("UI/Background_Color")));
 
         p.begin(&m_lastPixmap);
@@ -202,7 +200,7 @@ int DataPlot::getNumberOfPossiblyDisplayedSamples() const throw()
 // -------------------------------------------------------------------------------------------------
 int DataPlot::getCurrentWidthForPlot() const throw ()
 {
-    return width() - static_cast<int>( 2.0 / 3.0 * (height() / NUMBER_OF_BITS_PER_BYTE) );
+    return width() - int(2.0 / 3.0 * (height() / NUMBER_OF_BITS_PER_BYTE));
 }
 
 
@@ -254,7 +252,7 @@ void DataPlot::recalculateXPositions() throw ()
 // -------------------------------------------------------------------------------------------------
 int DataPlot::getLeftBegin() const throw ()
 {
-    return static_cast<int>( 2.0 / 3.0 * height() / NUMBER_OF_BITS_PER_BYTE );
+    return int(2.0 / 3.0 * height() / NUMBER_OF_BITS_PER_BYTE);
 }
 
 
@@ -372,7 +370,7 @@ void DataPlot::drawMarkers(QPainter* painter) throw ()
     if (m_leftMarker != -1) {
         int displaySample = m_leftMarker - m_startIndex;
 
-        if (displaySample >= 0 && displaySample < static_cast<int>(m_xPositions.size())) {
+        if (displaySample >= 0 && displaySample < int(m_xPositions.size())) {
             int x = m_xPositions[displaySample];
             painter->setPen(leftMarkerPen);
             painter->drawLine(x, 0, x, height());
@@ -381,7 +379,7 @@ void DataPlot::drawMarkers(QPainter* painter) throw ()
     if (m_rightMarker != -1) {
         int displaySample = m_rightMarker - m_startIndex;
 
-        if (displaySample >= 0 && displaySample < static_cast<int>(m_xPositions.size())) {
+        if (displaySample >= 0 && displaySample < int(m_xPositions.size())) {
             int x = m_xPositions[displaySample];
             painter->setPen(rightMarkerPen);
             painter->drawLine(x, 0, x, height());
@@ -407,10 +405,10 @@ void DataPlot::mousePressEvent(QMouseEvent* evt)
             return;
 
         // check if the user clicked too much right
-        if (evt->x() > static_cast<int>(m_xPositions.last()))
+        if (evt->x() > int(m_xPositions.last()))
             return;
 
-        double possibleSamplesPerScreen = static_cast<double>(width()) /
+        double possibleSamplesPerScreen = double(width()) /
                                           (DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor);
 
         int sample = qRound(leftDistance * possibleSamplesPerScreen / width() + getStartIndex());
