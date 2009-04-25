@@ -31,12 +31,6 @@ typedef unsigned char byte;
 typedef Q3ValueVector<byte> ByteVector;
 
 /**
- * uint is shorter than unsigned int.
- */
-typedef unsigned int uint;
-
-
-/**
  * Number of bytes in a bit.
  */
 #define NUMBER_OF_BITS_PER_BYTE 8

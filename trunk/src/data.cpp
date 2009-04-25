@@ -43,14 +43,14 @@ const ByteVector& Data::bytes() const throw()
 
 
 // -------------------------------------------------------------------------------------------------
-uint Data::getMeasuringTime() const throw ()
+unsigned int Data::getMeasuringTime() const throw ()
 {
     return m_measuringTime;
 }
 
 
 // -------------------------------------------------------------------------------------------------
-void Data::setMeasuringTime(uint time) throw ()
+void Data::setMeasuringTime(unsigned int time) throw ()
 {
     m_measuringTime = time;
 }
@@ -71,7 +71,7 @@ void Data::calculateLineStates() throw ()
     for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++) {
         m_lineStates[i] = bit_is_set(m_bytes[0], i) ? LS_ALWAYS_H : LS_ALWAYS_L;
 
-        for (uint j = 0; j < m_bytes.size() && m_lineStates[i] != LS_CHANGING; j++) {
+        for (unsigned int j = 0; j < m_bytes.size() && m_lineStates[i] != LS_CHANGING; j++) {
             switch (m_lineStates[i]) {
                 case LS_ALWAYS_L:
                     if (bit_is_set(m_bytes[j], i))

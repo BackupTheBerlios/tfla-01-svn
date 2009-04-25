@@ -33,7 +33,7 @@
 const int DataCollector::INITIAL_VECTOR_SPACE   = 1000000;
 
 // -------------------------------------------------------------------------------------------------
-DataCollector::DataCollector(uint port) throw ()
+DataCollector::DataCollector(unsigned int port) throw ()
     : m_portNumber(port)
     , m_triggering(false)
     , m_triggeringMask(0)

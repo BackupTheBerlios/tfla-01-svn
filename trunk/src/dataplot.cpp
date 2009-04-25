@@ -296,7 +296,8 @@ void DataPlot::plot(QPainter* painter)
     if (m_xPositions.size() >= 2 && (m_xPositions[1] - m_xPositions[0]) > 3) {
         painter->setPen(gridPen);
 
-        for (Q3ValueVector<uint>::iterator it = m_xPositions.begin(); it != m_xPositions.end(); ++it)
+        for (Q3ValueVector<unsigned int>::iterator it = m_xPositions.begin();
+                it != m_xPositions.end(); ++it)
             painter->drawLine(*it, 0, *it, height());
     }
 
@@ -326,7 +327,7 @@ void DataPlot::plot(QPainter* painter)
                 case Data::LS_CHANGING: {
                     Q3PointArray points(m_xPositions.size());
 
-                    Q3ValueVector<uint>::iterator it = m_xPositions.begin();
+                    Q3ValueVector<unsigned int>::iterator it = m_xPositions.begin();
                     int j = m_startIndex, j0 = 0;
 
                     // handle the first point

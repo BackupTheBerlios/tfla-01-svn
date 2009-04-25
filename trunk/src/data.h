@@ -34,16 +34,16 @@ class Data
 
         double getMsecsForSample(int sample) const throw();
 
-        uint getMeasuringTime() const throw ();
-        void setMeasuringTime(uint time) throw ();
+        unsigned int getMeasuringTime() const throw ();
+        void setMeasuringTime(unsigned int time) throw ();
 
         LineState getLineState(int line) const throw ();
         void calculateLineStates() throw ();
 
     private:
-        ByteVector m_bytes;
-        uint       m_measuringTime;
-        LineState  m_lineStates[NUMBER_OF_BITS_PER_BYTE];
+        ByteVector   m_bytes;
+        unsigned int m_measuringTime;
+        LineState    m_lineStates[NUMBER_OF_BITS_PER_BYTE];
 };
 
 #define bit_is_set(b, i) \

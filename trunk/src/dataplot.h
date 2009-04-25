@@ -75,16 +75,16 @@ class DataPlot : public QWidget
         void viewUpdated();
 
     private:
-        DataView*           m_dataView;
-        int                 m_startIndex;
-        double              m_zoomFactor;
-        QPixmap             m_lastPixmap;
-        int                 m_lastWidth;
-        int                 m_lastHeight;
-        bool                m_gridEnabled;
-        Q3ValueVector<uint>  m_xPositions;
-        int                 m_leftMarker;
-        int                 m_rightMarker;
+        DataView*                    m_dataView;
+        int                          m_startIndex;
+        double                       m_zoomFactor;
+        QPixmap                      m_lastPixmap;
+        int                          m_lastWidth;
+        int                          m_lastHeight;
+        bool                         m_gridEnabled;
+        Q3ValueVector<unsigned int>  m_xPositions;
+        int                          m_leftMarker;
+        int                          m_rightMarker;
 };
 
 #endif /* DATAPLOT_H */
