@@ -103,7 +103,7 @@ void AboutDialog::setupLicenseTab()
     textEdit->setWordWrap(Q3TextEdit::FixedColumnWidth);
     textEdit->setWrapColumnOrWidth(100);
 
-    QString fileName = qApp->applicationDirPath() + "/../share/tfla-01/COPYING";
+    const QString fileName = ":COPYING";
     if (QFile::exists(fileName))
     {
         QFile file(fileName);

@@ -43,6 +43,7 @@
   <file>images/stock_zoom-page-width_24.png</file>
   <file>images/tfla-01_32.png</file>
   <file>images/whats_this.png</file>
+  <file>COPYING</file>
 </qresource>
 </RCC>
 <!-- vim: set ft=xml: -->
