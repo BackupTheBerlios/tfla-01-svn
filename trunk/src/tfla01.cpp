@@ -29,9 +29,9 @@
 #include <qstatusbar.h>
 #include <qmessagebox.h>
 #include <qcolordialog.h>
-//Added by qt3to4:
 #include <QCloseEvent>
 #include <QDesktopWidget>
+#include <QToolBar>
 
 #include "hardware/parportlist.h"
 #include "tfla01.h"
@@ -44,16 +44,13 @@ using std::auto_ptr;
 // -------------------------------------------------------------------------------------------------
 Tfla01::Tfla01()
     throw ()
-    : Q3MainWindow(0, "tfla01 main window")
+    : QMainWindow(0, "tfla01 main window")
 {
     // Title and Icon
     setIcon(QPixmap(":/images/tfla-01_32.png"));
     setCaption(tr("The Fabulous Logic Analyzer"));
 
-    setUsesBigPixmaps(true);
-	// XXX
-	// QIcon::setIconSize(QIcon::Small, QSize(16, 16));
-	// QIcon::setIconSize(QIcon::Large, QSize(22, 22));
+    setIconSize(QSize(24, 24));
 
     // main widget in the center TODO
     m_centralWidget = new CentralWidget(this);
@@ -420,8 +417,9 @@ void Tfla01::initActions()
 void Tfla01::initToolbar()
     throw ()
 {
-    Q3ToolBar* applicationToolbar = new Q3ToolBar(this);
+    QToolBar* applicationToolbar = new QToolBar(this);
     applicationToolbar->setLabel(tr("Application"));
+    addToolBar(applicationToolbar);
 
     m_actions.quitAction->addTo(applicationToolbar);
     applicationToolbar->addSeparator();

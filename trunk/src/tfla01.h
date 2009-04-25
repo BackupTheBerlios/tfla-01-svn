@@ -17,7 +17,7 @@
 #ifndef TFLA01_H
 #define TFLA01_H
 
-#include <q3mainwindow.h>
+#include <QMainWindow>
 #include <qaction.h>
 //Added by qt3to4:
 #include <Q3PopupMenu>
@@ -26,7 +26,7 @@
 #include "centralwidget.h"
 #include "help.h"
 
-class Tfla01 : public Q3MainWindow
+class Tfla01 : public QMainWindow
 {
     Q_OBJECT
 
