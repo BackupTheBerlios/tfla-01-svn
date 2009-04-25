@@ -106,7 +106,7 @@ void AboutDialog::setupLicenseTab()
     textEdit->setWrapColumnOrWidth(100);
 
     QFile file(":COPYING");
-    if (file.open( QIODevice::ReadOnly )) {
+    if (file.open(QIODevice::ReadOnly)) {
         Q3TextStream stream(&file);
         textEdit->setText("<pre>" + stream.read() + "</pre>");
     }
