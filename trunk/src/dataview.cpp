@@ -56,7 +56,7 @@ DataView::DataView(QWidget* parent, const char* name)
     connect(m_dataPlot,              SIGNAL(rightMarkerValueChanged(double)),
             this,                    SIGNAL(rightMarkerValueChanged(double)));
     connect(m_scrollBar,             SIGNAL(actionTriggered(int)),
-            this,                    SLOT(navigateRightPage()));
+            this,                    SLOT(navigate(int)));
     connect(m_scrollBar,             SIGNAL(sliderReleased()),
             this,                    SLOT(scrollValueChanged()));
     connect(m_dataPlot,              SIGNAL(viewUpdated()),
@@ -250,7 +250,7 @@ void DataView::scrollValueChanged(int value) throw ()
 
 
 // -------------------------------------------------------------------------------------------------
-void DataView::navigate(QAbstractSlider::SliderAction direction) throw ()
+void DataView::navigate(int direction) throw ()
 {
     int si;
 
