@@ -177,7 +177,7 @@ void DataPlot::clearMarkers() throw ()
 // -------------------------------------------------------------------------------------------------
 int DataPlot::getNumberOfDisplayedSamples () const throw ()
 {
-    uint dataToDisplayMax = m_dataView->m_currentData.bytes().size() - m_startIndex;
+    int dataToDisplayMax = m_dataView->m_currentData.bytes().size() - m_startIndex;
 
     return  (dataToDisplayMax > (m_xPositions.size() - 1))
           ? m_xPositions.size() - 1
@@ -327,7 +327,7 @@ void DataPlot::plot(QPainter* painter)
                     Q3PointArray points(m_xPositions.size());
 
                     Q3ValueVector<uint>::iterator it = m_xPositions.begin();
-                    uint j = m_startIndex, j0 = 0;
+                    int j = m_startIndex, j0 = 0;
 
                     // handle the first point
                     bool oldHigh = data[j] & (1 << i);
