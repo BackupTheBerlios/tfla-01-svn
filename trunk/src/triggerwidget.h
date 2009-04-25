@@ -17,10 +17,10 @@
 #ifndef TRIGGERWIDGET_H
 #define TRIGGERWIDGET_H
 
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qdatetime.h>
+#include <QWidget>
+#include <QLabel>
+#include <QCheckBox>
+#include <QDateTime>
 
 #include "global.h"
 

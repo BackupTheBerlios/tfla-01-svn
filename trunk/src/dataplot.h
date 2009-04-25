@@ -17,10 +17,9 @@
 #ifndef DATAPLOT_H
 #define DATAPLOT_H
 
-#include <q3frame.h>
-#include <q3valuevector.h>
-#include <qpixmap.h>
-//Added by qt3to4:
+#include <Q3Frame>
+#include <Q3ValueVector>
+#include <QPixmap>
 #include <QMouseEvent>
 #include <QPaintEvent>
 

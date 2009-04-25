@@ -18,8 +18,7 @@
 #define TFLA01_H
 
 #include <QMainWindow>
-#include <qaction.h>
-//Added by qt3to4:
+#include <QAction>
 #include <Q3PopupMenu>
 #include <QCloseEvent>
 

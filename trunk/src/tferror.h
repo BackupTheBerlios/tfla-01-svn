@@ -17,8 +17,8 @@
 #ifndef TFERROR_H
 #define TFERROR_H
 
-#include <qstring.h>
-#include <qobject.h>
+#include <QString>
+#include <QObject>
 
 /**
  * Exception base class (or interface) for this application. A common base class for all exception

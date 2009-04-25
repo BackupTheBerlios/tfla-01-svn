@@ -14,16 +14,15 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <q3frame.h>
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <qapplication.h>
-#include <qscrollbar.h>
-#include <q3filedialog.h>
-#include <qstatusbar.h>
-#include <qmessagebox.h>
-#include <qcursor.h>
-//Added by qt3to4:
+#include <Q3Frame>
+#include <QLayout>
+#include <QPixmap>
+#include <QApplication>
+#include <QScrollBar>
+#include <Q3FileDialog>
+#include <QStatusBar>
+#include <QMessageBox>
+#include <QCursor>
 #include <Q3TextStream>
 #include <QWheelEvent>
 #include <Q3VBoxLayout>

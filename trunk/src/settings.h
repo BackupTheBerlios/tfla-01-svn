@@ -17,7 +17,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <qsettings.h>
+#include <QSettings>
 
 class Settings
 {

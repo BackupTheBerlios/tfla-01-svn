@@ -19,11 +19,11 @@
 
 #include <vector>
 
-#include <qobject.h>
-#include <qdatetime.h>
-#include <q3cstring.h>
-#include <qapplication.h>
-#include <qstatusbar.h>
+#include <QObject>
+#include <QDateTime>
+#include <Q3CString>
+#include <QApplication>
+#include <QStatusBar>
 
 #include "tfla01.h"
 #include "datacollector.h"

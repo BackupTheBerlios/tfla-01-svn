@@ -17,11 +17,10 @@
 #ifndef ABOUTDIALOG_H
 #define ABOUTDIALOG_H
 
-#include <qtabwidget.h>
-#include <qdialog.h>
-#include <q3vbox.h>
-#include <qlayout.h>
-//Added by qt3to4:
+#include <QTabWidget>
+#include <QDialog>
+#include <Q3VBox>
+#include <QLayout>
 #include <Q3VBoxLayout>
 
 class AboutDialog : public QDialog

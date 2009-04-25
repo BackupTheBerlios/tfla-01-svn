@@ -14,11 +14,10 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <qwidget.h>
-#include <qlayout.h>
-#include <q3groupbox.h>
-#include <qpushbutton.h>
-//Added by qt3to4:
+#include <QWidget>
+#include <QLayout>
+#include <Q3GroupBox>
+#include <QPushButton>
 #include <Q3Frame>
 #include <Q3VBoxLayout>
 

@@ -17,11 +17,11 @@
 #ifndef DATACOLLECTOR_H
 #define DATACOLLECTOR_H
 
-#include <qobject.h>
-#include <qdatetime.h>
-#include <q3cstring.h>
-#include <q3valuevector.h>
-#include <qthread.h>
+#include <QObject>
+#include <QDateTime>
+#include <Q3CString>
+#include <Q3ValueVector>
+#include <QThread>
 
 #include "hardware/parport.h"
 #include "global.h"

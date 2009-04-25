@@ -17,7 +17,7 @@
 #ifndef PARPORT_H
 #define PARPORT_H
 
-#include <qstring.h>
+#include <QString>
 
 #include <ieee1284.h>
 

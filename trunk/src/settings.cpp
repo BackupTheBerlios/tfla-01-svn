@@ -14,9 +14,9 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <qsettings.h>
-#include <qdir.h>
-#include <qapplication.h>
+#include <QSettings>
+#include <QDir>
+#include <QApplication>
 
 #include "settings.h"
 #include "global.h"

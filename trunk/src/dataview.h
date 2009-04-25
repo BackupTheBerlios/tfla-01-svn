@@ -17,8 +17,7 @@
 #ifndef DATAVIEW_H
 #define DATAVIEW_H
 
-#include <q3frame.h>
-//Added by qt3to4:
+#include <Q3Frame>
 #include <QWheelEvent>
 
 #include "dataplot.h"

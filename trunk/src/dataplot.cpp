@@ -14,12 +14,11 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <qpixmap.h>
-#include <qpainter.h>
-#include <qevent.h>
-#include <qapplication.h>
-#include <qstatusbar.h>
-//Added by qt3to4:
+#include <QPixmap>
+#include <QPainter>
+#include <QEvent>
+#include <QApplication>
+#include <QStatusBar>
 #include <Q3PointArray>
 #include <QPaintEvent>
 #include <QMouseEvent>

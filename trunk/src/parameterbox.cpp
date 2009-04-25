@@ -14,16 +14,15 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <qapplication.h>
-#include <qwidget.h>
-#include <qlayout.h>
-#include <qslider.h>
-#include <qlabel.h>
-#include <qlocale.h>
-#include <q3datetimeedit.h>
-#include <qdatetime.h>
-#include <qpushbutton.h>
-//Added by qt3to4:
+#include <QApplication>
+#include <QWidget>
+#include <QLayout>
+#include <QSlider>
+#include <QLabel>
+#include <QLocale>
+#include <Q3DateTimeEdit>
+#include <QDateTime>
+#include <QPushButton>
 #include <Q3GridLayout>
 #include <Q3Frame>
 

@@ -17,8 +17,7 @@
 #ifndef WHEELSCROLLBAR_H
 #define WHEELSCROLLBAR_H
 
-#include <qscrollbar.h>
-//Added by qt3to4:
+#include <QScrollBar>
 #include <QWheelEvent>
 
 

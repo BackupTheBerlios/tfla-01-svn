@@ -17,7 +17,7 @@
 #ifndef HELP_H
 #define HELP_H
 
-#include <qobject.h>
+#include <QObject>
 
 class Help : public QObject
 {

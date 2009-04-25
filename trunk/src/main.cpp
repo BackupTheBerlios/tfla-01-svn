@@ -15,14 +15,13 @@
  * -------------------------------------------------------------------------------------------------
  */
 #include <memory>
-
-#include <qstring.h>
-#include <qapplication.h>
-#include <qpushbutton.h>
-#include <qtranslator.h>
-#include <qmessagebox.h>
-#include <qtextcodec.h>
 #include <cstdlib>
+
+#include <QString>
+#include <QApplication>
+#include <QTranslator>
+#include <QMessageBox>
+#include <QTextCodec>
 
 #include "tferror.h"
 #include "tfla01.h"

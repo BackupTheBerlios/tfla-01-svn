@@ -14,15 +14,14 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include <qlabel.h>
-#include <q3hbox.h>
-#include <q3vbox.h>
-#include <qfile.h>
-#include <q3textedit.h>
-#include <qapplication.h>
-#include <qdir.h>
-#include <qpushbutton.h>
-//Added by qt3to4:
+#include <QLabel>
+#include <Q3HBox>
+#include <Q3VBox>
+#include <QFile>
+#include <Q3TextEdit>
+#include <QApplication>
+#include <QDir>
+#include <QPushButton>
 #include <QPixmap>
 #include <Q3TextStream>
 #include <Q3HBoxLayout>

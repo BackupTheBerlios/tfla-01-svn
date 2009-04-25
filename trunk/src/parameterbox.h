@@ -17,8 +17,8 @@
 #ifndef PARAMETERBOX_H
 #define PARAMETERBOX_H
 
-#include <q3frame.h>
-#include <qlabel.h>
+#include <Q3Frame>
+#include <QLabel>
 
 #include "global.h"
 

@@ -14,9 +14,9 @@
  *
  * -------------------------------------------------------------------------------------------------
  */
-#include "wheelscrollbar.h"
-//Added by qt3to4:
 #include <QWheelEvent>
+
+#include "wheelscrollbar.h"
 
 // -------------------------------------------------------------------------------------------------
 WheelScrollBar::WheelScrollBar(QWidget * parent, const char* name)

@@ -17,8 +17,8 @@
 #ifndef EXPORTDIALOG_H
 #define EXPORTDIALOG_H
 
-#include <q3filedialog.h>
-#include <qcheckbox.h>
+#include <Q3FileDialog>
+#include <QCheckBox>
 
 class ExportDialog : public Q3FileDialog
 {

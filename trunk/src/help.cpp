@@ -16,13 +16,13 @@
  */
 #include <memory>
 
-#include <qobject.h>
-#include <qapplication.h>
-#include <qmessagebox.h>
-#include <qwidget.h>
-#include <q3process.h>
-#include <qtextcodec.h>
-#include <qfile.h>
+#include <QObject>
+#include <QApplication>
+#include <QMessageBox>
+#include <QWidget>
+#include <Q3Process>
+#include <QTextCodec>
+#include <QFile>
 #include <QDesktopServices>
 #include <QUrl>
 

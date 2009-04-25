@@ -18,7 +18,7 @@
 #define PARPORTERROR_H
 
 #include <stdexcept>
-#include <qstring.h>
+#include <QString>
 
 #include <tferror.h>
 

@@ -16,19 +16,17 @@
  */
 #include <memory>
 
-#include <qlocale.h>
-#include <qpixmap.h>
-#include <qtimer.h>
-#include <qinputdialog.h>
-#include <qeventloop.h>
-#include <qcursor.h>
-#include <qicon.h>
-#include <qapplication.h>
-#include <q3popupmenu.h>
-#include <qmenubar.h>
-#include <qstatusbar.h>
-#include <qmessagebox.h>
-#include <qcolordialog.h>
+#include <QLocale>
+#include <QTimer>
+#include <QEventLoop>
+#include <QCursor>
+#include <QIcon>
+#include <QApplication>
+#include <Q3PopupMenu>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QMessageBox>
+#include <QColorDialog>
 #include <QCloseEvent>
 #include <QDesktopWidget>
 #include <QToolBar>
