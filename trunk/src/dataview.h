@@ -68,7 +68,6 @@ class DataView : public QWidget
 
     protected slots:
         void updateScrollInfo() throw ();
-        void scrollValueChanged() throw ();
         void scrollValueChanged(int value) throw ();
 
     private:

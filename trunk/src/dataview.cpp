@@ -57,18 +57,10 @@ DataView::DataView(QWidget* parent, const char* name)
             this,                    SIGNAL(rightMarkerValueChanged(double)));
     connect(m_scrollBar,             SIGNAL(actionTriggered(int)),
             this,                    SLOT(navigate(int)));
-    connect(m_scrollBar,             SIGNAL(sliderReleased()),
-            this,                    SLOT(scrollValueChanged()));
+    connect(m_scrollBar,             SIGNAL(valueChanged(int)),
+            this,                    SLOT(scrollValueChanged(int)));
     connect(m_dataPlot,              SIGNAL(viewUpdated()),
             this,                    SLOT(updateScrollInfo()));
-
-    // don't use this because of two reasons
-    //  - if zoom is high, the user may not see all
-    //  - if zoom is low, it's slow
-    //connect(m_scrollBar,             SIGNAL(sliderMoved(int)),
-    //        this,                    SLOT(scrollValueChanged(int)));
-    //connect(m_scrollBar,             SIGNAL(sliderPressed()),
-    //        this,                    SLOT(scrollValueChanged()));
 }
 
 
@@ -228,14 +220,6 @@ void DataView::redrawData()
     throw ()
 {
     m_dataPlot->update();
-}
-
-
-// -------------------------------------------------------------------------------------------------
-void DataView::scrollValueChanged()
-    throw ()
-{
-    scrollValueChanged(m_scrollBar->value());
 }
 
 
