@@ -51,7 +51,7 @@ Tfla01::Tfla01()
     setIconSize(QSize(24, 24));
 
     // main widget in the center TODO
-    m_centralWidget = new CentralWidget(this);
+    m_centralWidget = new CentralWidget(this, "CentralWidget");
     setCentralWidget(m_centralWidget);
 
     // Initiamlization of menu

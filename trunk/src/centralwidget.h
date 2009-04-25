@@ -28,7 +28,7 @@ class CentralWidget : public Q3Frame
     Q_OBJECT
 
     public:
-        CentralWidget(QWidget* parent, const char* name = 0) throw ();
+        CentralWidget(QWidget* parent, const char* name) throw ();
 
         DataView* getDataView() const throw ();
         ParameterBox* getParametersBox() const throw ();

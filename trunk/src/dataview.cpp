@@ -43,8 +43,8 @@ DataView::DataView(QWidget* parent, const char* name)
     : QWidget(parent, name), m_scrollDivisor(1)
 {
     Q3VBoxLayout* layout = new Q3VBoxLayout(this, 0);
-    m_dataPlot = new DataPlot(this, this);
-    m_scrollBar = new WheelScrollBar(Qt::Horizontal, this);
+    m_dataPlot = new DataPlot(this, this, "DataPlot");
+    m_scrollBar = new WheelScrollBar(Qt::Horizontal, this, "WheelScrollBar");
     m_scrollBar->setTracking(false);
 
     layout->addWidget(m_dataPlot);

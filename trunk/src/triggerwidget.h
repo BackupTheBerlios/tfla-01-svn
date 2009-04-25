@@ -29,7 +29,7 @@ class TriggerWidget : public QWidget
      Q_OBJECT
 
      public:
-        TriggerWidget(QWidget* parent, const char* name = 0) throw ();
+        TriggerWidget(QWidget* parent, const char* name) throw ();
         byte getMask() const throw ();
         byte getValue() const throw ();
         void setValue(byte mask, byte value) throw ();

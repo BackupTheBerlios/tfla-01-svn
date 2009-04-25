@@ -32,7 +32,7 @@ class DataView : public QWidget
     friend class DataPlot;
 
     public:
-        DataView(QWidget* parent, const char* name = 0) throw ();
+        DataView(QWidget* parent, const char* name) throw ();
         virtual ~DataView() {}
 
         void setData(const Data& data) throw ();

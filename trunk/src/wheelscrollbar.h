@@ -26,10 +26,10 @@ class WheelScrollBar : public QScrollBar
     Q_OBJECT
 
     public:
-        WheelScrollBar(QWidget * parent, const char* name = 0);
-        WheelScrollBar(Qt::Orientation orientation, QWidget* parent, const char* name = 0);
+        WheelScrollBar(QWidget * parent, const char* name);
+        WheelScrollBar(Qt::Orientation orientation, QWidget* parent, const char* name);
         WheelScrollBar(int minValue, int maxValue, int lineStep, int pageStep, int value,
-                       Qt::Orientation orientation, QWidget * parent, const char* name = 0);
+                       Qt::Orientation orientation, QWidget * parent, const char* name);
 
     protected:
         void wheelEvent(QWheelEvent* e);

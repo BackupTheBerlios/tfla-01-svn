@@ -30,13 +30,13 @@ CentralWidget::CentralWidget(QWidget* parent, const char* name)
     : Q3Frame(parent, name)
 {
     Q3VBoxLayout* layout = new Q3VBoxLayout(this, 6);
-    m_dataView = new DataView(this);
+    m_dataView = new DataView(this, "DataView");
 
     layout->addWidget(m_dataView);
     layout->setStretchFactor(m_dataView, 10);
 
     Q3GroupBox* groupBox = new Q3GroupBox(1, Qt::Horizontal, this);
-    m_parametersBox = new ParameterBox(groupBox);
+    m_parametersBox = new ParameterBox(groupBox, "ParameterBox");
 
     layout->addWidget(groupBox);
     layout->setStretchFactor(groupBox, 0);

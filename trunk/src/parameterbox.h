@@ -27,7 +27,7 @@ class ParameterBox : public Q3Frame
     Q_OBJECT
 
     public:
-        ParameterBox(QWidget* parent, const char* name = 0) throw ();
+        ParameterBox(QWidget* parent, const char* name) throw ();
         virtual ~ParameterBox() {}
 
     public slots:

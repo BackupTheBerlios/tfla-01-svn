@@ -34,7 +34,7 @@ class DataPlot : public QWidget
 
     public:
 
-        DataPlot(QWidget* parent, DataView* dataView, const char* name = 0) throw ();
+        DataPlot(QWidget* parent, DataView* dataView, const char* name) throw ();
         virtual ~DataPlot() {}
 
         void updateData(bool forceRedraw, bool forceRecalculatePositions = false) throw ();

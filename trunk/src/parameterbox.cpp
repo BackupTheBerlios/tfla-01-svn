@@ -52,7 +52,7 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     Q3TimeEdit* timeedit = new Q3TimeEdit(this);
     timeedit->setRange(QTime(0, 0), QTime(0, 1));
     QSlider* sampleSlider = new QSlider(0, MAX_SLIDER_VALUE, 1, 0, Qt::Horizontal, this);
-    TriggerWidget* triggering = new TriggerWidget(this);
+    TriggerWidget* triggering = new TriggerWidget(this, "TriggerWidget");
 
     // labels for the markers
     QLabel* leftMarkerLabel = new QLabel(tr("Left Button Marker:"), this);
