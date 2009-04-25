@@ -37,8 +37,6 @@ class DataPlot : public QWidget
         DataPlot(QWidget* parent, DataView* dataView, const char* name) throw ();
         virtual ~DataPlot() {}
 
-        void updateData(bool forceRedraw, bool forceRecalculatePositions = false) throw ();
-
         void setZoomFactor(double factor) throw ();
         double getZoomFactor() const throw ();
         int getNumberOfDisplayedSamples() const throw ();

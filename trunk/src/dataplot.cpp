@@ -50,18 +50,51 @@ DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name) throw 
 // -------------------------------------------------------------------------------------------------
 void DataPlot::paintEvent(QPaintEvent*)
 {
-	qDebug("DataPlot::paintEvent(QPaintEvent*)");
-    updateData(false);
+    // updateData(false);
+    const bool forceRedraw = true;
+ 
+    QPainter p;
+    QPixmap screenPixmap( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE *  m_zoomFactor),
+                         height() );
+
+    if (m_lastWidth != width())
+        recalculateXPositions();
+
+    if (forceRedraw || m_lastWidth != width() || m_lastHeight != height()
+            || (m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0)) {
+        // larger pixmap to have space to draw the last point
+        m_lastPixmap.resize( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE *
+                                                          m_zoomFactor),
+                             height() );
+        m_lastPixmap.fill(QColor(Settings::set().readEntry("UI/Background_Color")));
+
+        p.begin(&m_lastPixmap);
+        plot(&p);
+        p.end();
+
+        m_lastHeight = height();
+        m_lastWidth = width();
+
+        emit viewUpdated();
+    }
+
+    p.begin(&screenPixmap);
+    p.drawPixmap(0, 0, m_lastPixmap);
+    drawMarkers(&p);
+    p.end();
+
+    p.begin(this);
+    p.drawPixmap(0, 0, screenPixmap);
+    p.end();
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataPlot::setZoomFactor(double factor) throw ()
 {
-	qDebug("DataPlot::setZoomFactor(double factor) throw ()");
     m_zoomFactor = factor;
     recalculateXPositions();
-    updateData(true);
+    update();
 }
 
 
@@ -76,7 +109,7 @@ double DataPlot::getZoomFactor() const throw ()
 void DataPlot::setStartIndex(int startIndex) throw ()
 {
     m_startIndex = startIndex;
-    updateData(true);
+    update();
 }
 
 
@@ -102,7 +135,7 @@ void DataPlot::setLeftMarker(int markerpos)  throw ()
 
     if (markerpos == -1 || ms >= 0.0) {
         m_leftMarker = markerpos;
-        updateData(false);
+        update();
         leftMarkerValueChanged(ms);
     } else {
         static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
@@ -125,7 +158,7 @@ void DataPlot::setRightMarker(int markerpos) throw ()
 
     if (markerpos == -1 || ms >= 0.0) {
         m_rightMarker = markerpos;
-        updateData(false);
+        update();
         rightMarkerValueChanged(ms);
     } else {
         static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
@@ -139,7 +172,7 @@ void DataPlot::clearMarkers() throw ()
 {
     setLeftMarker(-1);
     setRightMarker(-1);
-    updateData(false);
+    update();
 }
 
 
@@ -190,45 +223,6 @@ QPixmap DataPlot::getScreenshot() throw ()
     ret.resize(width(), height());
 
     return ret;
-}
-
-
-// -------------------------------------------------------------------------------------------------
-void DataPlot::updateData(bool forceRedraw, bool forceRecalculatePositions) throw ()
-{
-    QPainter p;
-    QPixmap screenPixmap( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE *  m_zoomFactor),
-                         height() );
-
-    if (m_lastWidth != width() || forceRecalculatePositions)
-        recalculateXPositions();
-
-    if (forceRedraw || m_lastWidth != width() || m_lastHeight != height()
-            || (m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0)) {
-        // larger pixmap to have space to draw the last point
-        m_lastPixmap.resize( static_cast<int>(  width() + DEFAULT_POINTS_PER_SAMPLE *
-                                                          m_zoomFactor),
-                             height() );
-        m_lastPixmap.fill(QColor(Settings::set().readEntry("UI/Background_Color")));
-
-        p.begin(&m_lastPixmap);
-        plot(&p);
-        p.end();
-
-        m_lastHeight = height();
-        m_lastWidth = width();
-
-        emit viewUpdated();
-    }
-
-    p.begin(&screenPixmap);
-    p.drawPixmap(0, 0, m_lastPixmap);
-    drawMarkers(&p);
-    p.end();
-
-    p.begin(this);
-    p.drawPixmap(0, 0, screenPixmap);
-    p.end();
 }
 
 

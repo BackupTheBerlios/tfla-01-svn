@@ -90,7 +90,7 @@ void DataView::setData(const Data& data)
                        : m_currentData.bytes().size() / 1000;
 
     m_dataPlot->setStartIndex(0);
-    m_dataPlot->updateData(true, true);
+    m_dataPlot->update();
     m_dataPlot->clearMarkers();
 }
 
@@ -227,7 +227,7 @@ void DataView::updateScrollInfo()
 void DataView::redrawData()
     throw ()
 {
-    m_dataPlot->updateData(true);
+    m_dataPlot->update();
 }
 
 
