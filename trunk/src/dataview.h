@@ -48,6 +48,7 @@ class DataView : public QWidget
 
         void pos1() throw ();
         void end() throw ();
+        void navigate(QAbstractSlider::SliderAction direction) throw ();
         void navigateLeft() throw ();
         void navigateRight() throw ();
         void navigateLeftPage() throw ();

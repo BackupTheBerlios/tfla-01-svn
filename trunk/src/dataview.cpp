@@ -55,16 +55,10 @@ DataView::DataView(QWidget* parent, const char* name)
             this,                    SIGNAL(leftMarkerValueChanged(double)));
     connect(m_dataPlot,              SIGNAL(rightMarkerValueChanged(double)),
             this,                    SIGNAL(rightMarkerValueChanged(double)));
-    connect(m_scrollBar,             SIGNAL(nextLine()),
-            this,                    SLOT(navigateRight()));
-    connect(m_scrollBar,             SIGNAL(prevLine()),
-            this,                    SLOT(navigateLeft()));
+    connect(m_scrollBar,             SIGNAL(actionTriggered(int)),
+            this,                    SLOT(navigateRightPage()));
     connect(m_scrollBar,             SIGNAL(sliderReleased()),
             this,                    SLOT(scrollValueChanged()));
-    connect(m_scrollBar,             SIGNAL(nextPage()),
-            this,                    SLOT(navigateRightPage()));
-    connect(m_scrollBar,             SIGNAL(prevPage()),
-            this,                    SLOT(navigateLeftPage()));
     connect(m_dataPlot,              SIGNAL(viewUpdated()),
             this,                    SLOT(updateScrollInfo()));
 
@@ -256,39 +250,66 @@ void DataView::scrollValueChanged(int value) throw ()
 
 
 // -------------------------------------------------------------------------------------------------
+void DataView::navigate(QAbstractSlider::SliderAction direction) throw ()
+{
+    int si;
+
+    switch (direction) {
+        case QAbstractSlider::SliderSingleStepAdd:
+            m_dataPlot->setStartIndex( QMIN(m_dataPlot->getStartIndex() +
+                        qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0),
+                        int(m_currentData.bytes().size())) );
+            break;
+
+        case QAbstractSlider::SliderSingleStepSub:
+            m_dataPlot->setStartIndex( QMAX(0,  m_dataPlot->getStartIndex() -
+                        qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0)) );
+            break;
+
+        case QAbstractSlider::SliderPageStepAdd:
+            si = QMIN( m_dataPlot->getStartIndex() +
+                    qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()),
+                    static_cast<int>(m_currentData.bytes().size()));
+            m_dataPlot->setStartIndex(si);
+            break;
+
+        case QAbstractSlider::SliderPageStepSub:
+            si = QMAX(0,  m_dataPlot->getStartIndex() -
+                    qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()));
+            m_dataPlot->setStartIndex(si);
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+// -------------------------------------------------------------------------------------------------
 void DataView::navigateLeft() throw ()
 {
-    m_dataPlot->setStartIndex( QMAX(0,  m_dataPlot->getStartIndex() -
-                                        qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()
-                                               / 10.0)) );
+    navigate(QAbstractSlider::SliderSingleStepSub);
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateRight() throw ()
 {
-    m_dataPlot->setStartIndex( QMIN(m_dataPlot->getStartIndex() +
-                                   qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples() / 10.0),
-                                   static_cast<int>(m_currentData.bytes().size())) );
+    navigate(QAbstractSlider::SliderSingleStepAdd);
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateLeftPage() throw ()
 {
-    int si = QMAX(0,  m_dataPlot->getStartIndex() -
-                      qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()));
-    m_dataPlot->setStartIndex(si);
+    navigate(QAbstractSlider::SliderPageStepSub);
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::navigateRightPage() throw ()
 {
-    int si = QMIN( m_dataPlot->getStartIndex() +
-                  qRound(m_dataPlot->getNumberOfPossiblyDisplayedSamples()),
-                  static_cast<int>(m_currentData.bytes().size()));
-    m_dataPlot->setStartIndex(si);
+    navigate(QAbstractSlider::SliderPageStepAdd);
 }
 
 
