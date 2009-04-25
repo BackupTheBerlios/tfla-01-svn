@@ -19,9 +19,8 @@
 
 #include <QTabWidget>
 #include <QDialog>
-#include <Q3VBox>
 #include <QLayout>
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 
 class AboutDialog : public QDialog
 {
@@ -35,8 +34,8 @@ class AboutDialog : public QDialog
         void setupLicenseTab();
 
     private:
-        QTabWidget* m_tabWidget;
-        Q3VBoxLayout* m_mainLayout;
+        QTabWidget*  m_tabWidget;
+        QVBoxLayout* m_mainLayout;
 };
 
 

@@ -26,6 +26,7 @@
 #include <Q3TextStream>
 #include <Q3HBoxLayout>
 #include <Q3VBoxLayout>
+#include <QVBoxLayout>
 
 #include "aboutdialog.h"
 
@@ -34,7 +35,7 @@ AboutDialog::AboutDialog(QWidget* parent, const char* name)
     throw ()
     : QDialog(parent, name)
 {
-    m_mainLayout = new Q3VBoxLayout(this, 10, 6);
+    m_mainLayout = new QVBoxLayout(this, 10, 6);
     setCaption(tr("About The Fabulous Logic Analyzer"));
 
     // the top of the dialog
@@ -65,7 +66,7 @@ AboutDialog::AboutDialog(QWidget* parent, const char* name)
     // main layout
     m_mainLayout->addWidget(titleBox);
     m_mainLayout->addWidget(m_tabWidget);
-    m_mainLayout->addStretch(5);
+    m_mainLayout->setStretchFactor(m_tabWidget, 5);
     m_mainLayout->addLayout(buttonLayout);
 
     connect(okButton, SIGNAL(clicked()), SLOT(accept()));
@@ -78,15 +79,16 @@ void AboutDialog::setupAboutTab()
     Q3HBox* aboutTab = new Q3HBox(this);
     aboutTab->setMargin(15);
 
-    (void)new QLabel(
-        tr("<p><nobr>This is a logic analyzer tool written for Unix and Windows"
-            "</nobr> written in C++ using the Qt library.</p>"
+    QLabel *label = new QLabel(
+        tr("<p>This is a logic analyzer tool written for Unix and Windows "
+            "written in C++<br /> using the Qt library.</p>"
             "<p><b>Thanks to:</b>"
             "<ul><li>Trolltech for the Qt library</li>"
             "<li>Tim Waugh for the IEEE1284 (parallelport) library</li>"
             "<li>Gtk+ artists for the nice stock icons</li>"
             "</ul></p>"
             "<p><b>Homepage:</b> <tt>http://tfla-01.berlios.de</tt></p>"), aboutTab);
+    label->setAlignment(Qt::AlignTop);
 
     m_tabWidget->addTab(aboutTab, tr("&About"));
 
