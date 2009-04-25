@@ -103,15 +103,10 @@ void AboutDialog::setupLicenseTab()
     textEdit->setWordWrap(Q3TextEdit::FixedColumnWidth);
     textEdit->setWrapColumnOrWidth(100);
 
-    const QString fileName = ":COPYING";
-    if (QFile::exists(fileName))
-    {
-        QFile file(fileName);
-        if (file.open( QIODevice::ReadOnly ))
-        {
-            Q3TextStream stream(&file);
-            textEdit->setText("<pre>" + stream.read() + "</pre>");
-        }
+    QFile file(":COPYING");
+    if (file.open( QIODevice::ReadOnly )) {
+        Q3TextStream stream(&file);
+        textEdit->setText("<pre>" + stream.read() + "</pre>");
     }
 
     m_tabWidget->addTab(licenseTab, tr("&License"));
