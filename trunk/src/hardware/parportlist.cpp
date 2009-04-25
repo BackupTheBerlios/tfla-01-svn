@@ -25,13 +25,11 @@ ParportList* ParportList::m_theInstance = 0;
 // -------------------------------------------------------------------------------------------------
 ParportList* ParportList::instance(int flags) throw (ParportError)
 {
-    if (!m_theInstance)
-    {
+    if (!m_theInstance) {
         parport_list* list = new parport_list;
         int err;
 
-        if ((err = ieee1284_find_ports(list, flags)) != E1284_OK)
-        {
+        if ((err = ieee1284_find_ports(list, flags)) != E1284_OK) {
             delete list;
             throw ParportError(err);
         }

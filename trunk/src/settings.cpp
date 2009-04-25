@@ -98,14 +98,10 @@ QString Settings::readEntry(const QString & key, const QString& def)
     bool read = false;
     QString string = m_qSettings.readEntry(key, def, &read);
     if (!read && m_stringMap.contains(key))
-    {
         return m_stringMap[key];
-    }
 #ifdef DEBUG
     else if (!read && def.isNull())
-    {
         PRINT_DBG("Implicit default returned, key = %s", (const char*)key.local8Bit());
-    }
 #endif
     return string;
 }
@@ -118,14 +114,10 @@ int Settings::readNumEntry (const QString & key, int def)
     bool read = false;
     int number = m_qSettings.readNumEntry(key, def, &read);
     if (!read && m_intMap.contains(key))
-    {
         return m_intMap[key];
-    }
 #ifdef DEBUG
     else if (!read && def == 0)
-    {
         PRINT_TRACE("Implicit default returned, key = %s", key.latin1());
-    }
 #endif
     return number;
 }
@@ -138,14 +130,10 @@ double Settings::readDoubleEntry(const QString & key, double def)
     bool read = false;
     double number = m_qSettings.readDoubleEntry(key, def, &read);
     if (!read && m_doubleMap.contains(key))
-    {
         return m_doubleMap[key];
-    }
 #ifdef DEBUG
     else if (!read && def == 0.0)
-    {
         PRINT_TRACE("Implicit default returned, key = %s", (const char*)key.local8Bit());
-    }
 #endif
     return number;
 }
@@ -158,14 +146,10 @@ bool Settings::readBoolEntry(const QString & key, bool def)
     bool read = false;
     bool res = m_qSettings.readBoolEntry(key, def, &read);
     if (!read && m_boolMap.contains(key))
-    {
         return m_boolMap[key];
-    }
 #ifdef DEBUG
     else if (!read && !def)
-    {
         PRINT_TRACE("Implicit default returned, key = %s", (const char*)key.local8Bit());
-    }
 #endif
     return res;
 }

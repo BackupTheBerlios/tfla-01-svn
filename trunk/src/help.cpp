@@ -49,20 +49,15 @@ void Help::showHelp()
     QString loc = QString(QTextCodec::locale()).section("_", 0, 0);
     QStringList args;
 
-    if (QFile::exists(base + "/" + loc + "/index.html"))
-    {
+    if (QFile::exists(base + "/" + loc + "/index.html")) {
 		QString url = "file:///" + base + "/" + loc + "/index.html";
 		qDebug("URL: %s", url.latin1());
 		QDesktopServices::openUrl(QUrl(url));
-    }
-    else if (QFile::exists(base + "/en/index.html"))
-    {
+    } else if (QFile::exists(base + "/en/index.html")) {
 		QString url = "file:///" + base + "/en/index.html";
 		qDebug("URL: %s", url.latin1());
 		QDesktopServices::openUrl(QUrl(url));
-    }
-    else
-    {
+    } else {
         QMessageBox::critical(qApp->mainWidget(), tr("TFLA-01"),
             tr("The TFLA-01 documentation is not installed."), QMessageBox::Ok,
             QMessageBox::NoButton );

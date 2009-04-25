@@ -34,8 +34,13 @@ const int DataCollector::INITIAL_VECTOR_SPACE   = 1000000;
 
 // -------------------------------------------------------------------------------------------------
 DataCollector::DataCollector(uint port) throw ()
-    : m_portNumber(port), m_triggering(false), m_triggeringMask(0), m_triggeringValue(0),
-      m_collectingTime(0), m_stop(false), m_numberOfSkips(0)
+    : m_portNumber(port)
+    , m_triggering(false)
+    , m_triggeringMask(0)
+    , m_triggeringValue(0)
+    , m_collectingTime(0)
+    , m_stop(false)
+    , m_numberOfSkips(0)
 {
     m_data.bytes().reserve(INITIAL_VECTOR_SPACE);
 }
@@ -122,8 +127,7 @@ void DataCollector::stop()  throw ()
 // -------------------------------------------------------------------------------------------------
 void DataCollector::run()
 {
-    try
-    {
+    try {
         // open the port and claim it
         ParportList* list = ParportList::instance();
         Parport port = list->getPort(m_portNumber);
@@ -134,16 +138,12 @@ void DataCollector::run()
         port.setDataDirection(true);
 
         // wait for triggering
-        if (m_triggering && m_triggeringMask != 0x00)
-        {
+        if (m_triggering && m_triggeringMask != 0x00) {
             struct timeval timeout = { 1, 0 };
 
-            while (!m_stop)
-            {
+            while (!m_stop) {
                 if (port.waitData(m_triggeringMask, m_triggeringValue, &timeout, true))
-                {
                     break;
-                }
             }
         }
 
@@ -154,23 +154,17 @@ void DataCollector::run()
         // so we need to poll, and to be platform independent we use QTime
         // QTime::msecsTo(QTime::currentTime) isn't very fast, so we do this every 100 measures
         // which seems to be accurate enough
-        while ((start.msecsTo(QTime::currentTime()) <= m_collectingTime) && !m_stop)
-        {
-            for (int i = 0; i < 100 && !m_stop; i++)
-            {
+        while ((start.msecsTo(QTime::currentTime()) <= m_collectingTime) && !m_stop) {
+            for (int i = 0; i < 100 && !m_stop; i++) {
                 for (int j = 0; j < m_numberOfSkips; j++)
-                {
                     port.readData();
-                }
                 m_data.bytes().push_back(port.readData());
             }
         }
 
         m_data.setMeasuringTime(start.msecsTo(QTime::currentTime()));
         m_data.calculateLineStates();
-    }
-    catch (const TfError& err)
-    {
+    } catch (const TfError& err) {
         PRINT_TRACE("Error occured while getting data: %s", (const char*)err.what().local8Bit());
         PRINT_DBG("OS error was %s", strerror(errno));
         m_errorString = err.what();

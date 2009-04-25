@@ -41,28 +41,19 @@ WheelScrollBar::WheelScrollBar(int minValue, int maxValue, int lineStep, int pag
 // -------------------------------------------------------------------------------------------------
 void WheelScrollBar::wheelEvent(QWheelEvent* e)
 {
-    switch (e->state())
-    {
+    switch (e->state()) {
         case Qt::ShiftButton:
             if (e->delta() > 0)
-            {
                 emit actionTriggered(QAbstractSlider::SliderPageStepSub);
-            }
             else
-            {
                 emit actionTriggered(QAbstractSlider::SliderPageStepAdd);
-            }
             break;
 
         case Qt::NoButton:
             if (e->delta() > 0)
-            {
                 emit actionTriggered(QAbstractSlider::SliderSingleStepSub);
-            }
             else
-            {
                 emit actionTriggered(QAbstractSlider::SliderSingleStepAdd);
-            }
             break;
 
         default:

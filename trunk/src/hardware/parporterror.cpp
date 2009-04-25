@@ -32,8 +32,7 @@ ParportError::ParportError(int errorcode)
 QString ParportError::what() const
     throw ()
 {
-    switch (m_errorcode)
-    {
+    switch (m_errorcode) {
         case E1284_OK:
             return QObject::tr("No error ocurred.");
         case E1284_INIT:

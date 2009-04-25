@@ -43,9 +43,7 @@ int main(int argc, char* argv[])
     app.installTranslator(&translator);
     app.installTranslator(&ttranslator);
 
-
-    try
-    {
+    try {
         auto_ptr<Tfla01> tfla01(new Tfla01);
 
         app.setMainWidget(tfla01.get());
@@ -54,22 +52,16 @@ int main(int argc, char* argv[])
         app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
 
         return app.exec();
-    }
-    catch (const TfError& e)
-    {
+    } catch (const TfError& e) {
         QMessageBox::warning(0, QObject::tr("TFLA-01"),
             QObject::tr("An unknown error occurred:\n%1\nThe application will be closed.")
             .arg(e.what()),
             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-    }
-    catch (const std::bad_alloc& e)
-    {
+    } catch (const std::bad_alloc& e) {
         QMessageBox::warning(0, QObject::tr("TFLA-01"),
             QObject::tr("No more memory available. The application\nwill be closed."),
             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         QMessageBox::warning(0, QObject::tr("TFLA-01"),
             QObject::tr("An unknown error occurred:\n%1\nThe application will be closed.")
             .arg(e.what()),

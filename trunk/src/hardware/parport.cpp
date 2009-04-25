@@ -39,14 +39,10 @@ Parport::Parport(struct parport* port)
 // -------------------------------------------------------------------------------------------------
 Parport::~Parport()
 {
-    if (m_isOpen)
-    {
-        try
-        {
+    if (m_isOpen) {
+        try {
             close();
-        }
-        catch (const TfError& err)
-        {
+        } catch (const TfError& err) {
             PRINT_DBG("Error in Parport::~Parport: %s\n", (const char*)err.what().local8Bit());
         }
     }
@@ -60,14 +56,10 @@ void Parport::open(int flags, int* capabilities) throw (ParportError)
 
     // that check must be performed before opening the device
     if (!checkTristate())
-    {
         throw ParportError(ParportError::EPP_NOTRISTATE);
-    }
 
     if ((ret = ieee1284_open(m_parport, flags, capabilities)) != E1284_OK)
-    {
         throw ParportError(ret);
-    }
 
     m_isOpen = true;
 }
@@ -77,18 +69,14 @@ void Parport::open(int flags, int* capabilities) throw (ParportError)
 void Parport::close() throw (ParportError)
 {
     if (!m_isOpen)
-    {
         return;
-    }
 
     release();
 
     int ret;
 
     if ((ret = ieee1284_close(m_parport)) != E1284_OK)
-    {
         throw ParportError(ret);
-    }
 }
 
 
@@ -107,9 +95,7 @@ void Parport::claim() throw (ParportError)
     int err;
 
     if ((err = ieee1284_claim(m_parport)) != E1284_OK)
-    {
         throw ParportError(err);
-    }
 
     m_isClaimed = true;
 }
@@ -123,24 +109,18 @@ bool Parport::checkTristate() throw ()
 
     // only return false if we *know* that the parallel port is not capable of TRISTATE
     if (!m_parport->filename || strlen(m_parport->filename) == 0)
-    {
         return true;
-    }
 
     int fd = ::open(m_parport->filename, O_RDONLY);
     if (fd < 0)
-    {
         return true;
-    }
 
-    if (ioctl(fd, PPCLAIM) != 0)
-    {
+    if (ioctl(fd, PPCLAIM) != 0) {
         ::close(fd);
         return true;
     }
 
-    if (ioctl(fd, PPGETMODES, &modes) != 0)
-    {
+    if (ioctl(fd, PPGETMODES, &modes) != 0) {
         ::close(fd);
         return true;
     }
@@ -148,9 +128,7 @@ bool Parport::checkTristate() throw ()
     ::close(fd);
 
     if (!(modes & PARPORT_MODE_TRISTATE))
-    {
         return false;
-    }
 
     return true;
 }
@@ -167,9 +145,7 @@ byte Parport::readData() throw (ParportError)
     int ret;
 
     if ((ret = ieee1284_read_data(m_parport)) < 0)
-    {
         throw ParportError(ret);
-    }
 
     return (byte)ret;
 }
@@ -188,9 +164,7 @@ void Parport::setDataDirection(bool reverse) throw (ParportError)
     int ret;
 
     if ((ret = ieee1284_data_dir(m_parport, reverse)) != E1284_OK)
-    {
         throw ParportError(ret);
-    }
 }
 
 
@@ -199,13 +173,9 @@ bool Parport::waitData(int mask, int val, struct timeval* timeout, bool poll)
     throw (ParportError)
 {
     if (poll)
-    {
         return waitDataPoll(mask, val, timeout);
-    }
     else
-    {
         return waitDataIeee1284(mask, val, timeout);
-    }
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -223,31 +193,24 @@ bool Parport::waitDataPoll(int mask, int val, struct timeval* timeout)
 
     // check if we need to wait for data
     if (mask == 0)
-    {
         return true;
-    }
 
     int ret = gettimeofday(&now, NULL);
-    if (ret != 0)
-    {
+    if (ret != 0) {
         perror("gettimeofday() failed");
         return false;
     }
 
     timeradd(&now, timeout, &timeout_reached);
 
-    do
-    {
+    do {
         byte data = readData();
 
         if ((data & mask) == (val & 0xff))
-        {
             return true;
-        }
 
         ret = gettimeofday(&now, NULL);
-        if (ret != 0)
-        {
+        if (ret != 0) {
             perror("gettimeofday() failed");
             return false;
         }
@@ -268,20 +231,13 @@ bool Parport::waitDataIeee1284(int mask, int val, struct timeval* timeout)
     struct timeval default_timeout = { 60, 0 };
 
     if (!timeout)
-    {
         timeout = &default_timeout;
-    }
 
-    if ((ret = ieee1284_wait_data(m_parport, mask, val, timeout)) != E1284_OK)
-    {
+    if ((ret = ieee1284_wait_data(m_parport, mask, val, timeout)) != E1284_OK) {
         if (ret == E1284_TIMEDOUT)
-        {
             return false;
-        }
         else
-        {
             throw ParportError(ret);
-        }
     }
 
     return true;

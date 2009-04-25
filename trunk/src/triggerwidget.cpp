@@ -35,8 +35,7 @@ TriggerWidget::TriggerWidget(QWidget* parent, const char* name)
     hbox->setSpacing(2);
 
     // create the checkboxes with their labels
-    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
-    {
+    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++) {
         Q3VBox* box = new Q3VBox(hbox);
         box->setSpacing(2);
 
@@ -63,9 +62,7 @@ byte TriggerWidget::getMask() const
     byte ret = 0;
 
     for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
-    {
         ret |= (m_checkboxes[i]->checkState() != Qt::PartiallyChecked) << i;
-    }
 
     PRINT_TRACE("getMask, return %x", ret);
     return ret;
@@ -79,9 +76,7 @@ byte TriggerWidget::getValue() const
     byte ret = 0;
 
     for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
-    {
         ret |= (m_checkboxes[i]->checkState() == Qt::Checked) << i;
-    }
 
     PRINT_TRACE("getValue, return %x", ret);
     return ret;
@@ -100,16 +95,11 @@ void TriggerWidget::valueChangedHandler()
 void TriggerWidget::setValue(byte value, byte mask)
     throw ()
 {
-    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
-    {
+    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++) {
         if (!(mask & (1 << i)))
-        {
             m_checkboxes[i]->setNoChange();
-        }
         else
-        {
             m_checkboxes[i]->setChecked(value & (1<< i));
-        }
     }
 }
 

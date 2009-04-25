@@ -35,7 +35,9 @@
 // -------------------------------------------------------------------------------------------------
 ParameterBox::ParameterBox(QWidget* parent, const char* name)
     throw ()
-    : Q3Frame(parent, name), m_leftValue(-1.0), m_rightValue(-1.0)
+    : Q3Frame(parent, name)
+    , m_leftValue(-1.0)
+    , m_rightValue(-1.0)
 {
     Q3GridLayout* layout = new Q3GridLayout(this, 5 /* row */, 9 /* col */, 0 /* margin */, 5);
 
@@ -83,7 +85,7 @@ ParameterBox::ParameterBox(QWidget* parent, const char* name)
     sampleSlider->setValue(MAX_SLIDER_VALUE - set.readNumEntry("Measuring/Number_Of_Skips"));
 
     // - layout the stuff --------------------------------------------------------------------------
-                                   // row, col
+                                        // row, col
     layout->addWidget(timeLabel,           0,    1);
     layout->addWidget(sampleLabel,         1,    1);
     layout->addWidget(triggerLabel,        2,    1,    Qt::AlignTop);
@@ -165,34 +167,22 @@ void ParameterBox::updateValues() throw ()
 
     // update the left value
     if (m_leftValue < 0.0)
-    {
         m_leftMarker->setText(tr("(no marker)"));
-    }
     else
-    {
         m_leftMarker->setText(loc.toString(m_leftValue, 'f', 4) + " ms");
-    }
 
 
     // update the right value
     if (m_rightValue < 0.0)
-    {
         m_rightMarker->setText(tr("(no marker)"));
-    }
     else
-    {
         m_rightMarker->setText(loc.toString(m_rightValue, 'f', 4) + " ms");
-    }
 
     // update the diff display
     if (m_leftValue < 0.0 || m_rightValue < 0.0)
-    {
         m_diff->setText(tr("(no difference)"));
-    }
     else
-    {
         m_diff->setText(loc.toString(m_rightValue - m_leftValue, 'f', 4) + " ms");
-    }
 }
 
 // vim: set sw=4 ts=4 tw=100:

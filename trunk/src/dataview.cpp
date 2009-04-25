@@ -40,7 +40,8 @@
 // -------------------------------------------------------------------------------------------------
 DataView::DataView(QWidget* parent, const char* name)
     throw ()
-    : QWidget(parent, name), m_scrollDivisor(1)
+    : QWidget(parent, name)
+    , m_scrollDivisor(1)
 {
     Q3VBoxLayout* layout = new Q3VBoxLayout(this, 0);
     m_dataPlot = new DataPlot(this, this, "DataPlot");
@@ -105,9 +106,7 @@ void DataView::zoomIn()
     throw ()
 {
     if (m_dataPlot->getNumberOfDisplayedSamples() > 5)
-    {
         m_dataPlot->setZoomFactor(m_dataPlot->getZoomFactor() * 2.0);
-    }
 }
 
 
@@ -123,14 +122,11 @@ void DataView::zoomOut()
 void DataView::zoomFit()
     throw ()
 {
-    if (m_currentData.bytes().size() != 0)
-    {
+    if (m_currentData.bytes().size() != 0) {
         m_dataPlot->setStartIndex(0);
         m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 1) /
                               m_dataPlot->getPointsPerSample() / m_currentData.bytes().size() );
-    }
-    else
-    {
+    } else {
         static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
             tr("Function only available if data is displayed."), 4000);
     }
@@ -147,19 +143,15 @@ void DataView::zoom1() throw ()
 // -------------------------------------------------------------------------------------------------
 void DataView::zoomMarkers() throw ()
 {
-    if (m_dataPlot->getLeftMarker() > 0 && m_dataPlot->getRightMarker() > 0)
-    {
+    if (m_dataPlot->getLeftMarker() > 0 && m_dataPlot->getRightMarker() > 0) {
         double diff = DABS(m_dataPlot->getRightMarker() - m_dataPlot->getLeftMarker());
         m_dataPlot->setZoomFactor( static_cast<double>(m_dataPlot->getCurrentWidthForPlot() - 2) /
                               m_dataPlot->getPointsPerSample() / diff );
         m_dataPlot->setStartIndex(QMIN(m_dataPlot->getLeftMarker(), m_dataPlot->getRightMarker()));
-    }
-    else
-    {
+    } else {
         static_cast<Tfla01*>(qApp->mainWidget())->statusBar()->message(
             tr("Function only available if both markers are set."), 4000);
     }
-
 }
 
 
@@ -174,49 +166,34 @@ void DataView::pos1() throw ()
 void DataView::end() throw ()
 {
     if (m_currentData.bytes().size() > 0)
-    {
         m_dataPlot->setStartIndex(m_currentData.bytes().size() -
                                   m_dataPlot->getNumberOfPossiblyDisplayedSamples() + 2);
-    }
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::wheelEvent(QWheelEvent* e)
 {
-    switch (e->state())
-    {
+    switch (e->state()) {
         case Qt::ControlButton:
             if (e->delta() > 0)
-            {
                 zoomIn();
-            }
             else
-            {
                 zoomOut();
-            }
             break;
 
         case Qt::ShiftButton:
             if (e->delta() > 0)
-            {
                 navigateLeftPage();
-            }
             else
-            {
                 navigateRightPage();
-            }
             break;
 
         case Qt::NoButton:
             if (e->delta() > 0)
-            {
                 navigateLeft();
-            }
             else
-            {
                 navigateRight();
-            }
             break;
 
         default:
@@ -239,11 +216,8 @@ void DataView::updateScrollInfo()
 
     // set this to calculate the size
     if ((m_currentData.bytes().size() - ps) == 0)
-    {
         m_scrollBar->setPageStep(0);
-    }
     else
-    {
         m_scrollBar->setPageStep(ps / m_scrollDivisor);
         m_scrollBar->setLineStep(qRound(ps / 10.0 / m_scrollDivisor));
 
@@ -252,7 +226,6 @@ void DataView::updateScrollInfo()
         PRINT_TRACE("range = %d to %d", m_scrollBar->minValue(), m_scrollBar->maxValue());
         PRINT_TRACE("ps = %d", m_scrollBar->pageStep());
 #endif
-    }
 }
 
 
@@ -276,13 +249,9 @@ void DataView::scrollValueChanged()
 void DataView::scrollValueChanged(int value) throw ()
 {
     if (value == m_scrollBar->maxValue())
-    {
         end();
-    }
     else
-    {
         m_dataPlot->setStartIndex(value * m_scrollDivisor);
-    }
 }
 
 
@@ -327,17 +296,14 @@ void DataView::navigateRightPage() throw ()
 void DataView::jumpToLeftMarker() throw ()
 {
     if (m_dataPlot->getLeftMarker() >= 0)
-    {
         m_dataPlot->setStartIndex(QMAX(0, m_dataPlot->getLeftMarker()));
-    }
 }
 
 
 // -------------------------------------------------------------------------------------------------
 void DataView::jumpToRightMarker() throw ()
 {
-    if (m_dataPlot->getRightMarker() >= 0)
-    {
+    if (m_dataPlot->getRightMarker() >= 0) {
         // 3 instead of 2 because in end() size() is lastElementIndex + 1
         m_dataPlot->setStartIndex(QMAX(0, m_dataPlot->getRightMarker() -
                                        m_dataPlot->getNumberOfDisplayedSamples() + 3)  );
@@ -352,18 +318,14 @@ void DataView::saveScreenshot() throw ()
         QString::null, tr("PNG files (*.png)"),
         this, "", tr("Choose file to save"));
     if (fileName.isNull())
-    {
         return;
-    }
 
     QPixmap screenshot = m_dataPlot->getScreenshot();
     if (!screenshot.save(fileName, "PNG"))
-    {
         QMessageBox::warning(this,
             tr("TFLA-01"), tr("Current view could not be saved. Maybe you "
                 "you don't have permissions to that location."),
                 QMessageBox::Ok, QMessageBox::NoButton);
-    }
 }
 
 
@@ -378,18 +340,14 @@ void DataView::exportToCSV()
     ed->setMode(Q3FileDialog::AnyFile);
 
     if (ed->exec() != QDialog::Accepted)
-    {
         return;
-    }
 
     fileName = ed->selectedFile();
     diff = ed->getDiffMode();
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
-    {
         return;
-    }
 
     Q3TextStream stream(&file);
     QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
@@ -398,32 +356,24 @@ void DataView::exportToCSV()
     stream << "number;1;2;3;4;5;6;7;8\n";
 
     unsigned int size = m_currentData.bytes().size();
-    for (unsigned int i = 0; i < size; ++i)
-    {
+    for (unsigned int i = 0; i < size; ++i) {
         unsigned char byte = m_currentData.bytes()[i];
 
         // keep the event loop running
         if (i % 100 == 0)
-        {
             qApp->processEvents();
-        }
 
         // check for a state change
         if (diff && i != 0 && i != (size - 1) &&
                 byte == m_currentData.bytes()[i-1] &&
                 byte == m_currentData.bytes()[i+1])
-        {
             continue;
-        }
 
         stream << i << ';';
-        for (int j = 0; j < NUMBER_OF_BITS_PER_BYTE; ++j)
-        {
+        for (int j = 0; j < NUMBER_OF_BITS_PER_BYTE; ++j) {
             stream << (int)(bit_is_set(byte, j) ? 1 : 0);
             if (j != NUMBER_OF_BITS_PER_BYTE - 1)
-            {
                 stream << ';';
-            }
         }
 
         stream << '\n';

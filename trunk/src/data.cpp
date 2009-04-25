@@ -24,9 +24,7 @@ Data::Data() throw ()
     : m_measuringTime(0)
 {
     for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
-    {
         m_lineStates[i] = LS_CHANGING;
-    }
 }
 
 
@@ -68,30 +66,21 @@ Data::LineState Data::getLineState(int line) const throw ()
 void Data::calculateLineStates() throw ()
 {
     if (m_bytes.size() < 1)
-    {
         return;
-    }
 
-    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++)
-    {
+    for (int i = 0; i < NUMBER_OF_BITS_PER_BYTE; i++) {
         m_lineStates[i] = bit_is_set(m_bytes[0], i) ? LS_ALWAYS_H : LS_ALWAYS_L;
 
-        for (uint j = 0; j < m_bytes.size() && m_lineStates[i] != LS_CHANGING; j++)
-        {
-            switch (m_lineStates[i])
-            {
+        for (uint j = 0; j < m_bytes.size() && m_lineStates[i] != LS_CHANGING; j++) {
+            switch (m_lineStates[i]) {
                 case LS_ALWAYS_L:
                     if (bit_is_set(m_bytes[j], i))
-                    {
                         m_lineStates[i] = LS_CHANGING;
-                    }
                     break;
 
                 case LS_ALWAYS_H:
                     if (bit_is_clear(m_bytes[j], i))
-                    {
                         m_lineStates[i]  = LS_CHANGING;
-                    }
                     break;
 
                 case LS_CHANGING:
@@ -106,18 +95,13 @@ void Data::calculateLineStates() throw ()
 // -------------------------------------------------------------------------------------------------
 double Data::getMsecsForSample(int sample) const throw()
 {
+    // special case, the invalid position
     if (sample == -1)
-    {
-        // special case, the invalid position
         return -1.0;
-    }
-    else if (sample < 0 || sample > static_cast<int>(m_bytes.size()))
-    {
+    else if (sample < 0 || sample > int(m_bytes.size()))
         return -1.0;
-    }
 
-    return m_measuringTime * static_cast<double>(sample) / m_bytes.size();
-
+    return m_measuringTime * double(sample) / m_bytes.size();
 }
 
 // vim: set sw=4 ts=4 tw=100:

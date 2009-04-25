@@ -61,11 +61,8 @@ Tfla01::Tfla01()
 
     // restore the layout
     if (Settings::set().readBoolEntry("Main Window/maximized"))
-    {
         showMaximized();
-    }
-    else
-    {
+    else {
         int width = int(qApp->desktop()->width() * 0.5);
         resize(
             Settings::set().readNumEntry("Main Window/width", width),
@@ -88,8 +85,7 @@ void Tfla01::portChange(int id) throw ()
     m_portsMenu->clear();
 
     ParportList* list = ParportList::instance(0);
-    for (int i = 0; i < list->getNumberOfPorts(); i++)
-    {
+    for (int i = 0; i < list->getNumberOfPorts(); i++) {
         m_portsMenu->insertItem(list->getPort(i).getName(), i);
         m_portsMenu->setItemChecked(i, i == Settings::set().readNumEntry("Hardware/Parport"));
     }
@@ -122,22 +118,18 @@ void Tfla01::startAnalyze()
     QTimer timer;
     timer.start(100, 0);
     while (coll->running() && m_analyzingActive)
-    {
         qApp->processEvents( QEventLoop::WaitForMore);
-    }
     timer.stop();
 
     // stopped by the user
-    if (!m_analyzingActive)
-    {
+    if (!m_analyzingActive) {
         coll->stop();
         coll->wait();
     }
     QApplication::restoreOverrideCursor();
 
     // finished
-    if (!coll->getErrorString().isNull())
-    {
+    if (!coll->getErrorString().isNull()) {
         QMessageBox::warning(this, tr("TFLA-01"),
             tr("<qt><nobr>An error occurred while collecting data:</nobr><br>%1</qt>").arg(
                 coll->getErrorString()),
@@ -173,8 +165,7 @@ void Tfla01::changeForegroundColor()  throw ()
     QString currentColor = Settings::set().readEntry("UI/Foreground_Color_Line");
     QColor col = QColorDialog::getColor(currentColor, this);
 
-    if (col.isValid())
-    {
+    if (col.isValid()) {
         Settings::set().writeEntry("UI/Foreground_Color_Line", col.name());
         m_centralWidget->getDataView()->redrawData();
     }
@@ -188,8 +179,7 @@ void Tfla01::changeLeftColor()
     QString currentColor = Settings::set().readEntry("UI/Left_Marker_Color");
     QColor col = QColorDialog::getColor(currentColor, this);
 
-    if (col.isValid())
-    {
+    if (col.isValid()) {
         Settings::set().writeEntry("UI/Left_Marker_Color", col.name());
         m_centralWidget->getDataView()->redrawData();
     }
@@ -202,8 +192,7 @@ void Tfla01::changeRightColor()  throw ()
     QString currentColor = Settings::set().readEntry("UI/Right_Marker_Color");
     QColor col = QColorDialog::getColor(currentColor, this);
 
-    if (col.isValid())
-    {
+    if (col.isValid()) {
         Settings::set().writeEntry("UI/Right_Marker_Color", col.name());
         m_centralWidget->getDataView()->redrawData();
     }
