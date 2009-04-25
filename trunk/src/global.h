@@ -18,6 +18,7 @@
 #define GLOBAL_H
 
 #include <Q3ValueVector>
+#include <QDebug>
 
 /**
  * Byte is shorter than unsigned char.
