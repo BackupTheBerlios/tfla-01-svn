@@ -66,9 +66,10 @@ Tfla01::Tfla01()
     }
     else
     {
+        int width = int(qApp->desktop()->width() * 0.5);
         resize(
-            Settings::set().readNumEntry("Main Window/width", int(qApp->desktop()->width() * 0.6) ),
-            Settings::set().readNumEntry("Main Window/height", int(qApp->desktop()->height() / 2.0) )
+            Settings::set().readNumEntry("Main Window/width", width),
+            Settings::set().readNumEntry("Main Window/height", width*3/4)
         );
     }
 
