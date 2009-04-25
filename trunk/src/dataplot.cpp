@@ -337,12 +337,10 @@ void DataPlot::plot(QPainter* painter)
                     points.setPoint(j0++, *it, oldHigh ? currentHighY : currentLowY);
                     ++it;
 
-                    while (it != m_xPositions.end() && j < (data.size()))
-                    {
+                    while (it != m_xPositions.end() && j < (data.size())) {
                         newHigh = data[j] & (1 << i);
 
-                        if (newHigh != oldHigh)
-                        {
+                        if (newHigh != oldHigh) {
                             points.setPoint(j0++, *(it - 1), oldHigh ? currentHighY : currentLowY);
                             points.setPoint(j0++, *it,       newHigh ? currentHighY : currentLowY);
 
