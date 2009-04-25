@@ -17,7 +17,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
- #include <Q3ValueVector>
+#include <Q3ValueVector>
 
 /**
  * Byte is shorter than unsigned char.
