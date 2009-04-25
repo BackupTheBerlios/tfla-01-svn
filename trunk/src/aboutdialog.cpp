@@ -34,7 +34,7 @@ AboutDialog::AboutDialog(QWidget* parent, const char* name)
     throw ()
     : QDialog(parent, name)
 {
-     m_mainLayout = new Q3VBoxLayout(this, 10, 6);
+    m_mainLayout = new Q3VBoxLayout(this, 10, 6);
     setCaption(tr("About The Fabulous Logic Analyzer"));
 
     // the top of the dialog
