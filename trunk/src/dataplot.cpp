@@ -22,6 +22,7 @@
 #include <Q3PointArray>
 #include <QPaintEvent>
 #include <QMouseEvent>
+#include <QTime>
 
 #include "dataplot.h"
 #include "global.h"
@@ -31,6 +32,7 @@
 
 // -------------------------------------------------------------------------------------------------
 #define DEFAULT_POINTS_PER_SAMPLE 10
+#define MEASURE_TIME              0
 
 // -------------------------------------------------------------------------------------------------
 DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name) throw ()
@@ -52,6 +54,10 @@ void DataPlot::paintEvent(QPaintEvent*)
 {
     // updateData(false);
     const bool forceRedraw = true;
+
+#if MEASURE_TIME
+    QTime start = QTime::currentTime();
+#endif
  
     QPainter p;
     QPixmap screenPixmap( int(width() + DEFAULT_POINTS_PER_SAMPLE *  m_zoomFactor),
@@ -84,6 +90,12 @@ void DataPlot::paintEvent(QPaintEvent*)
     p.begin(this);
     p.drawPixmap(0, 0, screenPixmap);
     p.end();
+
+#if MEASURE_TIME
+    QTime end = QTime::currentTime();
+    long msec = start.msecsTo(end);
+    qDebug() << "Repainting took " << msec << " ms.";
+#endif
 }
 
 
