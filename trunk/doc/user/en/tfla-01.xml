@@ -918,25 +918,6 @@ KERNEL="parport[0-9]", MODE="664", GROUP="parport"
       </para>
     </sect2>
 
-  <!--  <sect2 id="browser">
-      <title>Browser settings</title>
-
-      <para>The web browser is used to display HTML help in the application. On Windows,
-        <application>Internet Explorer</application> is used as default, on Unix it is
-        <application>Mozilla Firefox</application>. Use
-        <menuchoice><guimenu>Settings</guimenu> <guimenuitem>Change browser</guimenuitem>
-        </menuchoice> to change the browser: Just enter the name of the executable
-        (e. g. <application>mozilla</application>) if it is in <envar>PATH</envar>
-        enviroment or the full path (e. g. <application>/opt/mozilla/mozilla</application>
-        on Unix or <application>c:\program files\mozilla\mozilla.exe</application> on Windows).
-      </para>
-
-      <para>
-        The HTML file to display, prefixed with <literal>file://</literal> is the first
-        and only argument of the browser start action.
-      </para>
-    </sect2> -->
-
     <sect2 id="parport">
       <title>Parallel port</title>
 
@@ -947,9 +928,6 @@ KERNEL="parport[0-9]", MODE="664", GROUP="parport"
         don't know hot-pluggable parallel ports).
       </para>
     </sect2>
-
-
-
   </sect1>
   <sect1 id="aboutapplication">
     <title>About &application;</title>
