@@ -171,7 +171,6 @@ void ParameterBox::updateValues() throw ()
     else
         m_leftMarker->setText(loc.toString(m_leftValue, 'f', 4) + " ms");
 
-
     // update the right value
     if (m_rightValue < 0.0)
         m_rightMarker->setText(tr("(no marker)"));

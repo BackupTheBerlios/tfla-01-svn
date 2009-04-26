@@ -23,10 +23,10 @@ unix:LIBS         += -lieee1284
 
 ################################################################################
 
-VERSION_STRING     = 0.1.4
+VERSION_STRING     = 0.2.0
 MAJOR_VERSION      = 0
-MINOR_VERSION      = 1
-PATCH_VERSION      = 4
+MINOR_VERSION      = 2
+PATCH_VERSION      = 0
 
 ################################################################################
 
