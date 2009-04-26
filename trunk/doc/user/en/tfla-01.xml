@@ -974,6 +974,4 @@ KERNEL="parport[0-9]", MODE="664", GROUP="parport"
   </sect1>
 
 </article>
-<!--
-	vim:set ts=2 sw=2 et ai:
--->
+<!-- vim:set ts=2 sw=2 et ai: -->
