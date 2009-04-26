@@ -1,6 +1,7 @@
 2009-04-26  Bernhard Walle <bernhard.walle@gmx.de>
 
 	* Port to Qt4
+	* Switch to CMake
 
 2008-07-13  Bernhard Walle <bernhard.walle@gmx.de>
 
