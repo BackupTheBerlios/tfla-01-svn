@@ -52,9 +52,6 @@ DataPlot::DataPlot(QWidget* parent, DataView* dataView, const char* name) throw 
 // -------------------------------------------------------------------------------------------------
 void DataPlot::paintEvent(QPaintEvent*)
 {
-    // updateData(false);
-    const bool forceRedraw = true;
-
 #if MEASURE_TIME
     QTime start = QTime::currentTime();
 #endif
@@ -66,8 +63,8 @@ void DataPlot::paintEvent(QPaintEvent*)
     if (m_lastWidth != width())
         recalculateXPositions();
 
-    if (forceRedraw || m_lastWidth != width() || m_lastHeight != height()
-            || (m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0)) {
+    if (m_lastWidth != width() || m_lastHeight != height() ||
+            (m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0)) {
         // larger pixmap to have space to draw the last point
         m_lastPixmap.resize(int(width() + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor), height());
         m_lastPixmap.fill(QColor(Settings::set().readEntry("UI/Background_Color")));
