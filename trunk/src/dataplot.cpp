@@ -63,21 +63,23 @@ void DataPlot::paintEvent(QPaintEvent*)
     if (m_lastWidth != width())
         recalculateXPositions();
 
-    if (m_lastWidth != width() || m_lastHeight != height() ||
-            (m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0)) {
-        // larger pixmap to have space to draw the last point
-        m_lastPixmap.resize(int(width() + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor), height());
-        m_lastPixmap.fill(QColor(Settings::set().readEntry("UI/Background_Color")));
+    // XXX
+    // logic to detect redraw
+    // (m_lastWidth != width() || m_lastHeight != height() ||
+    //   (m_lastPixmap.width() == 0 && m_lastPixmap.height() == 0))
+ 
+    // larger pixmap to have space to draw the last point
+    m_lastPixmap.resize(int(width() + DEFAULT_POINTS_PER_SAMPLE * m_zoomFactor), height());
+    m_lastPixmap.fill(QColor(Settings::set().readEntry("UI/Background_Color")));
 
-        p.begin(&m_lastPixmap);
-        plot(&p);
-        p.end();
+    p.begin(&m_lastPixmap);
+    plot(&p);
+    p.end();
 
-        m_lastHeight = height();
-        m_lastWidth = width();
+    m_lastHeight = height();
+    m_lastWidth = width();
 
-        emit viewUpdated();
-    }
+    emit viewUpdated();
 
     p.begin(&screenPixmap);
     p.drawPixmap(0, 0, m_lastPixmap);
