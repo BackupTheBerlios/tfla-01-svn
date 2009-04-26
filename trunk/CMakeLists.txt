@@ -172,7 +172,7 @@ ADD_CUSTOM_COMMAND(
         ${CMAKE_SOURCE_DIR}/doc/user/en/tfla-01.xml &&
         ${CMAKE_COMMAND} -E copy
         ${CMAKE_SOURCE_DIR}/doc/user/tfla-01.css
-        ${CMAKE_BINARY_DIR}/doc/user/en/tfla-01.css
+        ${CMAKE_BINARY_DIR}/doc/user/tfla-01.css
     DEPENDS
         ${CMAKE_SOURCE_DIR}/doc/user/en/tfla-01.xml
     WORKING_DIRECTORY
@@ -228,7 +228,7 @@ INSTALL(
 
 INSTALL(
     DIRECTORY
-        ${CMAKE_BINARY_DIR}/doc/user/en
+        ${CMAKE_BINARY_DIR}/doc/user/
     DESTINATION
         share/tfla-01/doc/
     FILES_MATCHING REGEX ".*.(html|css)"
