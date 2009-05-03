@@ -38,7 +38,8 @@ int main(int argc, char* argv[])
     // translation
     QTranslator translator(0), ttranslator(0);
     QString loc = QTextCodec::locale();
-    translator.load(loc, qApp->applicationDirPath() + "/../share/tfla-01/translations/");
+    if (!translator.load(loc, qApp->applicationDirPath() + "/../share/tfla-01/translations/"))
+        translator.load(loc, ".");
     ttranslator.load(QString("qt_") + loc, QString(getenv("QTDIR")) + "/translations/");
     app.installTranslator(&translator);
     app.installTranslator(&ttranslator);
