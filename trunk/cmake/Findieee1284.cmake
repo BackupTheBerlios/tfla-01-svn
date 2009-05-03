@@ -26,6 +26,7 @@ else (IEEE1284_LIBRARIES AND IEEE1284_INCLUDE_DIRS)
       /usr/local/include
       /opt/local/include
       /sw/include
+      libieee1284/include
   )
 
   find_library(IEEE1284_LIBRARY
@@ -36,6 +37,7 @@ else (IEEE1284_LIBRARIES AND IEEE1284_INCLUDE_DIRS)
       /usr/local/lib
       /opt/local/lib
       /sw/lib
+      libieee1284
   )
   mark_as_advanced(IEEE1284_LIBRARY)
 
