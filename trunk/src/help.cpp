@@ -45,7 +45,11 @@ void Help::showAbout()
 // -------------------------------------------------------------------------------------------------
 void Help::showHelp()
 {
-    QString base = QDir(qApp->applicationDirPath() + "/../share/tfla-01/doc/").canonicalPath();
+    QString base;
+    if (QDir(qApp->applicationDirPath() + "/doc/user/").exists())
+        base = QDir(qApp->applicationDirPath() + "/doc/user/").canonicalPath();
+    else
+        base = QDir(qApp->applicationDirPath() + "/../share/tfla-01/doc/").canonicalPath();
     QString loc = QString(QTextCodec::locale()).section("_", 0, 0);
     QStringList args;
 
