@@ -170,7 +170,10 @@ ADD_CUSTOM_COMMAND(
         ${CMAKE_SOURCE_DIR}/doc/user/en/tfla-01.xml &&
         ${CMAKE_COMMAND} -E copy
         ${CMAKE_SOURCE_DIR}/doc/user/tfla-01.css
-        ${CMAKE_BINARY_DIR}/doc/user/tfla-01.css
+        ${CMAKE_BINARY_DIR}/doc/user/tfla-01.css &&
+        ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/doc/user/en/images
+        ${CMAKE_BINARY_DIR}/doc/user/en/images
     DEPENDS
         ${CMAKE_SOURCE_DIR}/doc/user/en/tfla-01.xml
     WORKING_DIRECTORY
