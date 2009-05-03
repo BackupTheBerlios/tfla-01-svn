@@ -42,7 +42,8 @@ Parport::~Parport()
     if (m_isOpen) {
         try {
             close();
-        } catch (const TfError& err) {
+        } catch (const TfError &err) {
+            Q_UNUSED(err);
             PRINT_DBG("Error in Parport::~Parport: %s\n", (const char*)err.what().local8Bit());
         }
     }
